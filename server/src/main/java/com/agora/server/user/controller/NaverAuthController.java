@@ -2,6 +2,10 @@ package com.agora.server.user.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.service.NaverAuthService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,10 @@ public class NaverAuthController {
     /**
      * join 시 get 요청
      */
+    @Operation(summary = "join button", description = "소셜 회원 가입 시 redirect")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
     @GetMapping("join/oauth")
     public void join() {
         try {
