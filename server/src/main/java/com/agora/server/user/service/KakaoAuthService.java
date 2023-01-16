@@ -1,5 +1,7 @@
 package com.agora.server.user.service;
 
+import com.agora.server.user.controller.dto.CommonDto;
+import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.utils.KakaoAuthUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -25,7 +27,7 @@ public class KakaoAuthService {
     @Value("${spring.OAuth2.kakao.api-key}")
     private String KAKAO_REST_API_KEY;
 
-    @Value("${spring.OAuth2.kakao.info-key}")
+    @Value("${spring.OAuth2.kakao.info-url}")
     private String KAKAO_GET_INFO_URL;
 
     /**
@@ -95,7 +97,7 @@ public class KakaoAuthService {
     }
 
 
-    public void getKakaoUserInfo(String token) throws IOException{
+    public CommonDto getKakaoUserInfo(String token) throws IOException{
 
         URL url = new URL(KAKAO_GET_INFO_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -123,6 +125,7 @@ public class KakaoAuthService {
         JsonElement element = parser.parse(result);
 
         int id = element.getAsJsonObject().get("id").getAsInt();
+        String userId = String.valueOf(id);
         boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
         String email = "";
         if(hasEmail){
@@ -134,6 +137,10 @@ public class KakaoAuthService {
 //        System.out.println("nickname = " + nickname);
 
         br.close();
+        CommonDto kakaoUser = new CommonDto();
+        kakaoUser.createCommonDto(userId, email, null, SocialType.KAKAO);
+
+        return kakaoUser;
 
     }
 

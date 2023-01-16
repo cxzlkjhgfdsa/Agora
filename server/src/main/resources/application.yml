@@ -5,13 +5,5 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  OAuth2:
-    kakao:
-      url: https://kauth.kakao.com/oauth/authorize
-      api-key: 9b71df2737d70ddadb6b15f8710ccda4
-      login-url: http://localhost:8080/login/auth/kakao
-      join-url: http://localhost:8080/join/auth/kakao
-      token-url : https://kauth.kakao.com/oauth/token
-      info-url : https://kapi.kakao.com/v2/user/me
 server:
   port: 8080

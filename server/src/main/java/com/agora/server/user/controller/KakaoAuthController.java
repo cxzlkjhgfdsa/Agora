@@ -1,5 +1,6 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.service.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +32,10 @@ public class KakaoAuthController {
     public String kakaoLogin(@RequestParam String code) throws IOException {
         String token = kakaoAuthService.getKakaoToken(code);
         // 유저 확인
-        kakaoAuthService.getKakaoUserInfo(token);
+        CommonDto kakaoUserInfo = kakaoAuthService.getKakaoUserInfo(token);
         // 이미 회원가입 되어있는지 확인
-
-        return "code = " + code; // dto 반환
+        //... 회원가입 확인 메소드
+        return kakaoUserInfo.getEmail(); // dto 반환
     }
 
 
