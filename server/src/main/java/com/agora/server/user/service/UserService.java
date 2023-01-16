@@ -15,4 +15,5 @@ public class UserService {
     public User findUser(String socialId, SocialType socialType) {
         return userRepository.findSocialUser(socialId, socialType);
     }
+
 }

@@ -21,8 +21,7 @@ public class User{
     private String user_photo;
     private String user_refresh_token;
 
-    public void createUser(Long user_id, SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
-        this.user_id = user_id;
+    public void createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
         this.user_social_type = user_social_type;
         this.user_social_id = user_social_id;
         this.user_name = user_name;
