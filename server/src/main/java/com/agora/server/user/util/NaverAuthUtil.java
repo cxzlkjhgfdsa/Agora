@@ -42,17 +42,30 @@ public class NaverAuthUtil {
     @Value("${oauth.naver.get-info.auth.header-value}")
     private String getInfoAuthHeaderValue;
 
+    @Value("${oauth.naver.get-code.response-type}")
+    private String responseType;
+
+    @Value("${oauth.naver.get-code.state}")
+    private String state;
+
+    @Value("${oauth.naver.get-code.redirect-uri}")
+    private String redirectUri;
+
     /**
      * @param code redirect 후 받은 code
      * @return redirect 된 후 code를 가지고 token을 받아오기 위한 함수
      */
-    public HttpEntity<?> getTokenHttpEntity(String code) {
+    public HttpEntity<MultiValueMap<String, String>> getTokenHttpEntity(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(getRedirectHeader, getRedirectHeaderValue);
         MultiValueMap<String, String> params = getParams(code);
         return new HttpEntity<>(params, headers);
     }
 
+    /**
+     * @param code reidrect  후  받아오는 code
+     * @return header 정보 담고 있는 param
+     */
     private MultiValueMap<String, String> getParams(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", getGrantType);
@@ -60,6 +73,22 @@ public class NaverAuthUtil {
         params.add("client_secret", getClientSecret);
         params.add("code", code);
         return params;
+    }
+
+    public HttpEntity<MultiValueMap<String, String>> getRedirectUrl(String state) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(getRedirectHeader, getRedirectHeaderValue);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        getRedirectHeader(state, params);
+        HttpEntity<MultiValueMap<String, String>> redirect = new HttpEntity<>(params, headers);
+        return redirect;
+    }
+
+    private void getRedirectHeader(String state, MultiValueMap<String, String> params) {
+        params.add("response_type", responseType);
+        params.add("client_id", getClientId);
+        params.add("state", state);
+        params.add("redirect_uri", redirectUri);
     }
 
 }
