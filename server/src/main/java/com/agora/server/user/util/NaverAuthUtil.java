@@ -48,8 +48,14 @@ public class NaverAuthUtil {
     @Value("${oauth.naver.get-code.state}")
     private String state;
 
-    @Value("${oauth.naver.get-code.redirect-uri}")
-    private String redirectUri;
+    @Value("${oauth.naver.get-code.login.redirect-uri}")
+    private String loginRedirectUri;
+
+    @Value("${oauth.naver.get-code.join.redirect-uri}")
+    private String joinRedirectUri;
+
+    @Value("${oauth.naver.get-code.url}")
+    private String getCodeUrl;
 
     /**
      * @param code redirect 후 받은 code
@@ -75,20 +81,29 @@ public class NaverAuthUtil {
         return params;
     }
 
-    public HttpEntity<MultiValueMap<String, String>> getRedirectUrl(String state) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(getRedirectHeader, getRedirectHeaderValue);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        getRedirectHeader(state, params);
-        HttpEntity<MultiValueMap<String, String>> redirect = new HttpEntity<>(params, headers);
-        return redirect;
+    public String getRedirectUrlLogin() {
+        StringBuilder sb = getCodeUrl(loginRedirectUri);
+        return sb.toString();
     }
 
-    private void getRedirectHeader(String state, MultiValueMap<String, String> params) {
-        params.add("response_type", responseType);
-        params.add("client_id", getClientId);
-        params.add("state", state);
-        params.add("redirect_uri", redirectUri);
+    public String getRedirectUrlJoin() {
+        StringBuilder sb = getCodeUrl(joinRedirectUri);
+        return sb.toString();
     }
+
+    private StringBuilder getCodeUrl(String uri) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getCodeUrl)
+                .append("response_type=")
+                .append(responseType)
+                .append("&client_id=")
+                .append(getClientId)
+                .append("&state=")
+                .append(state)
+                .append("&redirect_uri=")
+                .append(uri);
+        return sb;
+    }
+
 
 }
