@@ -21,13 +21,9 @@ public class KakaoAuthController {
      *                 login : 로그인 요청  
      * @throws IOException
      */
-    @GetMapping("request/auth/kakao")
-    public void kakaoLoginRedirect(@RequestParam String state) throws IOException {
-        switch (state){
-            case "join" :
-                kakaoAuthService.joinRequest();
-        }
-
+    @GetMapping("request/join/auth/kakao")
+    public void kakaoLoginRedirect() throws IOException {
+        kakaoAuthService.joinRequest();
     }
 
     /**
@@ -36,12 +32,14 @@ public class KakaoAuthController {
      */
     @GetMapping("join/auth/kakao")
     public String kakaoLogin(@RequestParam String code) throws IOException {
-        String token = kakaoAuthService.getKakaoToken(code);fea
+        String token = kakaoAuthService.getKakaoToken(code);
         // 유저 확인
-
+        kakaoAuthService.getKakaoUserInfo(token);
         // 이미 회원가입 되어있는지 확인
 
-        return "code" + code; // dto 반환
+        return "code = " + code; // dto 반환
     }
+
+
 
 }
