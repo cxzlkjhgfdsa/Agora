@@ -35,5 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
-env.yml
 env-key.yml
+*.DS_Store
