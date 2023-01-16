@@ -12,5 +12,6 @@ spring:
       login-url: http://localhost:8080/login/auth/kakao
       join-url: http://localhost:8080/join/auth/kakao
       token-url : https://kauth.kakao.com/oauth/token
+      info-url : https://kapi.kakao.com/v2/user/me
 server:
   port: 8080

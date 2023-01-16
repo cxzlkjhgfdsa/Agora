@@ -15,10 +15,7 @@ public class KakaoAuthController {
     private final KakaoAuthService kakaoAuthService;
 
     /**
-     * 
-     * @param  state => 로그인 요청인지 회원가입 요청인지 분리하기 위한 값
-     *                 join : 회원가입 요청
-     *                 login : 로그인 요청  
+     *
      * @throws IOException
      */
     @GetMapping("request/join/auth/kakao")

@@ -25,6 +25,9 @@ public class KakaoAuthService {
     @Value("${spring.OAuth2.kakao.api-key}")
     private String KAKAO_REST_API_KEY;
 
+    @Value("${spring.OAuth2.kakao.info-key}")
+    private String KAKAO_GET_INFO_URL;
+
     /**
      * 회원가입 요청으로 redirect 하기 위한 URL 생성
      */
@@ -44,7 +47,6 @@ public class KakaoAuthService {
 
         String access_Token = "";
         String refresh_Token = "";
-
 
         URL url = new URL(KAKAO_TOKEN_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -93,53 +95,46 @@ public class KakaoAuthService {
     }
 
 
-    public void getKakaoUserInfo(String token) {
+    public void getKakaoUserInfo(String token) throws IOException{
 
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
+        URL url = new URL(KAKAO_GET_INFO_URL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        //access_token을 이용하여 사용자 정보 조회
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
 
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
+        //결과 코드가 200이라면 성공
+        int responseCode = conn.getResponseCode();
+        //System.out.println("responseCode : " + responseCode);
 
-            //결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-            //System.out.println("responseCode : " + responseCode);
+        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = "";
+        String result = "";
 
-            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            //System.out.println("response body : " + result);
-
-            //Gson 라이브러리로 JSON파싱
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-
-            int id = element.getAsJsonObject().get("id").getAsInt();
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            String email = "";
-            if(hasEmail){
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
-            String nickname = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
-            System.out.println("id : " + id);
-            System.out.println("email : " + email);
-            System.out.println("nickname = " + nickname);
-
-            br.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        while ((line = br.readLine()) != null) {
+            result += line;
         }
+        //System.out.println("response body : " + result);
+
+        //Gson 라이브러리로 JSON파싱
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(result);
+
+        int id = element.getAsJsonObject().get("id").getAsInt();
+        boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+        String email = "";
+        if(hasEmail){
+            email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+        }
+        String nickname = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
+//        System.out.println("id : " + id);
+//        System.out.println("email : " + email);
+//        System.out.println("nickname = " + nickname);
+
+        br.close();
+
     }
 
 }
