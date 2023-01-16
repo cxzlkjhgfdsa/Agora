@@ -35,8 +35,8 @@ public class KakaoAuthController {
      * @param code : 유저 토큰을 받기 위한 code
      */
     @GetMapping("join/auth/kakao")
-    public String kakaoLogin(@RequestParam String code){
-        String token = kakaoAuthService.getKakaoToken(code);
+    public String kakaoLogin(@RequestParam String code) throws IOException {
+        String token = kakaoAuthService.getKakaoToken(code);fea
         // 유저 확인
 
         // 이미 회원가입 되어있는지 확인
