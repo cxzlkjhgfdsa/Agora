@@ -47,13 +47,16 @@ const LogoIcon = styled.img`
   margin: 12px;
 `;
 
-const user = { userId: "ssafy123", userPw: "qwer1234", nickname: "SSAFY123" };
-// const user = null;
-
 function Header() {
   const clickLogo = () => {
     alert("로고를 눌렀습니다.");
   };
+
+  // Test : 활성화 시 검색창, 사용자 프로필 보기
+  // const user = { userId: "ssafy123", userPw: "qwer1234", nickname: "SSAFY123" };
+  
+  // Test : 활성화 시 모든 헤더 버튼들 보기
+  const user = null;
 
   return (
     <StyledHeader>

@@ -1,3 +1,4 @@
+import { DisabledReadyButton, EnabledReadyButton, EnabledStartButton, ExitButton } from "components/debate/DebateButtons";
 import styled from "styled-components";
 
 // Styled Button
@@ -25,6 +26,11 @@ function RightSide({ user }) {
         <StyledLightButton>둘러보기</StyledLightButton>
         <StyledLightButton>회원가입</StyledLightButton>
         <StyledDarkButton>로그인</StyledDarkButton>
+        <EnabledReadyButton onClick={() => alert("준비합니다.")} />
+        <DisabledReadyButton />
+        <EnabledStartButton onClick={() => alert("시작합니다.")} />
+        <DisabledReadyButton />
+        <ExitButton onClick={() => alert("방에서 나갑니다.")} />
       </RightSideWrapper>
     );
   }
