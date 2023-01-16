@@ -3,14 +3,14 @@ package com.agora.server.user.domain;
 import com.agora.server.user.controller.dto.SocialType;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
+@Table(name = "users")
 public class User{
     @Id @GeneratedValue
+    @Column(name="user_id")
     private Long user_id;
     private SocialType user_social_type;
     private String user_social_id;
