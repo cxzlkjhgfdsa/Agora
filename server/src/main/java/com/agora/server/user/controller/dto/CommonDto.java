@@ -8,9 +8,12 @@ public class CommonDto {
     private String email;
     private String phone;
 
-    public void createCommonDto(String social_id, String email,  String phone){
+    private SocialType socialType;
+
+    public void createCommonDto(String social_id, String email,  String phone, SocialType socialType){
         this.social_id = social_id;
         this.email = email;
         this.phone = phone;
+        this.socialType=socialType;
     }
 }
