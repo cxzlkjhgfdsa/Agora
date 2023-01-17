@@ -1,21 +1,28 @@
 package com.agora.server.user.service;
 
+import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
 import com.agora.server.user.controller.dto.google.GoogleUser;
 import com.agora.server.user.controller.dto.google.GetGoogleOAuthRes;
+import com.agora.server.user.domain.User;
+import com.agora.server.user.repository.GoogleUserRepository;
 import com.agora.server.user.utils.GoogleAuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GoogleAuthService {
     private final GoogleAuthUtils googleAuthUtils;
     private final HttpServletResponse response;
+
+    private final GoogleUserRepository googleUserRepository;
 
     public void loginRequest() throws IOException {
         String redirectURL = googleAuthUtils.getLoginRedirectURL();
@@ -81,6 +88,12 @@ public class GoogleAuthService {
 //
 //      액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
         GetGoogleOAuthRes getGoogleOAuthRes = new GetGoogleOAuthRes("jwtToken", 1, oAuthToken.getAccess_token(), oAuthToken.getToken_type(), "join");
+
+        User user = new User();
+        user.createUser(SocialType.GOOGLE,googleUser.getId(),googleUser.name,"age","phone",googleUser.getName(),"photo","refreshtoken");
+
+        googleUserRepository.save(user);
+
         return getGoogleOAuthRes;
 //        } else {
 //      서버에 user가 없으면 회원가입창으로 유도를 위해
@@ -91,5 +104,6 @@ public class GoogleAuthService {
 
 
 
-    }
+
+}
 

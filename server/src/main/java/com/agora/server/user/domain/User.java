@@ -3,17 +3,16 @@ package com.agora.server.user.domain;
 import com.agora.server.user.controller.dto.SocialType;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Table(name = "users")
 public class User{
     @Id @GeneratedValue
+    @Column(name="user_id")
     private Long user_id;
+    @Enumerated(EnumType.STRING)
     private SocialType user_social_type;
     private String user_social_id;
     private String user_name;
@@ -23,8 +22,7 @@ public class User{
     private String user_photo;
     private String user_refresh_token;
 
-    public void createUser(Long user_id, SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
-        this.user_id = user_id;
+    public void createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
         this.user_social_type = user_social_type;
         this.user_social_id = user_social_id;
         this.user_name = user_name;
@@ -34,5 +32,6 @@ public class User{
         this.user_photo = user_photo;
         this.user_refresh_token = user_refresh_token;
     }
+
 
 }
