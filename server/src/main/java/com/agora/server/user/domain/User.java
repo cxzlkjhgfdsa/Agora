@@ -19,6 +19,7 @@ public class User{
     private String user_name;
     private String user_age;
     private String user_phone;
+
     @Column(unique = true)
     private String user_nickname;
     private String user_photo;
