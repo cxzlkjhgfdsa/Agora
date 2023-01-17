@@ -55,6 +55,12 @@ public class KakaoAuthController {
 
     }
 
+  
+    @GetMapping("kakao/logout")
+    public String logoutPage(){
+        return "로그아웃 성공";
+    }
+
 
 
 }

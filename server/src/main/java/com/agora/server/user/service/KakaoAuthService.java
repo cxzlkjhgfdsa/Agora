@@ -87,7 +87,7 @@ public class KakaoAuthService {
         access_Token = element.getAsJsonObject().get("access_token").getAsString();
         refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
 
-        //System.out.println("access_token : " + access_Token);
+        System.out.println("access_token : " + access_Token);
         //System.out.println("refresh_token : " + refresh_Token);
 
         br.close();
@@ -132,13 +132,18 @@ public class KakaoAuthService {
             email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
         }
         String nickname = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
+        String profile = element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image").getAsString();
 //        System.out.println("id : " + id);
 //        System.out.println("email : " + email);
 //        System.out.println("nickname = " + nickname);
+        //System.out.println("profile = "+profile);
 
         br.close();
         CommonDto kakaoUser = new CommonDto();
-        kakaoUser.createCommonDto(userId, email, null, SocialType.KAKAO);
+        kakaoUser.setEmail(email);
+        kakaoUser.setSocial_id(userId);
+        kakaoUser.setSocialType(SocialType.KAKAO);
+        kakaoUser.setProfile(profile);
 
         return kakaoUser;
 
