@@ -1,8 +1,15 @@
 package com.agora.server.user.service;
 
+import com.agora.server.user.controller.response.NaverTokenDTO;
 import com.agora.server.user.util.NaverAuthUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,5 +34,12 @@ public class NaverAuthService {
     public void sendRedirectNaverAuthLogin() throws IOException {
         String url = naverAuthUtil.getRedirectUrlLogin();
         httpResponse.sendRedirect(url);
+    }
+
+    public NaverTokenDTO getToken(String code) throws JsonProcessingException {
+        HttpEntity<MultiValueMap<String, String>> httpEntity = naverAuthUtil.getTokenHttpEntity(code);
+        String tokenBody = naverAuthUtil.getTokenBody(httpEntity);
+        String accessToken = naverAuthUtil.getAccessToken(tokenBody);
+
     }
 }

@@ -56,7 +56,6 @@ public class NaverAuthController {
     public ResponseEntity<ResponseDTO> login(@RequestParam String code) {
         ResponseDTO res = new ResponseDTO();
 
-
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 
