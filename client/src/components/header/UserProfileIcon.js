@@ -10,6 +10,8 @@ const Wrapper = styled.div`
   height: 70px;
 
   position: relative;
+
+  display: inline-block;
 `;
 
 // 사용자 프로필 이미지
@@ -108,10 +110,10 @@ function UserProfileIcon({ nickname }) {
       <Round className="bg-main border-main" />
       <IDLabel>{nickname}</IDLabel>
       <Icon src={ArrowDownIcon} onClick={expandProfile} />
-      <ExpandedProfile>
+      {/* <ExpandedProfile>
         <ExpandedWhiteElement>My Page</ExpandedWhiteElement>
         <ExpandedRedElement>Log out</ExpandedRedElement>
-      </ExpandedProfile>
+      </ExpandedProfile> */}
     </Wrapper>
   );
 }
