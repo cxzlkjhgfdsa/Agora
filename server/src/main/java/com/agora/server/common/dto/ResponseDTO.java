@@ -9,5 +9,6 @@ public class ResponseDTO {
     private String message;
     private Object body;
     private int statusCode;
+    private boolean state;
 
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.user_social_id= :socialId and u.user_social_type = :socialType")
-    User findSocialUser(@Param("socialId") String socialId, @Param("socialType")SocialType socialType);
+    User checkDuplicateUser(@Param("socialId") String socialId, @Param("socialType")SocialType socialType);
 
 }
+

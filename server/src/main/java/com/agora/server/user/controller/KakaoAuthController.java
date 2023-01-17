@@ -33,20 +33,26 @@ public class KakaoAuthController {
      * @param code : 유저 토큰을 받기 위한 code
      */
     @GetMapping("join/auth/kakao")
-    public String kakaoJoin(@RequestParam String code) throws IOException {
+    public ResponseDTO kakaoJoin(@RequestParam String code) throws IOException {
         String token = kakaoAuthService.getKakaoToken(code);
         // 유저 확인
         CommonDto kakaoUserInfo = kakaoAuthService.getKakaoUserInfo(token);
         // 이미 회원가입 되어있는지 확인
-        User user = userService.findUser(kakaoUserInfo.getSocial_id(), kakaoUserInfo.getSocialType());
-
+        User user = userService.checkDuplicateUser(kakaoUserInfo.getSocial_id(), kakaoUserInfo.getSocialType());
+        ResponseDTO responseDTO = new ResponseDTO();
         if(user!=null){
             //이미 회원가입 되어있음 오류
+            responseDTO.setMessage("이미 회원가입 된 사용자입니다");
+            responseDTO.setState(false);
+            return responseDTO;
         }else{
             //회원가입 하기위한 정보 리턴
-            System.out.println("회원가입 해도되용");
+            responseDTO.setState(true);
+            responseDTO.setBody(kakaoUserInfo);
+            responseDTO.setMessage("회원가입 하기 위한 추가정보 입력 바랍니다");
+            return responseDTO;
         }
-        return kakaoUserInfo.getEmail(); // dto 반환
+
     }
 
 

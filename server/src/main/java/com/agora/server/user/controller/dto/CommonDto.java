@@ -7,7 +7,6 @@ public class CommonDto {
     private String social_id;
     private String email;
     private String phone;
-
     private SocialType socialType;
 
     public void createCommonDto(String social_id, String email,  String phone, SocialType socialType){
