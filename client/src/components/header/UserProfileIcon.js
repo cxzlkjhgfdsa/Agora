@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import ArrowDownIcon from "assets/icons/Arrow_Down_White.png";
+import ArrowUpIcon from "assets/icons/Arrow_Up_White.png";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { UserInfoAtom } from "stores/atoms";
 
 const Wrapper = styled.div`
   // 좌측 모서리, 우측 모서리 둥글게
-  border-radius: 35px 10px 10px 35px;
+  border-radius: 35px 10px ${({expanded}) => expanded ? "0px" : "10px"} 35px;
   
   // 크기 설정
   width: 246px;
@@ -75,23 +80,36 @@ const ExpandedProfile = styled.ul`
   // 배경색
   background-color: #222222;
 
+  // 크기 설정
   width: 212px;
-  height: 85px;
 
+  // 마진 및 패딩
   margin: 0px;
-  padding: 15px 0px 0px 0px;
+  padding: 0px 0px 5px 0px;
 
-  border-radius: 10px;
+  // 상단 직각, 하단 둥글게
+  border-radius: 0px 0px 10px 10px;
 
+  // 위치 설정 : 사용자 프로필 바로 아래
   position: absolute;
-  top: 55px;
+  top: 70px;
   right: 0;
+
+  // 구분점 없애기
+  list-style: none;
 `;
 // 확장 프로필 리스트
 const ExpandedElement = styled.li`
   background-color: transparent;
+
   text-align: center;
-  
+  font-size: 25px;
+  line-height: 30px;
+  letter-spacing: -0.05em;
+
+  margin: 12px 0px;
+
+  cursor: pointer;
 `
 const ExpandedWhiteElement = styled(ExpandedElement)`
   color: #FFFFFF;
@@ -101,19 +119,32 @@ const ExpandedRedElement = styled(ExpandedElement)`
 `;
 
 function UserProfileIcon({ nickname }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const expandProfile = () => {
-    alert("사용자 프로필 아이콘을 눌렀습니다.");
+    setIsExpanded(current => !current);
+  };
+
+  const setUserInfo = useSetRecoilState(UserInfoAtom);
+  const navigate = useNavigate();
+  const logout = () => {
+    alert("로그아웃 처리");
+    setUserInfo({});
+    navigate("/");
   };
 
   return (
-    <Wrapper className="bg-dark border-dark">
+    <Wrapper className="bg-dark border-dark" expanded={isExpanded}>
       <Round className="bg-main border-main" />
       <IDLabel>{nickname}</IDLabel>
-      <Icon src={ArrowDownIcon} onClick={expandProfile} />
-      {/* <ExpandedProfile>
-        <ExpandedWhiteElement>My Page</ExpandedWhiteElement>
-        <ExpandedRedElement>Log out</ExpandedRedElement>
-      </ExpandedProfile> */}
+      <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
+      {isExpanded &&
+        <ExpandedProfile>
+          <Link to={"/user/mypage"}>
+            <ExpandedWhiteElement>My Page</ExpandedWhiteElement>
+          </Link>
+          <ExpandedRedElement onClick={logout}>Logout</ExpandedRedElement>
+        </ExpandedProfile>
+      }
     </Wrapper>
   );
 }

@@ -27,16 +27,17 @@ function RightComponents() {
   const curPath = useLocation().pathname;
   const navigate = useNavigate();
 
-  const exit = () => {
-    alert("나가기 버튼을 눌렀습니다. 나가기 처리 후 토론방 목록으로 이동합니다.");
-    // 토론방 정보 초기화?
-    setDebateInfo({});
-    // 나가기
-    navigate("/debate/list");
-  };
 
   // 토론방에서는 나가기 버튼 표시
   if (curPath.startsWith("/debate/room")) {
+    const exit = () => {
+      alert("나가기 버튼을 눌렀습니다. 나가기 처리 후 토론방 목록으로 이동합니다.");
+      // 토론방 정보 초기화?
+      setDebateInfo({});
+      // 나가기
+      navigate("/debate/list");
+    };
+
     return (
       <Wrapper>
         <ExitButton onClick={exit} />
@@ -44,7 +45,7 @@ function RightComponents() {
     );
   }
   // 회원가입 페이지라면 미표시
-  else if (curPath.startsWith("/signup")) {
+  else if (curPath.startsWith("/user/signup")) {
     return (
       <Wrapper></Wrapper>
     );
@@ -67,10 +68,10 @@ function RightComponents() {
         <Link to={"/debate/list"}>
           <StyledLightButton>둘러보기</StyledLightButton>
         </Link>
-        <Link to={"/signup"}>
+        <Link to={"/user/signup"}>
           <StyledLightButton>회원가입</StyledLightButton>
         </Link>
-        <Link to={"/login"}>
+        <Link to={"/user/login"}>
           <StyledDarkButton>로그인</StyledDarkButton>
         </Link>
       </Wrapper>
