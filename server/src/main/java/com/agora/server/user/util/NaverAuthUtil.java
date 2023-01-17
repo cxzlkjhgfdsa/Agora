@@ -81,16 +81,29 @@ public class NaverAuthUtil {
         return params;
     }
 
+    /**
+     * login redirect 하기
+     * @return redirect 링크
+     */
     public String getRedirectUrlLogin() {
         StringBuilder sb = getCodeUrl(loginRedirectUri);
         return sb.toString();
     }
 
+    /**
+     * join redirect 하기
+     * @return redirect 링크
+     */
     public String getRedirectUrlJoin() {
         StringBuilder sb = getCodeUrl(joinRedirectUri);
         return sb.toString();
     }
 
+    /**
+     * redirect 링크 생성
+     * @param uri login, join
+     * @return 링크
+     */
     private StringBuilder getCodeUrl(String uri) {
         StringBuilder sb = new StringBuilder();
         sb.append(getCodeUrl)

@@ -22,4 +22,5 @@ public class GlobalException {
         res.setMessage("run time error");
         return new ResponseEntity<>(res, HttpStatus.REQUEST_TIMEOUT);
     }
+
 }
