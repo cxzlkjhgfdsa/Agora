@@ -1,9 +1,12 @@
 package com.agora.server.user.controller;
 
 import com.agora.server.user.controller.dto.CommonDto;
+import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.controller.dto.google.GetGoogleOAuthRes;
 import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
+import com.agora.server.user.domain.User;
 import com.agora.server.user.service.GoogleAuthService;
+import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,7 @@ import java.io.IOException;
 public class GoogleAuthController {
 
     private final GoogleAuthService googleOAuthService;
+    private final UserService userService;
 
     // 프론트단에서 처리 할 예정
     @GetMapping("request/auth/login/google")
@@ -44,8 +48,13 @@ public class GoogleAuthController {
         // 유저정보 받기
         CommonDto googleUser = googleOAuthService.getGoogleUserInfo(googleOAuthToken);
 
+        User user = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
 
-
+        if(user == null){
+            System.out.println("user가 null "+user);
+        } else {
+            System.out.println("user가 notnull"+user);
+        }
         GetGoogleOAuthRes getGoogleOAuthRes=googleOAuthService.oAuthJoin(code);
         return getGoogleOAuthRes;
     }
