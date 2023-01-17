@@ -3,15 +3,16 @@ package com.agora.server.user.util;
 import com.agora.server.user.controller.response.NaverTokenDTO;
 import com.agora.server.user.controller.response.NaverUserInfoDTO;
 import com.agora.server.user.domain.User;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -85,9 +86,15 @@ public class NaverAuthUtil {
         objectMapper = new ObjectMapper();
         Map<String, Object> userInfo = objectMapper.readValue(body, new TypeReference<>() {
         });
-        System.out.println(userInfo.get("response"));
-//        NaverUserInfoDTO naverUserInfoDTO = (NaverUserInfoDTO) userInfo.get("response");
+        String response = objectMapper.writeValueAsString(userInfo.get("response"));
+        Map<String, String> value = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
+
+//        System.out.println(userInfo.get("response"));
+//        Gson gson = new Gson();
+//        NaverUserInfoDTO info = gson.fromJson((String) userInfo.get("response"), NaverUserInfoDTO.class);
+//        System.out.println(info.getName());
 
 
         return User.createUser(null, null, null, null, null, null, null);
