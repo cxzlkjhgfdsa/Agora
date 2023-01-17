@@ -90,7 +90,7 @@ public class GoogleAuthService {
 //      액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
         GetGoogleOAuthRes getGoogleOAuthRes = new GetGoogleOAuthRes("jwtToken", 1, oAuthToken.getAccess_token(), oAuthToken.getToken_type(), "join");
 
-        User user = User.createUser(SocialType.GOOGLE, googleUser.getId(), googleUser.name, "age", "phone", googleUser.getName(), "photo", "refreshtoken");
+        User user = User.createUser(SocialType.GOOGLE, googleUser.getId(), googleUser.name, "age", "phone", googleUser.getName(), "photo");
 
         googleUserRepository.save(user);
 
