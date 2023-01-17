@@ -40,7 +40,6 @@ public class NaverAuthService {
     public User getToken(String code) throws JsonProcessingException {
         HttpEntity<MultiValueMap<String, String>> httpEntity = naverAuthUtil.getTokenHttpEntity(code);
         String tokenBody = naverAuthUtil.getTokenBody(httpEntity);
-        System.out.println("body: " + tokenBody);
         String accessToken = naverAuthUtil.getAccessToken(tokenBody);
         return naverAuthUtil.getUserInfo(accessToken);
     }

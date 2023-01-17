@@ -75,7 +75,6 @@ public class NaverAuthUtil {
                 httpEntity,
                 String.class
         );
-        System.out.println(userInfoBody);
         return new User();
     }
 
@@ -94,7 +93,6 @@ public class NaverAuthUtil {
      */
     public String getTokenBody(HttpEntity<MultiValueMap<String, String>> httpEntity) {
         restTemplate = new RestTemplate();
-        System.out.println("http entity : " + httpEntity);
         return restTemplate.exchange(
                 "https://nid.naver.com/oauth2.0/token",
                 HttpMethod.POST,
@@ -112,7 +110,6 @@ public class NaverAuthUtil {
      */
     public String getAccessToken(String body) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(body);
         NaverTokenDTO naverTokenDTO = objectMapper.readValue(body, NaverTokenDTO.class);
         return naverTokenDTO.getAccess_token();
     }
