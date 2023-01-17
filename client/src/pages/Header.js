@@ -4,14 +4,14 @@
 // 헤더 컴포넌트를 불러 와 페이지에 배치합니다.
 import styled from "styled-components";
 
-// 로고
-import AgoraLogo from "assets/icons/AgoraLogo.png";
+// 라우터 이동을 위한 Link
+import LeftComponents from "components/header/LeftComponents";
+import CenterComponents from "components/header/CenterComponents";
+import RightComponents from "components/header/RightComponents";
 
-// 헤더 중앙, 검색창
-import SearchBar from "../components/header/SearchBar";
-
-// 헤더 우측, 로그인 버튼 및 사용자 프로필 등
-import RightSide from "../components/header/RightSide";
+// 토론방 정보 및 사용자 정보 상태 관리
+import { useRecoilValue } from "recoil";
+import { DebateInfoAtom, UserInfoAtom } from "stores/atoms";
 
 // 상단바
 const StyledHeader = styled.header`
@@ -34,40 +34,27 @@ const StyledHeader = styled.header`
   right: 0;
 `;
 
-// 로고 이미지와 '아고라' 이미지를 합치는 Wrapper
-const LogoIcon = styled.img`
-  // 전체 크기 설정
-  width: 234px;
-  height: 70px;
-
-  // 호버링 시 커서 모양 설정
-  cursor: pointer;
-
-  // 마진 설정
-  margin: 12px;
-`;
-
 function Header() {
-  const clickLogo = () => {
-    alert("로고를 눌렀습니다.");
-  };
-
   // Test : 활성화 시 검색창, 사용자 프로필 보기
   // const user = { userId: "ssafy123", userPw: "qwer1234", nickname: "SSAFY123" };
   
   // Test : 활성화 시 모든 헤더 버튼들 보기
-  const user = null;
+  const userInfo = useRecoilValue(UserInfoAtom);
+  const debateInfo = useRecoilValue(DebateInfoAtom);
 
+  console.log(userInfo);
+  console.log(debateInfo);
+  
   return (
     <StyledHeader>
       {/* 로고 */}
-      <LogoIcon src={AgoraLogo} onClick={clickLogo} />
+      <LeftComponents />
       
       {/* 검색창 */}
-      {user ? <SearchBar /> : null}
+      <CenterComponents />
       
       {/* 그룹 */}
-      <RightSide user={user} />
+      <RightComponents />
     </StyledHeader>
   );
 }
