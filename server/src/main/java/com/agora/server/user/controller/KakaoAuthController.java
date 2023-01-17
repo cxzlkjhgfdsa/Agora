@@ -1,5 +1,6 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.service.KakaoAuthService;
@@ -38,6 +39,7 @@ public class KakaoAuthController {
         CommonDto kakaoUserInfo = kakaoAuthService.getKakaoUserInfo(token);
         // 이미 회원가입 되어있는지 확인
         User user = userService.findUser(kakaoUserInfo.getSocial_id(), kakaoUserInfo.getSocialType());
+
         if(user!=null){
             //이미 회원가입 되어있음 오류
         }else{

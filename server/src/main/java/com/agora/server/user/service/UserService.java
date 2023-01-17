@@ -12,7 +12,7 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    public User findUser(String socialId, SocialType socialType) {
+    public User findUser(String socialId, SocialType socialType){
         return userRepository.findSocialUser(socialId, socialType);
     }
 

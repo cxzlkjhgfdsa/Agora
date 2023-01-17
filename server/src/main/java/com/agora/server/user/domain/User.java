@@ -12,6 +12,7 @@ public class User{
     @Id @GeneratedValue
     @Column(name="user_id")
     private Long user_id;
+    @Enumerated(EnumType.STRING)
     private SocialType user_social_type;
     private String user_social_id;
     private String user_name;
