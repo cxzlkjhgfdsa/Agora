@@ -1,6 +1,7 @@
 package com.agora.server.user.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.user.domain.User;
 import com.agora.server.user.service.NaverAuthService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,27 +44,43 @@ public class NaverAuthController {
     public void login() {
         try {
             naverAuthService.sendRedirectNaverAuthLogin();
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
      * login redirect
+     *
      * @param code naver가 주는 code
-     * TODO code를 가지고 accessToken을 얻기 위한 요청을 해야 함
+     *             TODO code를 가지고 accessToken을 얻기 위한 요청을 해야 함
      */
     @GetMapping("auth/login")
     public ResponseEntity<ResponseDTO> login(@RequestParam String code) throws IOException {
         ResponseDTO res = new ResponseDTO();
-        naverAuthService.getToken(code);
+        User user = naverAuthService.getToken(code);
+
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * naver 에서 얻은 정보로 클라이언트에게 정보를 던져준다
+     *
+     * @param code naver에서 준 code
+     * @return
+     */
     @GetMapping("auth/join")
     public ResponseEntity<ResponseDTO> join(@RequestParam String code) {
         ResponseDTO res = new ResponseDTO();
-
-        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+        try {
+            User user = naverAuthService.getToken(code);
+            res.setBody(user);
+            res.setState(true);
+            res.setMessage("ok");
+            res.setStatusCode(200);
+            return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 }
