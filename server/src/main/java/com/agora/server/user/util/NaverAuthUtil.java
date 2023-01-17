@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,7 +37,7 @@ public class NaverAuthUtil {
     @Value("${oauth.naver.get-info.url}")
     private String getInfoUrl;
 
-    @Value("@{oauth.naver.get-info.header-type}")
+    @Value("${oauth.naver.get-info.header-type}")
     private String getInfoHeaderType;
 
     @Value("${oauth.naver.get-info.header-value}")
@@ -67,8 +68,22 @@ public class NaverAuthUtil {
 
     public User getUserInfo(String accessToken) {
         restTemplate = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = generateProfileRequest(accessToken);
+        ResponseEntity<String> userInfoBody = restTemplate.exchange(
+                "https://openapi.naver.com/v1/nid/me",
+                HttpMethod.POST,
+                httpEntity,
+                String.class
+        );
+        System.out.println(userInfoBody);
+        return new User();
+    }
 
-
+    private HttpEntity<MultiValueMap<String, String>> generateProfileRequest(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(getInfoAuthHeader, getInfoAuthHeaderValue + accessToken);
+        headers.add(getInfoHeaderType, getInfoHeaderValue);
+        return new HttpEntity<>(headers);
     }
 
     /**
@@ -79,6 +94,7 @@ public class NaverAuthUtil {
      */
     public String getTokenBody(HttpEntity<MultiValueMap<String, String>> httpEntity) {
         restTemplate = new RestTemplate();
+        System.out.println("http entity : " + httpEntity);
         return restTemplate.exchange(
                 "https://nid.naver.com/oauth2.0/token",
                 HttpMethod.POST,
@@ -96,8 +112,9 @@ public class NaverAuthUtil {
      */
     public String getAccessToken(String body) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(body);
         NaverTokenDTO naverTokenDTO = objectMapper.readValue(body, NaverTokenDTO.class);
-        return naverTokenDTO.getAccessToken();
+        return naverTokenDTO.getAccess_token();
     }
 
     /**

@@ -6,19 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 public class NaverTokenDTO {
-    private String accessToken;
-    private String refreshToken;
-    private String tokenType;
-    private String expiresIn;
+    private String access_token;
+    private String refresh_token;
+    private String token_type;
+    private String expires_in;
 
-    public static NaverTokenDTO createNaverTokenDto(String accessToken, String refreshToken, String tokenType, String expiresIn) {
-        NaverTokenDTO naverTokenDTO = new NaverTokenDTO();
-        naverTokenDTO.accessToken = accessToken;
-        naverTokenDTO.refreshToken = refreshToken;
-        naverTokenDTO.tokenType = tokenType;
-        naverTokenDTO.expiresIn = tokenType;
-        return naverTokenDTO;
-    }
 }

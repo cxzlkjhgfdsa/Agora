@@ -3,6 +3,7 @@ package com.agora.server.user.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.service.NaverAuthService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -53,9 +54,9 @@ public class NaverAuthController {
      * TODO code를 가지고 accessToken을 얻기 위한 요청을 해야 함
      */
     @GetMapping("auth/login")
-    public ResponseEntity<ResponseDTO> login(@RequestParam String code) {
+    public ResponseEntity<ResponseDTO> login(@RequestParam String code) throws JsonProcessingException {
         ResponseDTO res = new ResponseDTO();
-
+        naverAuthService.getToken(code);
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 

@@ -1,6 +1,7 @@
 package com.agora.server.user.service;
 
 import com.agora.server.user.controller.response.NaverTokenDTO;
+import com.agora.server.user.domain.User;
 import com.agora.server.user.util.NaverAuthUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,10 +37,12 @@ public class NaverAuthService {
         httpResponse.sendRedirect(url);
     }
 
-    public NaverTokenDTO getToken(String code) throws JsonProcessingException {
+    public User getToken(String code) throws JsonProcessingException {
         HttpEntity<MultiValueMap<String, String>> httpEntity = naverAuthUtil.getTokenHttpEntity(code);
         String tokenBody = naverAuthUtil.getTokenBody(httpEntity);
+        System.out.println("body: " + tokenBody);
         String accessToken = naverAuthUtil.getAccessToken(tokenBody);
-
+        return naverAuthUtil.getUserInfo(accessToken);
     }
 }
+
