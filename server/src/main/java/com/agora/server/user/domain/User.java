@@ -26,7 +26,7 @@ public class User{
     private String user_refresh_token;
 
 
-    public User createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
+    public static User createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo, String user_refresh_token) {
         User user = new User();
         user.user_social_type = user_social_type;
         user.user_social_id = user_social_id;

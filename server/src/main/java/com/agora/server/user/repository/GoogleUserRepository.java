@@ -15,6 +15,5 @@ public class GoogleUserRepository {
     public void save(User user){em.persist(user);}
 
     public User findById(Long id) {return em.find(User.class,id);}
-    public User findBySocialId(String socialId) {return em.find(User.class,socialId);}
 
 }

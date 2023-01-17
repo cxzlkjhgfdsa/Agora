@@ -1,6 +1,8 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.controller.dto.google.GetGoogleOAuthRes;
+import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
 import com.agora.server.user.service.GoogleAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ public class GoogleAuthController {
 
     private final GoogleAuthService googleOAuthService;
 
+    // 프론트단에서 처리 할 예정
     @GetMapping("request/auth/login/google")
     public void googleLoginRedirect() throws IOException {
         googleOAuthService.loginRequest();
@@ -35,6 +38,14 @@ public class GoogleAuthController {
     @GetMapping(value = "request/auth/join/google/callback")
     public GetGoogleOAuthRes googleJoinCallback(
             @RequestParam(name = "code") String code)throws IOException{
+
+        // 토큰 받기
+        GoogleOAuthToken googleOAuthToken = googleOAuthService.getGoogleOAuthToken(code);
+        // 유저정보 받기
+        CommonDto googleUser = googleOAuthService.getGoogleUserInfo(googleOAuthToken);
+
+
+
         GetGoogleOAuthRes getGoogleOAuthRes=googleOAuthService.oAuthJoin(code);
         return getGoogleOAuthRes;
     }

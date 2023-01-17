@@ -1,5 +1,6 @@
 package com.agora.server.user.service;
 
+import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
 import com.agora.server.user.controller.dto.google.GoogleUser;
@@ -89,8 +90,7 @@ public class GoogleAuthService {
 //      액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
         GetGoogleOAuthRes getGoogleOAuthRes = new GetGoogleOAuthRes("jwtToken", 1, oAuthToken.getAccess_token(), oAuthToken.getToken_type(), "join");
 
-        User user = new User();
-        user.createUser(SocialType.GOOGLE,googleUser.getId(),googleUser.name,"age","phone",googleUser.getName(),"photo","refreshtoken");
+        User user = User.createUser(SocialType.GOOGLE, googleUser.getId(), googleUser.name, "age", "phone", googleUser.getName(), "photo", "refreshtoken");
 
         googleUserRepository.save(user);
 
@@ -102,6 +102,25 @@ public class GoogleAuthService {
 
     }
 
+    public GoogleOAuthToken getGoogleOAuthToken(String code) throws IOException {
+        //구글로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
+        ResponseEntity<String> accessTokenResponse= googleAuthUtils.requestJoinAccessToken(code);
+        //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
+        GoogleOAuthToken oAuthToken=googleAuthUtils.getJoinAccessToken(accessTokenResponse);
+        return oAuthToken;
+    }
+
+    public CommonDto getGoogleUserInfo(GoogleOAuthToken oAuthToken) throws IOException {
+        //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
+        ResponseEntity<String> userInfoResponse=googleAuthUtils.requestUserInfo(oAuthToken);
+        //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
+        GoogleUser googleUser= googleAuthUtils.getUserInfo(userInfoResponse);
+
+        CommonDto commonUserDto = new CommonDto();
+        commonUserDto.createCommonDto(googleUser.getId(),googleUser.getEmail(),null,SocialType.GOOGLE);
+
+        return commonUserDto;
+    }
 
 
 
