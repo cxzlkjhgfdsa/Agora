@@ -18,6 +18,10 @@ const GlobalStyle = createGlobalStyle`
   main {
     padding-top: 94px; 
   }
+
+  a {
+    text-decoration-line: none;
+  }
   
   // 배경색
   .bg-dark {
