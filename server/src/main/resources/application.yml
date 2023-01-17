@@ -2,8 +2,12 @@ spring:
   config:
     activate:
       on-profile: local
+<<<<<<< HEAD
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 server:
+=======
+serve:
+>>>>>>> d3fabbc08e63488219e3fdb12a01170b39f187d3
   port: 8080
