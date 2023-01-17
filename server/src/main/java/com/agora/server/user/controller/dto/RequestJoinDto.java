@@ -11,5 +11,7 @@ public class RequestJoinDto {
     private String user_age;
     private String user_nickname;
     private String user_phone;
-    private String user_profile;
+    private String user_photo;
+    private SocialType user_social_type;
+    private String user_social_id;
 }

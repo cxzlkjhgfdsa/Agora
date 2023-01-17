@@ -21,4 +21,7 @@ public class UserService {
         return userRepository.checkDuplicateUser(socialId, socialType);
     }
 
+    public void join(User joinUser) {
+        userRepository.save(joinUser);
+    }
 }
