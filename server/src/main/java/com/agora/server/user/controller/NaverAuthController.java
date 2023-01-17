@@ -54,7 +54,7 @@ public class NaverAuthController {
      * TODO code를 가지고 accessToken을 얻기 위한 요청을 해야 함
      */
     @GetMapping("auth/login")
-    public ResponseEntity<ResponseDTO> login(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<ResponseDTO> login(@RequestParam String code) throws IOException {
         ResponseDTO res = new ResponseDTO();
         naverAuthService.getToken(code);
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);

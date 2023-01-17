@@ -1,8 +1,11 @@
 package com.agora.server.user.util;
 
 import com.agora.server.user.controller.response.NaverTokenDTO;
+import com.agora.server.user.controller.response.NaverUserInfoDTO;
 import com.agora.server.user.domain.User;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class NaverAuthUtil {
@@ -65,17 +71,26 @@ public class NaverAuthUtil {
     private String getCodeUrl;
 
     private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
 
-    public User getUserInfo(String accessToken) {
+    public User getUserInfo(String accessToken) throws IOException {
         restTemplate = new RestTemplate();
         HttpEntity<MultiValueMap<String, String>> httpEntity = generateProfileRequest(accessToken);
-        ResponseEntity<String> userInfoBody = restTemplate.exchange(
+        String body = restTemplate.exchange(
                 "https://openapi.naver.com/v1/nid/me",
                 HttpMethod.POST,
                 httpEntity,
                 String.class
-        );
-        return new User();
+        ).getBody();
+        objectMapper = new ObjectMapper();
+        Map<String, Object> userInfo = objectMapper.readValue(body, new TypeReference<>() {
+        });
+        System.out.println(userInfo.get("response"));
+//        NaverUserInfoDTO naverUserInfoDTO = (NaverUserInfoDTO) userInfo.get("response");
+
+
+
+        return User.createUser(null, null, null, null, null, null, null);
     }
 
     private HttpEntity<MultiValueMap<String, String>> generateProfileRequest(String accessToken) {
@@ -109,7 +124,7 @@ public class NaverAuthUtil {
      * @throws JsonProcessingException
      */
     public String getAccessToken(String body) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
         NaverTokenDTO naverTokenDTO = objectMapper.readValue(body, NaverTokenDTO.class);
         return naverTokenDTO.getAccess_token();
     }

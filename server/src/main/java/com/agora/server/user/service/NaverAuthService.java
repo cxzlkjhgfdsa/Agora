@@ -37,7 +37,7 @@ public class NaverAuthService {
         httpResponse.sendRedirect(url);
     }
 
-    public User getToken(String code) throws JsonProcessingException {
+    public User getToken(String code) throws IOException {
         HttpEntity<MultiValueMap<String, String>> httpEntity = naverAuthUtil.getTokenHttpEntity(code);
         String tokenBody = naverAuthUtil.getTokenBody(httpEntity);
         String accessToken = naverAuthUtil.getAccessToken(tokenBody);
