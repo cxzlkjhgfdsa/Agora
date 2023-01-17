@@ -14,15 +14,25 @@ import javax.persistence.*;
 public class User{
     @Id @GeneratedValue
     private Long user_id;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private SocialType user_social_type;
+    @Column(length = 50)
     private String user_social_id;
-    private String user_name;
-    private String user_age;
-    private String user_phone;
 
-    @Column(unique = true)
+    @Column(length = 100)
+    private String user_name;
+
+    @Column(length = 30)
+    private String user_age;
+    @Column(length = 100)
+    private String user_phone;
+    @Column(unique = true, length = 30)
     private String user_nickname;
+
+    @Column(length = 200)
     private String user_photo;
+    @Column(length = 200)
     private String user_refresh_token;
 
 
