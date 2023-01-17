@@ -44,10 +44,10 @@
 -   prettierrc.json으로 설정
 -   tab: 4
 
-### Backend 
-- intellij 세팅 통일 
-- package 구조 domain 기반 
+### Backend
 
+-   intellij 세팅 통일
+-   package 구조 domain 기반
 
 ## Branch Strategy
 
@@ -62,7 +62,18 @@ Branch 전략은 `git flow`를 사용한다.
 | hotfix      | 출시 버전 버그 수정 브랜치 | hotfix-1.1.0         |
 | document    | 문서 작업 브랜치           | docs/readme          |
 
+### branch 구성
+
+-   master
+    -   dev
+        -   back/dev
+            -   feat-login-back
+        -   front/dev
+            -   feat-login-front
+    -   docs/readme
+
 ## Project Structure
+
 ![full_structure](https://user-images.githubusercontent.com/55802893/212011394-0a91a910-2779-41d6-a45b-a766b4798103.png)
 
-- jenkins와 nginx를 이용한 무중단 배포 (Blue, Green 전략)
+-   jenkins와 nginx를 이용한 무중단 배포 (Blue, Green 전략)
