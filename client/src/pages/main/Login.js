@@ -1,16 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { UserInfoAtom } from "stores/atoms";
 
 function Login() {
   const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
 
+  const navigate = useNavigate();
+
   const login = () => {
     alert("로그인 처리");
     setUserInfo({ userId: "ssafy123", nickname: "Coffee", isLoggedIn: true });
+    navigate("/debate/list");
   };
   const logout = () => {
     alert("로그아웃 처리");
     setUserInfo({});
+    navigate("/");
   };
 
   return (
