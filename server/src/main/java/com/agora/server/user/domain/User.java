@@ -16,14 +16,24 @@ public class User{
     @Column(name="user_id")
     private Long user_id;
     @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private SocialType user_social_type;
+    @Column(length = 50)
     private String user_social_id;
+
+    @Column(length = 100)
     private String user_name;
+
+    @Column(length = 30)
     private String user_age;
+    @Column(length = 100)
     private String user_phone;
-    @Column(unique = true)
+    @Column(unique = true, length = 30)
     private String user_nickname;
+
+    @Column(length = 200)
     private String user_photo;
+    @Column(length = 200)
     private String user_refresh_token;
 
 
