@@ -119,6 +119,7 @@ public class GoogleAuthService {
         CommonDto commonUserDto = new CommonDto();
         commonUserDto.createCommonDto(googleUser.getId(),googleUser.getEmail(),null,SocialType.GOOGLE);
 
+
         return commonUserDto;
     }
 

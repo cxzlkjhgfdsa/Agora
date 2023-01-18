@@ -1,13 +1,17 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.controller.dto.google.GetGoogleOAuthRes;
 import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
 import com.agora.server.user.domain.User;
+import com.agora.server.user.repository.GoogleUserRepository;
 import com.agora.server.user.service.GoogleAuthService;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -18,6 +22,7 @@ public class GoogleAuthController {
 
     private final GoogleAuthService googleOAuthService;
     private final UserService userService;
+    private final GoogleUserRepository googleUserRepository;
 
     // 프론트단에서 처리 할 예정
     @GetMapping("request/auth/login/google")
@@ -40,7 +45,7 @@ public class GoogleAuthController {
 
     @ResponseBody
     @GetMapping(value = "request/auth/join/google/callback")
-    public GetGoogleOAuthRes googleJoinCallback(
+    public ResponseEntity<ResponseDTO> googleJoinCallback(
             @RequestParam(name = "code") String code)throws IOException{
 
         // 토큰 받기
@@ -50,12 +55,18 @@ public class GoogleAuthController {
 
         User user = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
 
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        // 가입되어 있지 않은 유저 -> 정상 코드와 CommonDto 반환
         if(user == null){
-            System.out.println("user가 null "+user);
+            responseDTO.setState(true);
+            responseDTO.setBody(googleUser);
+            responseDTO.setMessage("ok");
+            responseDTO.setStatusCode(200);
+            return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
         } else {
+        // 가입되어 있는 유저 -> Exception 발생
             System.out.println("user가 notnull"+user);
         }
-        GetGoogleOAuthRes getGoogleOAuthRes=googleOAuthService.oAuthJoin(code);
-        return getGoogleOAuthRes;
     }
 }
