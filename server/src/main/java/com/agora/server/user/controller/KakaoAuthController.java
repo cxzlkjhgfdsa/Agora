@@ -2,11 +2,13 @@ package com.agora.server.user.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.controller.dto.CommonDto;
+import com.agora.server.user.controller.dto.LoginResponseDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.service.KakaoAuthService;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +37,7 @@ public class KakaoAuthController {
     @GetMapping("join/auth/kakao")
     public ResponseDTO kakaoJoin(@RequestParam String code) throws IOException {
         String token = kakaoAuthService.getKakaoToken(code);
+        System.out.println(code);
         // 유저 확인
         CommonDto kakaoUserInfo = kakaoAuthService.getKakaoUserInfo(token);
         // 이미 회원가입 되어있는지 확인
@@ -55,12 +58,43 @@ public class KakaoAuthController {
 
     }
 
-  
+    @GetMapping("kakao/login")
+    public ResponseDTO kakaoLogin(@RequestParam String code) throws IOException {
+        String token = kakaoAuthService.getKakaoToken(code);
+        CommonDto userInfo = kakaoAuthService.getKakaoUserInfo(token);
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        User user = userService.checkDuplicateUser(userInfo.getSocial_id(), userInfo.getSocialType());
+
+        if(user == null){
+            //예외 발생
+            throw new RuntimeException("회원가입 되어있지 않은 사용자입니다");
+        }
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setUserId(user.getUser_id());
+        loginResponseDto.setUserNickname(user.getUser_nickname());
+        loginResponseDto.setSocialType(user.getUser_social_type());
+        loginResponseDto.setUserPhoto(user.getUser_photo());
+        // access Token 발급 후 set
+
+        responseDTO.setBody(loginResponseDto);
+        responseDTO.setStatusCode(200);
+        responseDTO.setMessage("로그인 성공");
+        responseDTO.setState(true);
+
+        return responseDTO;
+    }
+
+    /**
+     * 추후 삭제 예정
+     * @return
+     */
     @GetMapping("kakao/logout")
     public String logoutPage(){
         return "로그아웃 성공";
     }
 
+    
 
 
 }
