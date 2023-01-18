@@ -14,7 +14,7 @@ public class GlobalException {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ResponseDTO> NullPointerException(NullPointerException nullPointerException) {
         ResponseDTO res = new ResponseDTO();
-        res.setMessage("값이 존재하지 않습니다");
+        res.setMessage(nullPointerException.getMessage());
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -22,8 +22,8 @@ public class GlobalException {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResponseDTO> RuntimeException(RuntimeException r) {
         ResponseDTO res = new ResponseDTO();
-        res.setMessage("run time error");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        res.setMessage(r.getMessage());
+        return new ResponseEntity<>(res, HttpStatus.REQUEST_TIMEOUT);
     }
 
     @ExceptionHandler(AlreadyExistUserException.class)
