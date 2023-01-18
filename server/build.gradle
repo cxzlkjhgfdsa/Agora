@@ -30,16 +30,12 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
     // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-<<<<<<< HEAD
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.31'
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
     implementation 'com.google.code.gson:gson:2.8.7'
-
-=======
     runtimeOnly 'com.h2database:h2'
->>>>>>> f7639f452046ffd4aa5f862e5774fca31b3f5ff0
 }
 
 tasks.named('test') {
