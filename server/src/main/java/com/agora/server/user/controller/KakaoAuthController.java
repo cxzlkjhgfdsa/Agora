@@ -4,6 +4,8 @@ import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.controller.dto.CommonDto;
 import com.agora.server.user.controller.dto.LoginResponseDto;
 import com.agora.server.user.domain.User;
+import com.agora.server.user.exception.AlreadyExistUserException;
+import com.agora.server.user.exception.NoUserException;
 import com.agora.server.user.service.KakaoAuthService;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public class KakaoAuthController {
     private final UserService userService;
 
     /**
-     *
+     * 추후 클라이언트 코드로 변경 후 삭제 예정
      * @throws IOException
      */
     @GetMapping("request/join/auth/kakao")
@@ -44,10 +46,7 @@ public class KakaoAuthController {
         User user = userService.checkDuplicateUser(kakaoUserInfo.getSocial_id(), kakaoUserInfo.getSocialType());
         ResponseDTO responseDTO = new ResponseDTO();
         if(user!=null){
-            //이미 회원가입 되어있음 오류
-            responseDTO.setMessage("이미 회원가입 된 사용자입니다");
-            responseDTO.setState(false);
-            return responseDTO;
+            throw new AlreadyExistUserException("이미 회원가입된 사용자입니다");
         }else{
             //회원가입 하기위한 정보 리턴
             responseDTO.setState(true);
@@ -58,6 +57,12 @@ public class KakaoAuthController {
 
     }
 
+    /**
+     * 로그인 처리 메소드
+     * @param code
+     * @return
+     * @throws IOException
+     */
     @GetMapping("kakao/login")
     public ResponseDTO kakaoLogin(@RequestParam String code) throws IOException {
         String token = kakaoAuthService.getKakaoToken(code);
@@ -68,7 +73,7 @@ public class KakaoAuthController {
 
         if(user == null){
             //예외 발생
-            throw new RuntimeException("회원가입 되어있지 않은 사용자입니다");
+            throw new NoUserException("회원가입 되어있지 않은 사용자입니다");
         }
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setUserId(user.getUser_id());
