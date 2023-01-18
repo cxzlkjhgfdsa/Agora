@@ -1,5 +1,9 @@
 package com.agora.server.config;
 
+import com.agora.server.config.filter.CorsFilter;
+import com.agora.server.config.filter.JwtAuthorizationFilter;
+import com.agora.server.user.repository.UserRepository;
+import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,33 +12,25 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final CorsFilter corsFilter;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
+                .addFilter(corsFilter.corsFilter())
                 .csrf().disable()
-                .httpBasic().disable();
+                .httpBasic().disable()
+                .addFilterBefore(jwtAuthorizationFilter, JwtAuthorizationFilter.class)
+                .antMatcher("/room/**");
 
         return http.build();
     }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowCredentials(true);
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addAllowedOrigin("*");
-
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
 }
