@@ -53,21 +53,20 @@ public class GoogleAuthController {
         // 유저정보 받기
         CommonDto googleUser = googleOAuthService.getGoogleUserInfo(googleOAuthToken);
 
-        User user = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
+        User dupUser = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
 
-        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseDTO res = new ResponseDTO();
 
-        // 가입되어 있는 유저 -> Exception 발생
-        if(user != null) {
-            System.out.println("user가 notnull"+user);
+        // 가입되어 있는 유저 -> RuntimeException 발생 -> Exception 후에 커스텀으로 만들면 교체
+        if(dupUser != null) {
+            throw new RuntimeException("이미 가입되어 있습니다 로그인 페이지로 이동합니다");
         }
 
         // 가입되어 있지 않은 유저 -> 정상 코드와 CommonDto 반환
-            responseDTO.setState(true);
-            responseDTO.setBody(googleUser);
-            responseDTO.setMessage("ok");
-            responseDTO.setStatusCode(200);
-            return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-        
+        res.setState(true);
+        res.setBody(googleUser);
+        res.setMessage("ok");
+        res.setStatusCode(200);
+        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 }
