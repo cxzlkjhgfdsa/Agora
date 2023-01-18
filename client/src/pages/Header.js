@@ -5,9 +5,9 @@
 import styled from "styled-components";
 
 // 라우터 이동을 위한 Link
-import LeftComponents from "components/header/LeftComponents";
-import CenterComponents from "components/header/CenterComponents";
-import RightComponents from "components/header/RightComponents";
+import LeftComponents from "components/header/left/LeftComponents";
+import CenterComponents from "components/header/center/CenterComponents";
+import RightComponents from "components/header/right/RightComponents";
 
 // 토론방 정보 및 사용자 정보 상태 관리
 import { useRecoilValue } from "recoil";
@@ -35,9 +35,6 @@ const StyledHeader = styled.header`
 `;
 
 function Header() {
-  // Test : 활성화 시 검색창, 사용자 프로필 보기
-  // const user = { userId: "ssafy123", userPw: "qwer1234", nickname: "SSAFY123" };
-  
   // Test : 활성화 시 모든 헤더 버튼들 보기
   const userInfo = useRecoilValue(UserInfoAtom);
   const debateInfo = useRecoilValue(DebateInfoAtom);

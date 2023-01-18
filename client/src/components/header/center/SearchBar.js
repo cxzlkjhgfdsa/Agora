@@ -6,6 +6,7 @@ import SearchIcon from "assets/icons/Search_Gray.png";
 // 디바운싱, API 호출 최적화
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
+import SearchResult from "./SearchResult";
 
 // 검색바 전체
 const StyledSearchBar = styled.div`
@@ -135,6 +136,7 @@ function SearchBar() {
         onChange={changeEvent}
         onKeyDown={pressEnter}
       />
+      <SearchResult />
     </StyledSearchBar>
   );
 }

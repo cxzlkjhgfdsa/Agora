@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 // READY, START 버튼
-import { EnabledReadyButton, DisabledReadyButton, EnabledStartButton, DisabledStartButton } from "components/debate/DebateButtons";
+import ReadyButton from "./ReadyButton";
+import StartButton from "./StartButton";
 import { Link, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { DebateInfoAtom } from "stores/atoms";
@@ -32,7 +33,7 @@ function LeftComponents() {
     if (debateInfo.isLeader) {
       return (
         <Wrapper>
-          <DisabledStartButton />
+          <StartButton enabled={false} />
         </Wrapper>
       );
     }
@@ -41,8 +42,8 @@ function LeftComponents() {
       return (
         <Wrapper>
           {!debateInfo.isReady
-            ? <EnabledReadyButton onClick={ready} />
-            : <DisabledReadyButton />}
+            ? <ReadyButton onClick={ready} enabled={true} />
+            : <ReadyButton enabled={false} />}
         </Wrapper>
       );
     }

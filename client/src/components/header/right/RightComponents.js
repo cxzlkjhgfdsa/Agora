@@ -1,8 +1,8 @@
-import { ExitButton } from "components/debate/DebateButtons";
+import ExitButton from "./ExitButton";
 import styled from "styled-components";
 
 // Styled Button
-import { StyledDarkButton, StyledLightButton } from "../common/Buttons";
+import { StyledDarkButton, StyledLightButton } from "../../common/Buttons";
 
 // 사용자 프로필
 import UserProfileIcon from "./UserProfileIcon";
