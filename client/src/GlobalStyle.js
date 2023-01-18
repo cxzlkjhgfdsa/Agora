@@ -9,14 +9,9 @@ const GlobalStyle = createGlobalStyle`
     color: #4C4556;
   }
 
-  body {
-    min-width: 1920px;
-    width: 1920px;
-  }
-
   // 상단바에 가리지 않게 상단 패딩
   main {
-    padding-top: 94px; 
+    padding-top: 64px; 
   }
 
   a {
