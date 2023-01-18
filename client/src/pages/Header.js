@@ -11,7 +11,7 @@ import RightComponents from "components/header/right/RightComponents";
 
 // 토론방 정보 및 사용자 정보 상태 관리
 import { useRecoilValue } from "recoil";
-import { DebateInfoAtom, UserInfoAtom } from "stores/atoms";
+import { debateInfoState, userInfoState } from "stores/atoms";
 
 // 상단바
 const StyledHeader = styled.header`
@@ -36,8 +36,8 @@ const StyledHeader = styled.header`
 
 function Header() {
   // Test : 활성화 시 모든 헤더 버튼들 보기
-  const userInfo = useRecoilValue(UserInfoAtom);
-  const debateInfo = useRecoilValue(DebateInfoAtom);
+  const userInfo = useRecoilValue(userInfoState);
+  const debateInfo = useRecoilValue(debateInfoState);
 
   console.log(userInfo);
   console.log(debateInfo);

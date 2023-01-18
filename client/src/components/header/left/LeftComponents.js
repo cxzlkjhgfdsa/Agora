@@ -5,7 +5,7 @@ import ReadyButton from "./ReadyButton";
 import StartButton from "./StartButton";
 import { Link, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { DebateInfoAtom } from "stores/atoms";
+import { debateInfoState } from "stores/atoms";
 import LogoIcon from "./LogoIcon";
 
 const Wrapper = styled.div`
@@ -18,7 +18,7 @@ function LeftComponents() {
   const curPath = useLocation().pathname;
 
   // 사용자 정보 및 토론방 정보 가져오기
-  const [debateInfo, setDebateInfo] = useRecoilState(DebateInfoAtom);
+  const [debateInfo, setDebateInfo] = useRecoilState(debateInfoState);
 
   // READY 이벤트
   const ready = () => {

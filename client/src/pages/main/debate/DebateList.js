@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { DebateInfoAtom } from "stores/atoms";
+import { debateInfoState } from "stores/atoms";
 
 function DebateList() {
-  const setDebateInfo = useSetRecoilState(DebateInfoAtom);
+  const setDebateInfo = useSetRecoilState(debateInfoState);
 
   return (
     <div>
