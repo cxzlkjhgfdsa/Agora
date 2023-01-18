@@ -1,6 +1,6 @@
 package com.agora.server.config;
 
-import com.agora.server.config.filter.CorsFilter;
+import com.agora.server.config.filter.CorsFilterConfig;
 import com.agora.server.config.filter.JwtAuthorizationFilter;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.util.JwtAuthorizationUtil;
@@ -10,15 +10,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final CorsFilter corsFilter;
+
+    private final CorsFilterConfig corsFilter;
+    private final JwtAuthorizationUtil jwtAuthorizationUtil;
+    private final UserRepository userRepository;
+
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -26,7 +28,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter.corsFilter())
                 .csrf().disable()
                 .httpBasic().disable()
-                .addFilterBefore(jwtAuthorizationFilter, JwtAuthorizationFilter.class)
+                .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .antMatcher("/room/**");
 
         return http.build();

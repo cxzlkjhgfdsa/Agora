@@ -11,10 +11,9 @@ import java.util.Date;
 
 @Component
 public class JwtAuthorizationUtil {
-    @Value("${jwt-config.secret}")
-    private String jwtSecret;
+    private String jwtSecret = "ksajdhfkj";
 
-    public String createAccessToken(String id, String socialType) {
+    public String createAccessToken(Long id, String socialType) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -28,6 +27,7 @@ public class JwtAuthorizationUtil {
     }
 
     public UserAccessTokenInfo getUserInfo(String accessToken) {
+        System.out.println("access token : " + accessToken);
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
         Claims body = null;
         try {
@@ -35,13 +35,13 @@ public class JwtAuthorizationUtil {
                     .setSigningKey(jwtSecret)
                     .parseClaimsJws(accessToken)
                     .getBody();
-            userAccessTokenInfo.setId(body.get("id", String.class));
-            userAccessTokenInfo.setSocialType(body.get("socialType", SocialType.class));
+            System.out.println(body);
+            userAccessTokenInfo.setId(body.get("id", Long.class));
+            userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
+            System.out.println("user id " + userAccessTokenInfo.getId());
             return userAccessTokenInfo;
         } catch (ExpiredJwtException expire) {
             throw new ExpiredJwtException(expire.getHeader(), body, "세션이 만료되었습니다.");
-        } catch (Exception e) {
-            throw new RuntimeException();
         }
     }
 }

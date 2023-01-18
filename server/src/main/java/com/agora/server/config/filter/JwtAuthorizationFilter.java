@@ -6,9 +6,7 @@ import com.agora.server.util.JwtAuthorizationUtil;
 import com.agora.server.util.dto.UserAccessTokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -16,26 +14,26 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@RequiredArgsConstructor
-@Component
+
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    @Value("${jwt-config.secret}")
-    private String jwtSecret;
-    @Value("${jwt-config.expires-in}")
-    private String expiresIn;
-    @Value("${jwt-config.token-type}")
-    private String tokenType;
-    @Value("${jwt-config.header}")
-    private String authorizationHeader;
 
+    private String tokenType = "Bearer ";
 
-    private final JwtAuthorizationUtil jwtAuthorizationUtil;
-    private final UserRepository userRepository;
+    private String authorizationHeader = "Authorization";
 
+    private JwtAuthorizationUtil jwtAuthorizationUtil;
+    private UserRepository userRepository;
+
+    public JwtAuthorizationFilter(JwtAuthorizationUtil jwtAuthorizationUtil, UserRepository userRepository) {
+        this.jwtAuthorizationUtil = jwtAuthorizationUtil;
+        this.userRepository = userRepository;
+    }
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(authorizationHeader);
-        if (header == null || !header.startsWith(tokenType)) {
+        System.out.println("header: " + request.getHeader("Authorization"));
+        System.out.println("method: " + request.getMethod());
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
