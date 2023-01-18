@@ -82,7 +82,7 @@ public class NaverAuthController {
         User user = naverAuthService.getToken(code);
         User checkDuplicateUser = userService.checkDuplicateUser(user.getUser_social_id(), user.getUser_social_type());
         if (checkDuplicateUser != null)
-            throw new RuntimeException();
+            throw new RuntimeException("이미 가입되어 있습니다 로그인 페이지로 이동합니다.");
         res.setBody(user);
         res.setState(true);
         res.setMessage("ok");
