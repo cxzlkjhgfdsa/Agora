@@ -57,16 +57,17 @@ public class GoogleAuthController {
 
         ResponseDTO responseDTO = new ResponseDTO();
 
+        // 가입되어 있는 유저 -> Exception 발생
+        if(user != null) {
+            System.out.println("user가 notnull"+user);
+        }
+
         // 가입되어 있지 않은 유저 -> 정상 코드와 CommonDto 반환
-        if(user == null){
             responseDTO.setState(true);
             responseDTO.setBody(googleUser);
             responseDTO.setMessage("ok");
             responseDTO.setStatusCode(200);
             return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-        } else {
-        // 가입되어 있는 유저 -> Exception 발생
-            System.out.println("user가 notnull"+user);
-        }
+        
     }
 }
