@@ -102,7 +102,17 @@ public class GoogleAuthService {
 
     }
 
-    public GoogleOAuthToken getGoogleOAuthToken(String code) throws IOException {
+
+
+    public GoogleOAuthToken getGoogleLoginOAuthToken(String code) throws IOException {
+        //구글로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
+        ResponseEntity<String> accessTokenResponse= googleAuthUtils.requestLoginAccessToken(code);
+        //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
+        GoogleOAuthToken oAuthToken=googleAuthUtils.getLoginAccessToken(accessTokenResponse);
+        return oAuthToken;
+    }
+
+    public GoogleOAuthToken getGoogleJoinOAuthToken(String code) throws IOException {
         //구글로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
         ResponseEntity<String> accessTokenResponse= googleAuthUtils.requestJoinAccessToken(code);
         //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
