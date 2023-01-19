@@ -30,7 +30,6 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .antMatcher("/room/**");
-
         return http.build();
     }
 

@@ -6,11 +6,12 @@ import lombok.Setter;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class UserAccessTokenInfo {
-    private Long id;
+    private UUID id;
 
     private SocialType socialType;
 }

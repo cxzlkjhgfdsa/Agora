@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtAuthorizationUtil {
@@ -15,7 +16,7 @@ public class JwtAuthorizationUtil {
     @Value("${jwt-config.secret}")
     private String jwtSecret;
 
-    public String createAccessToken(Long id, String socialType) {
+    public String createAccessToken(UUID id, String socialType) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -36,7 +37,7 @@ public class JwtAuthorizationUtil {
                     .setSigningKey(jwtSecret)
                     .parseClaimsJws(accessToken)
                     .getBody();
-            userAccessTokenInfo.setId(body.get("id", Long.class));
+            userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
             userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
             return userAccessTokenInfo;
         } catch (ExpiredJwtException expire) {

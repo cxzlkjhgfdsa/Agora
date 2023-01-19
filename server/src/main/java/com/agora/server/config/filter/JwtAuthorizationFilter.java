@@ -16,9 +16,8 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     //    private String tokenType = "Bearer ";
-    @Value("${jwt-config.header-prefix}")
-    private String headerPrefix;
 
+    private String headerPrefix = "Bearer ";
     private String authorizationHeader = "Authorization";
 
     private JwtAuthorizationUtil jwtAuthorizationUtil;
@@ -30,8 +29,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader(authorizationHeader);
         if (header == null || !header.startsWith(headerPrefix)) {
             chain.doFilter(request, response);
             return;
