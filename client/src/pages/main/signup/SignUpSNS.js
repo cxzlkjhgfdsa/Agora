@@ -4,7 +4,10 @@ import styled from "styled-components";
 import ProgressBar from "components/main/signup/progressbar/ProgressBar";
 
 // SNS 이동 버튼
-import SignUpButton from "components/main/signup/Button/SignUpButton";
+import SignUpButton from "components/main/signup/button/SignUpButton";
+
+// 제목
+import Title from "components/main/signup/title/Title";
 
 // 라우터 이동을 위한 Link
 import { useNavigate } from "react-router-dom";
@@ -23,6 +26,7 @@ function SignUpSNS() {
   return (
     <Wrapper>
       <ProgressBar />
+      <Title />
       <h1>This is Sign Up SNS page</h1>
         <SignUpButton onClick={moveToInput}>
           완료 후 계속
