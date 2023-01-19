@@ -8,12 +8,15 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtAuthorizationUtil {
-    private String jwtSecret = "ksajdhfkj";
+    //    private String jwtSecret = "ksajdhfkj";
+    @Value("${jwt-config.secret}")
+    private String jwtSecret;
 
-    public String createAccessToken(Long id, String socialType) {
+    public String createAccessToken(UUID id, String socialType) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -27,7 +30,6 @@ public class JwtAuthorizationUtil {
     }
 
     public UserAccessTokenInfo getUserInfo(String accessToken) {
-        System.out.println("access token : " + accessToken);
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
         Claims body = null;
         try {
@@ -35,10 +37,8 @@ public class JwtAuthorizationUtil {
                     .setSigningKey(jwtSecret)
                     .parseClaimsJws(accessToken)
                     .getBody();
-            System.out.println(body);
-            userAccessTokenInfo.setId(body.get("id", Long.class));
+            userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
             userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
-            System.out.println("user id " + userAccessTokenInfo.getId());
             return userAccessTokenInfo;
         } catch (ExpiredJwtException expire) {
             throw new ExpiredJwtException(expire.getHeader(), body, "세션이 만료되었습니다.");

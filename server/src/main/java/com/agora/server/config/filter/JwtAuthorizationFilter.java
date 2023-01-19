@@ -4,9 +4,7 @@ import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.util.JwtAuthorizationUtil;
 import com.agora.server.util.dto.UserAccessTokenInfo;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -17,8 +15,9 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private String tokenType = "Bearer ";
+    //    private String tokenType = "Bearer ";
 
+    private String headerPrefix = "Bearer ";
     private String authorizationHeader = "Authorization";
 
     private JwtAuthorizationUtil jwtAuthorizationUtil;
@@ -30,15 +29,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("header: " + request.getHeader("Authorization"));
-        System.out.println("method: " + request.getMethod());
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
+        String header = request.getHeader(authorizationHeader);
+        if (header == null || !header.startsWith(headerPrefix)) {
             chain.doFilter(request, response);
             return;
         }
         // token
-        String token = request.getHeader(authorizationHeader).replace(tokenType, "");
+        String token = request.getHeader(authorizationHeader).replace(headerPrefix, "");
         UserAccessTokenInfo userInfo = jwtAuthorizationUtil.getUserInfo(token);
         if (userInfo != null) {
             User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
