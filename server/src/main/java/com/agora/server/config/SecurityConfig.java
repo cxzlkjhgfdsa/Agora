@@ -1,6 +1,7 @@
 package com.agora.server.config;
 
 import com.agora.server.config.filter.CorsFilterConfig;
+import com.agora.server.config.filter.ExceptionHandlerFilter;
 import com.agora.server.config.filter.JwtAuthorizationFilter;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.util.JwtAuthorizationUtil;
@@ -29,9 +30,9 @@ public class SecurityConfig {
                 .csrf().disable()
                 .httpBasic().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthorizationFilter.class)
                 .antMatcher("/room/**");
+
         return http.build();
     }
-
-
 }

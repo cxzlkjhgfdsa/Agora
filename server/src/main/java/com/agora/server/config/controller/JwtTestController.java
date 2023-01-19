@@ -1,6 +1,7 @@
 package com.agora.server.config.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.common.exception.JwtInvalidException;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.domain.User;
 import com.agora.server.util.JwtAuthorizationUtil;
@@ -38,6 +39,7 @@ public class JwtTestController {
         System.out.println(headerPrefix + ": ");
         System.out.println(getRedirectHeader);
         System.out.println(getRedirectHeaderValue);
+        throw new JwtInvalidException("jwt test error");
     }
 
     @GetMapping("jwt")
@@ -50,6 +52,10 @@ public class JwtTestController {
 
     @GetMapping("room")
     public ResponseEntity<ResponseDTO> room(HttpServletRequest req) {
+        if (req.getAttribute("error") != null) {
+            ResponseDTO res = (ResponseDTO) req.getAttribute("error");
+            throw new JwtInvalidException(res.getMessage());
+        }
         User user = (User) req.getAttribute("user");
         ResponseDTO res = new ResponseDTO();
         res.setBody(user);

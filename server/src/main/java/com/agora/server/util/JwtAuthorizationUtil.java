@@ -1,5 +1,6 @@
 package com.agora.server.util;
 
+import com.agora.server.common.exception.JwtInvalidException;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.util.dto.UserAccessTokenInfo;
 import io.jsonwebtoken.*;
@@ -32,16 +33,12 @@ public class JwtAuthorizationUtil {
     public UserAccessTokenInfo getUserInfo(String accessToken) {
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
         Claims body = null;
-        try {
-            body = Jwts.parser()
-                    .setSigningKey(jwtSecret)
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-            userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
-            userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
-            return userAccessTokenInfo;
-        } catch (ExpiredJwtException expire) {
-            throw new ExpiredJwtException(expire.getHeader(), body, "세션이 만료되었습니다.");
-        }
+        body = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(accessToken)
+                .getBody();
+        userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
+        userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
+        return userAccessTokenInfo;
     }
 }
