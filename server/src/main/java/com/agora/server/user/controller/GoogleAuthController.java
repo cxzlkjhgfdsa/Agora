@@ -59,7 +59,9 @@ public class GoogleAuthController {
         // LoginResponseDto 정보 받기
         // userService에 넣어 두는 것도 생각해보기
         LoginResponseDto loginRes = new LoginResponseDto();
-        loginRes.setAccessToken("null");
+
+        String jwtAccessToken = googleOAuthService.getJwtAccessToken(joinedUser.getUser_id(), joinedUser.getUser_social_id());
+        loginRes.setAccessToken(jwtAccessToken);
         loginRes.setUserId(joinedUser.getUser_id());
         loginRes.setUserPhoto(joinedUser.getUser_photo());
         loginRes.setUserNickname(joinedUser.getUser_nickname());

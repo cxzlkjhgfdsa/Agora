@@ -8,6 +8,7 @@ import com.agora.server.user.controller.dto.google.GetGoogleOAuthRes;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.GoogleUserRepository;
 import com.agora.server.user.utils.GoogleAuthUtils;
+import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,6 +26,8 @@ public class GoogleAuthService {
     private final HttpServletResponse response;
 
     private final GoogleUserRepository googleUserRepository;
+
+    private final JwtAuthorizationUtil jwtAuthorizationUtil;
 
     public void loginRequest() throws IOException {
         String redirectURL = googleAuthUtils.getLoginRedirectURL();
@@ -133,6 +137,9 @@ public class GoogleAuthService {
         return commonUserDto;
     }
 
+    public String getJwtAccessToken(UUID id, String socialType){
+        return jwtAuthorizationUtil.createAccessToken(id, socialType);
+    }
 
 
 }
