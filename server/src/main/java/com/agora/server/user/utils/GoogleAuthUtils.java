@@ -20,21 +20,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GoogleAuthUtils {
 
-    //applications.yml 에서 value annotation을 통해서 값을 받아온다.
+
+    // id와 secret은 env-key.yml 에서 환경변수로 값을 받아온다.
+    @Value("${oauth-key.google.client-id}")
+    private String GOOGLE_SNS_CLIENT_ID;
+    @Value("${oauth-key.google.client-secret}")
+    private String GOOGLE_SNS_CLIENT_SECRET;
+
+    // 다른 경로들은 application-local에서 받아온다.
     @Value("${spring.OAuth2.google.url}")
     private String GOOGLE_SNS_LOGIN_URL;
-
-    @Value("${spring.OAuth2.google.client-id}")
-    private String GOOGLE_SNS_CLIENT_ID;
-
     @Value("${spring.OAuth2.google.login-callback-url}")
     private String GOOGLE_SNS_LOGIN_CALLBACK_URL;
 
     @Value("${spring.OAuth2.google.join-callback-url}")
     private String GOOGLE_SNS_JOIN_CALLBACK_URL;
-
-    @Value("${spring.OAuth2.google.client-secret}")
-    private String GOOGLE_SNS_CLIENT_SECRET;
 
     @Value("${spring.OAuth2.google.scope}")
     private String GOOGLE_DATA_ACCESS_SCOPE;
