@@ -10,7 +10,10 @@ import Header from "./pages/Header";
 
 // Main Pages
 import Login from "pages/main/Login";
-import SignUp from "pages/main/SignUp";
+import SignUpSNS from "pages/main/signup/SignUpSNS";
+import SignUpInput from "pages/main/signup/SignUpInput";
+import SignUpCategory from "pages/main/signup/SignUpCategory";
+import SignUpComplete from "pages/main/signup/SignUpComplete";
 import Welcome from "pages/main/Welcome";
 import DebateList from "pages/main/debate/DebateList";
 import DebateRoom from "pages/main/debate/DebateRoom";
@@ -26,7 +29,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/user/login" element={<Login />} />
-            <Route path="/user/signup" element={<SignUp />} />
+            <Route path="/user/signup/SNS" element={<SignUpSNS />} />
+            <Route path="/user/signup/input" element={<SignUpInput />} />
+            <Route path="/user/signup/category" element={<SignUpCategory />} />
+            <Route path="/user/signup/complete" element={<SignUpComplete />} />
             <Route path="/user/mypage" element={<MyPage />} />
             <Route path="/debate/list" element={<DebateList />} />
             <Route path="/debate/room/:roomId" element={<DebateRoom />} />

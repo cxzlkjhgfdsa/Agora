@@ -2,6 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 // 여러 페이지에서 사용될 디자인
 const GlobalStyle = createGlobalStyle`
+  
   // 전체 폰트, Inter 폰트 및 어두운 글자색
   * {
     // 폰트 설정, !important -> 이후에 선언한 CSS 무시
@@ -9,14 +10,14 @@ const GlobalStyle = createGlobalStyle`
     color: #4C4556;
   }
 
+  // body 마진 제거
   body {
-    min-width: 1920px;
-    width: 1920px;
+    margin: 0px;
   }
 
   // 상단바에 가리지 않게 상단 패딩
   main {
-    padding-top: 94px; 
+    padding-top: 64px; 
   }
 
   a {

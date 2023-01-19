@@ -68,7 +68,7 @@ function RightComponents() {
         <Link to={"/debate/list"}>
           <StyledLightButton>둘러보기</StyledLightButton>
         </Link>
-        <Link to={"/user/signup"}>
+        <Link to={"/user/signup/SNS"}>
           <StyledLightButton>회원가입</StyledLightButton>
         </Link>
         <Link to={"/user/login"}>
