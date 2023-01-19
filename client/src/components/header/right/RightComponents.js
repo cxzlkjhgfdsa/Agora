@@ -10,7 +10,7 @@ import UserProfileIcon from "./UserProfileIcon";
 // 라우터 이동을 위한 Link
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { DebateInfoAtom, UserInfoAtom } from "stores/atoms";
+import { debateInfoState, userInfoState } from "stores/atoms";
 
 // 상단바 우측 컴포넌트 Wrapper
 const Wrapper = styled.div`
@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 
 function RightComponents() {
   // 로그인 여부, 페이지 위치 등 각종 상태에 따라 다른 컴포넌트 반환
-  const userInfo = useRecoilValue(UserInfoAtom);
-  const setDebateInfo = useSetRecoilState(DebateInfoAtom);
+  const userInfo = useRecoilValue(userInfoState);
+  const setDebateInfo = useSetRecoilState(debateInfoState);
   const curPath = useLocation().pathname;
   const navigate = useNavigate();
 
