@@ -11,8 +11,8 @@ import SearchResult from "./SearchResult";
 // 검색바 전체
 const StyledSearchBar = styled.div`
   // 크기 설정
-  width: 750px;
-  height: 60px;
+  width: 30rem;
+  height: 40px;
 
   // 배경색 설정
   background-color: #EBEBEB;
@@ -26,8 +26,8 @@ const StyledSearchBar = styled.div`
 // 돋보기 아이콘
 const StyledImg = styled.img`
   // 돋보기 아이콘 크기 설정
-  width: 52px;
-  height: 52px;
+  width: 36px;
+  height: 36px;
 
   // 위치 설정
   position: absolute;
@@ -46,12 +46,13 @@ const StyledInput = styled.input`
   height: 36px;
 
   // 글자 설정
-  font-size: 30px;
+  font-size: 20px;
 
   // 위치 설정
   position: absolute;
-  top: 9px;
-  left: 61px;
+  top: 0tpx;
+  left: 40px;
+  padding: 0px;
 `;
 
 function SearchBar() {
