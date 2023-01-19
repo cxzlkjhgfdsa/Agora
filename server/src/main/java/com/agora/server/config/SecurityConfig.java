@@ -3,6 +3,7 @@ package com.agora.server.config;
 import com.agora.server.config.filter.CorsFilterConfig;
 import com.agora.server.config.filter.JwtAuthorizationFilter;
 import com.agora.server.user.repository.UserRepository;
+import com.agora.server.user.service.PrincipalOauth2UserService;
 import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +22,23 @@ public class SecurityConfig {
     private final JwtAuthorizationUtil jwtAuthorizationUtil;
     private final UserRepository userRepository;
 
+    private final PrincipalOauth2UserService principalOauth2UserService;
+
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .addFilter(corsFilter.corsFilter())
                 .csrf().disable()
-                .httpBasic().disable()
-                .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
-                .antMatcher("/room/**");
+                    .httpBasic().disable()
+                    .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
+                    .antMatcher("/room/**")
+                    .authorizeRequests()
+                .and()
+                .oauth2Login()
+                .defaultSuccessUrl("/total/oauth", true)
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
         return http.build();
     }
 
