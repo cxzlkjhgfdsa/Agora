@@ -4,16 +4,22 @@ import com.agora.server.user.controller.dto.SocialType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User{
-    @Id @GeneratedValue
-    private Long user_id;
+    @Id @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Type(type = "uuid-char")
+    @Column(length = 50)
+    private UUID user_id;
     @Enumerated(EnumType.STRING)
     @Column(length = 30)
     private SocialType user_social_type;

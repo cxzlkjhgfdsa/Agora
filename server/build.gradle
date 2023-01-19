@@ -33,11 +33,15 @@ dependencies {
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.31'
     runtimeOnly 'com.h2database:h2'
+
+    //JUnit4 추가
+    testImplementation("org.junit.vintage:junit-vintage-engine") {
+        exclude group: "org.hamcrest", module: "hamcrest-core"
+    }
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.7'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-
 
 }
 
