@@ -1,8 +1,7 @@
 package com.agora.server.util;
 
-import com.agora.server.common.exception.JwtInvalidException;
 import com.agora.server.user.controller.dto.SocialType;
-import com.agora.server.util.dto.UserAccessTokenInfo;
+import com.agora.server.common.dto.UserAccessTokenInfo;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class JwtAuthorizationUtil {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject("access-token")
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(60).toMillis()))
+                .setExpiration(new Date(now.getTime() + Duration.ofSeconds(10).toMillis()))
                 .claim("id", id)
                 .claim("socialType", socialType)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)

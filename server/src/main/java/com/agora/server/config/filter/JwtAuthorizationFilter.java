@@ -1,12 +1,10 @@
 package com.agora.server.config.filter;
 
-import com.agora.server.aop.GlobalException;
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.common.exception.JwtInvalidException;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
+import com.agora.server.common.dto.UserAccessTokenInfo;
 import com.agora.server.util.JwtAuthorizationUtil;
-import com.agora.server.util.dto.UserAccessTokenInfo;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -30,6 +28,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.userRepository = userRepository;
     }
 
+
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(authorizationHeader);
         if (header == null || !header.startsWith(headerPrefix)) {
@@ -41,10 +40,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         } else {
             // token
             String token = request.getHeader(authorizationHeader).replace(headerPrefix, "");
-            UserAccessTokenInfo userInfo = jwtAuthorizationUtil.getUserInfo(token);
-            if (userInfo != null) {
-                User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
-                request.setAttribute("user", user);
+            try {
+                UserAccessTokenInfo userInfo = jwtAuthorizationUtil.getUserInfo(token);
+                if (userInfo != null) {
+                    User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
+                    request.setAttribute("user", user);
+                }
+            } catch (Exception e) {
+                response.sendError(403, "access token expires");
             }
         }
         chain.doFilter(request, response);
