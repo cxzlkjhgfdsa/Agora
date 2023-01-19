@@ -33,6 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(authorizationHeader);
         if (header == null || !header.startsWith(headerPrefix)) {
+            // header가 없거나 Bearer 토큰이 아닌 경우
             ResponseDTO res = new ResponseDTO();
             res.setState(false);
             res.setMessage("no header");
