@@ -8,7 +8,6 @@ import com.agora.server.user.controller.dto.google.GoogleOAuthToken;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.exception.AlreadyExistUserException;
 import com.agora.server.user.exception.NoUserException;
-import com.agora.server.user.repository.GoogleUserRepository;
 import com.agora.server.user.service.GoogleAuthService;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class GoogleAuthController {
 
     private final GoogleAuthService googleOAuthService;
     private final UserService userService;
-    private final GoogleUserRepository googleUserRepository;
 
     // 프론트단에서 처리 할 예정
     @GetMapping("request/auth/login/google")
@@ -49,7 +47,7 @@ public class GoogleAuthController {
         User joinedUser = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
 
 
-        // 가입이 안되어있는 유저 -> RuntimeException 발생 -> Exception 후에 커스텀으로 만들면 교체
+        // 가입이 안 되어있는 유저 -> NoUserException 발생
         if(joinedUser == null) {
             throw new NoUserException("가입되지 않은 회원입니다 회원가입 페이지로 이동합니다");
         }
@@ -57,9 +55,9 @@ public class GoogleAuthController {
         ResponseDTO res = new ResponseDTO();
 
         // LoginResponseDto 정보 받기
-        // userService에 넣어 두는 것도 생각해보기
         LoginResponseDto loginRes = new LoginResponseDto();
 
+        // JwtAccessToken 생성
         String jwtAccessToken = googleOAuthService.getJwtAccessToken(joinedUser.getUser_id(), joinedUser.getUser_social_id());
         loginRes.setAccessToken(jwtAccessToken);
         loginRes.setUserId(joinedUser.getUser_id());
@@ -89,7 +87,7 @@ public class GoogleAuthController {
 
         User dupUser = userService.checkDuplicateUser(googleUser.getSocial_id(), SocialType.GOOGLE);
 
-        // 가입되어 있는 유저 -> RuntimeException 발생 -> Exception 후에 커스텀으로 만들면 교체
+        // 가입되어 있는 유저 -> AlreadyExistUserException 발생
         if(dupUser != null) {
             throw new AlreadyExistUserException("이미 가입되어 있습니다 로그인 페이지로 이동합니다");
         }

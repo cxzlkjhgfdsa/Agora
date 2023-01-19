@@ -2,6 +2,12 @@ spring:
   config:
     activate:
       on-profile: local
+  OAuth2:
+    google:
+      url: https://accounts.google.com/o/oauth2/v2/auth
+      login-callback-url: http://localhost:8080/request/auth/login/google/callback
+      join-callback-url: http://localhost:8080/request/auth/join/google/callback
+      scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
