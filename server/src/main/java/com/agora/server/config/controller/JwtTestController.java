@@ -14,19 +14,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class JwtTestController {
     private final JwtAuthorizationUtil jwtAuthorizationUtil;
 
-    @GetMapping("jwt")
-    public ResponseEntity<ResponseDTO> jwtGetmapping() {
-        String accessToken = jwtAuthorizationUtil.createAccessToken(1L, SocialType.GOOGLE.toString());
-        ResponseDTO res = new ResponseDTO();
-        res.setMessage(accessToken);
-        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
-    }
+//    @GetMapping("jwt")
+//    public ResponseEntity<ResponseDTO> jwtGetmapping() {
+//        String accessToken = jwtAuthorizationUtil.createAccessToken(1L, SocialType.GOOGLE.toString());
+//        ResponseDTO res = new ResponseDTO();
+//        res.setMessage(accessToken);
+//        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+//    }
 
     @GetMapping("room")
     public ResponseEntity<ResponseDTO> room(HttpServletRequest req) {

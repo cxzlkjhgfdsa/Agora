@@ -8,12 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtAuthorizationUtil {
     private String jwtSecret = "ksajdhfkj";
 
-    public String createAccessToken(Long id, String socialType) {
+    public String createAccessToken(UUID id, String socialType) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
