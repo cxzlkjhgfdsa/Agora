@@ -1,7 +1,8 @@
 package com.agora.server.config;
 
+import com.agora.server.auth.util.AccessTokenUtil;
 import com.agora.server.config.filter.CorsFilterConfig;
-import com.agora.server.config.filter.JwtAuthorizationFilter;
+import com.agora.server.auth.exception.JwtAuthorizationFilter;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CorsFilterConfig corsFilter;
-    private final JwtAuthorizationUtil jwtAuthorizationUtil;
+    private final AccessTokenUtil userToken;
     private final UserRepository userRepository;
 
 
@@ -27,7 +28,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter.corsFilter())
                 .csrf().disable()
                 .httpBasic().disable()
-                .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthorizationFilter(userToken, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .antMatcher("/room/**");
 
         return http.build();

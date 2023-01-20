@@ -1,10 +1,10 @@
-package com.agora.server.config.filter;
+package com.agora.server.auth.exception;
 
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.common.dto.UserToken;
+import com.agora.server.auth.util.AccessTokenUtil;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
-import com.agora.server.common.dto.UserAccessTokenInfo;
+import com.agora.server.auth.dto.UserAccessTokenInfo;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,10 +20,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private String headerPrefix = "Bearer ";
     private String authorizationHeader = "Authorization";
 
-    private UserToken userToken;
+    private AccessTokenUtil userToken;
     private UserRepository userRepository;
 
-    public JwtAuthorizationFilter(UserToken userToken, UserRepository userRepository) {
+    public JwtAuthorizationFilter(AccessTokenUtil userToken, UserRepository userRepository) {
         this.userToken = userToken;
         this.userRepository = userRepository;
     }
@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // token
             String token = request.getHeader(authorizationHeader).replace(headerPrefix, "");
             try {
-                userToken.getUserInfo(token, jwtSecret);
+                UserAccessTokenInfo userInfo = userToken.getUserInfo(token);
                 if (userInfo != null) {
                     User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
                     request.setAttribute("user", user);

@@ -1,31 +1,26 @@
-package com.agora.server.common.dto;
+package com.agora.server.auth.util;
 
+import com.agora.server.auth.dto.UserAccessTokenInfo;
 import com.agora.server.user.controller.dto.SocialType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserToken {
-    private String accessToken;
+@Component
+public class AccessTokenUtil {
 
     @Value("${jwt-config.secret}")
-    private static String jwtSecret;
+    private String jwtSecret;
 
-    public static String createAccessToken(UUID id, String socialType) {
 
+    public String createAccessToken(UUID id, String socialType) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -38,7 +33,7 @@ public class UserToken {
                 .compact();
     }
 
-    public UserAccessTokenInfo getUserInfo(String accessToken, String jwtSecret) {
+    public UserAccessTokenInfo getUserInfo(String accessToken) {
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
         Claims body = null;
         body = Jwts.parser()

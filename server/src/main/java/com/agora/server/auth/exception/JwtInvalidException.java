@@ -1,4 +1,4 @@
-package com.agora.server.common.exception;
+package com.agora.server.auth.exception;
 
 public class JwtInvalidException extends RuntimeException {
 

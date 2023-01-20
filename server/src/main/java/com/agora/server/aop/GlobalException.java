@@ -1,13 +1,12 @@
 package com.agora.server.aop;
 
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.common.exception.JwtInvalidException;
+import com.agora.server.auth.exception.JwtInvalidException;
 import com.agora.server.user.exception.AlreadyExistUserException;
 import com.agora.server.user.exception.DuplicateNickNameException;
 import com.agora.server.user.exception.NoUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;

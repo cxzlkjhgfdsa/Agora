@@ -1,8 +1,8 @@
 package com.agora.server.config.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.common.dto.UserToken;
-import com.agora.server.common.exception.JwtInvalidException;
+import com.agora.server.auth.util.AccessTokenUtil;
+import com.agora.server.auth.exception.JwtInvalidException;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,6 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class JwtTestController {
-    private final JwtAuthorizationUtil jwtAuthorizationUtil;
 
     @Value("${jwt-config.secret}")
     private String jwtSecret;
@@ -33,6 +32,8 @@ public class JwtTestController {
     @Value("${jwt-config.header-prefix}")
     private String headerPrefix;
 
+    private final AccessTokenUtil accessTokenUtil;
+
 
     @GetMapping("jwttest")
     public void jwttest() {
@@ -44,7 +45,7 @@ public class JwtTestController {
 
     @GetMapping("jwtdto")
     public ResponseEntity<ResponseDTO> jwtDto() {
-        String accessToken = UserToken.createAccessToken(UUID.fromString(UUID.randomUUID().toString()), SocialType.GOOGLE.toString(), jwtSecret);
+        String accessToken = accessTokenUtil.createAccessToken(UUID.fromString(UUID.randomUUID().toString()), SocialType.GOOGLE.toString());
         ResponseDTO res = new ResponseDTO();
         res.setBody(accessToken);
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -52,7 +53,7 @@ public class JwtTestController {
 
     @GetMapping("jwt")
     public ResponseEntity<ResponseDTO> jwtGetmapping(@RequestParam UUID id) {
-        String accessToken = jwtAuthorizationUtil.createAccessToken(id, SocialType.GOOGLE.toString());
+        String accessToken = accessTokenUtil.createAccessToken(UUID.fromString(UUID.randomUUID().toString()), SocialType.GOOGLE.toString());
         ResponseDTO res = new ResponseDTO();
         res.setMessage(accessToken);
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
