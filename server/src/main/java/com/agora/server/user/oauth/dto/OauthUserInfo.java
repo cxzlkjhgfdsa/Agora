@@ -7,4 +7,6 @@ public interface OauthUserInfo {
     SocialType getProvider();
     String getEmail();
     String getName();
+
+    String getProfile();
 }

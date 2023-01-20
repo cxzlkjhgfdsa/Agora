@@ -31,4 +31,9 @@ public class GoogleUserInfo implements OauthUserInfo{
     public String getName() {
         return (String) attributes.get("name");
     }
+
+    @Override
+    public String getProfile() {
+        return (String)attributes.get("profile_image");
+    }
 }

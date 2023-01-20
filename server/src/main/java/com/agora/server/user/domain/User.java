@@ -54,4 +54,13 @@ public class User{
         return user;
     }
 
+    public static User createOAuthUser(SocialType socialType, String social_id, String nickname, String profile){
+        User user = new User();
+        user.user_social_type = socialType;
+        user.user_social_id = social_id;
+        user.user_nickname = nickname;
+        user.user_photo = profile;
+        return user;
+    }
+
 }

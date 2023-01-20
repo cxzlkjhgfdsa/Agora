@@ -8,8 +8,10 @@ import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,7 +23,6 @@ public class SecurityConfig {
     private final CorsFilterConfig corsFilter;
     private final JwtAuthorizationUtil jwtAuthorizationUtil;
     private final UserRepository userRepository;
-
     private final PrincipalOauth2UserService principalOauth2UserService;
 
 
@@ -30,15 +31,22 @@ public class SecurityConfig {
         http
                 .addFilter(corsFilter.corsFilter())
                 .csrf().disable()
-                    .httpBasic().disable()
-                    .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
-                    .antMatcher("/room/**")
-                    .authorizeRequests()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
-                .oauth2Login()
-                .defaultSuccessUrl("/total/oauth", true)
-                .userInfoEndpoint()
-                .userService(principalOauth2UserService);
+                    .authorizeRequests()
+                    .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .anyRequest().permitAll()
+                .and()
+                    .oauth2Login()
+                    .defaultSuccessUrl("/total/oauth", true)
+                    .userInfoEndpoint()
+                    .userService(principalOauth2UserService)
+                .and().and()
+                .httpBasic().disable()
+                .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class);
+//                .antMatcher("/room/**");
+
+
         return http.build();
     }
 

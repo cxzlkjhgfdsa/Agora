@@ -13,21 +13,27 @@ public class NaverUserInfo implements OauthUserInfo{
     }
     @Override
     public String getProviderId() {
-        return null;
+        return (String)attributes.get("id");
     }
 
     @Override
     public SocialType getProvider() {
-        return null;
+        return SocialType.NAVER;
     }
 
     @Override
     public String getEmail() {
-        return null;
+        return (String)attributes.get("email");
     }
 
     @Override
     public String getName() {
-        return null;
+        return (String)attributes.get("nickname");
     }
+
+    @Override
+    public String getProfile() {
+        return (String)attributes.get("profile_image");
+    }
+
 }
