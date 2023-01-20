@@ -1,7 +1,9 @@
 package com.agora.server.config.filter;
 
+import com.agora.server.auth.dto.UserAccessTokenInfo;
 import com.agora.server.auth.util.AccessTokenUtil;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
         String accessToken = header.replace(headerPrefix, "");
-        ResponseEntity<ResponseDTO> userInfo = accessTokenUtil.getUserInfo(accessToken);
-        System.out.println(userInfo);
+        logger.info("access token : " + accessToken);
+        UserAccessTokenInfo userInfo = accessTokenUtil.getUserInfo(accessToken);
+        User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
+        request.setAttribute("user", user);
+        chain.doFilter(request, response);
     }
 }

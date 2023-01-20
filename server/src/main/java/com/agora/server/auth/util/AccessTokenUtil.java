@@ -33,29 +33,14 @@ public class AccessTokenUtil {
                 .compact();
     }
 
-    public ResponseEntity<ResponseDTO> getUserInfo(String accessToken) {
+    public UserAccessTokenInfo getUserInfo(String accessToken) {
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
-        ResponseDTO res = new ResponseDTO();
-        Claims body = null;
-        try {
-            body = Jwts.parser()
-                    .setSigningKey(jwtSecret)
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-            userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
-            userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
-            res.setBody(userAccessTokenInfo);
-            res.setState(true);
-            res.setStatusCode(200);
-            return new ResponseEntity<>(res, HttpStatus.OK);
-        } catch (SignatureException | ExpiredJwtException e) {
-            res.setStatusCode(403);
-            res.setMessage(e.getMessage());
-            res.setState(false);
-            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-        }
-
+        Claims body = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(accessToken)
+                .getBody();
+        userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
+        userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
+        return userAccessTokenInfo;
     }
-
-
 }
