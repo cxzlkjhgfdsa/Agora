@@ -1,12 +1,12 @@
 package com.agora.server.auth.util;
 
 import com.agora.server.auth.dto.UserAccessTokenInfo;
+import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.controller.dto.SocialType;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -33,16 +33,28 @@ public class AccessTokenUtil {
                 .compact();
     }
 
-    public UserAccessTokenInfo getUserInfo(String accessToken) {
+    public ResponseEntity<ResponseDTO> getUserInfo(String accessToken) {
         UserAccessTokenInfo userAccessTokenInfo = new UserAccessTokenInfo();
+        ResponseDTO res = new ResponseDTO();
         Claims body = null;
-        body = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(accessToken)
-                .getBody();
-        userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
-        userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
-        return userAccessTokenInfo;
+        try {
+            body = Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+            userAccessTokenInfo.setId(UUID.fromString(body.get("id", String.class)));
+            userAccessTokenInfo.setSocialType(SocialType.valueOf(body.get("socialType", String.class)));
+            res.setBody(userAccessTokenInfo);
+            res.setState(true);
+            res.setStatusCode(200);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (SignatureException | ExpiredJwtException e) {
+            res.setStatusCode(403);
+            res.setMessage(e.getMessage());
+            res.setState(false);
+            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
 
