@@ -1,10 +1,10 @@
 package com.agora.server.config.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.common.dto.UserToken;
 import com.agora.server.common.exception.JwtInvalidException;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.domain.User;
-import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,6 +40,14 @@ public class JwtTestController {
         System.out.println(getRedirectHeader);
         System.out.println(getRedirectHeaderValue);
         throw new JwtInvalidException("jwt test error");
+    }
+
+    @GetMapping("jwtdto")
+    public ResponseEntity<ResponseDTO> jwtDto() {
+        String accessToken = UserToken.createAccessToken(UUID.fromString(UUID.randomUUID().toString()), SocialType.GOOGLE.toString(), jwtSecret);
+        ResponseDTO res = new ResponseDTO();
+        res.setBody(accessToken);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("jwt")

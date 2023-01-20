@@ -1,10 +1,10 @@
 package com.agora.server.config.filter;
 
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.common.dto.UserToken;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.common.dto.UserAccessTokenInfo;
-import com.agora.server.util.JwtAuthorizationUtil;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,14 +20,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private String headerPrefix = "Bearer ";
     private String authorizationHeader = "Authorization";
 
-    private JwtAuthorizationUtil jwtAuthorizationUtil;
+    private UserToken userToken;
     private UserRepository userRepository;
 
-    public JwtAuthorizationFilter(JwtAuthorizationUtil jwtAuthorizationUtil, UserRepository userRepository) {
-        this.jwtAuthorizationUtil = jwtAuthorizationUtil;
+    public JwtAuthorizationFilter(UserToken userToken, UserRepository userRepository) {
+        this.userToken = userToken;
         this.userRepository = userRepository;
     }
-
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(authorizationHeader);
@@ -41,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // token
             String token = request.getHeader(authorizationHeader).replace(headerPrefix, "");
             try {
-                UserAccessTokenInfo userInfo = jwtAuthorizationUtil.getUserInfo(token);
+                userToken.getUserInfo(token, jwtSecret);
                 if (userInfo != null) {
                     User user = userRepository.findByUserAccessTokenInfo(userInfo.getId(), userInfo.getSocialType());
                     request.setAttribute("user", user);

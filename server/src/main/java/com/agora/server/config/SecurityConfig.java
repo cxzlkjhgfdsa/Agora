@@ -3,7 +3,6 @@ package com.agora.server.config;
 import com.agora.server.config.filter.CorsFilterConfig;
 import com.agora.server.config.filter.JwtAuthorizationFilter;
 import com.agora.server.user.repository.UserRepository;
-import com.agora.server.util.JwtAuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
