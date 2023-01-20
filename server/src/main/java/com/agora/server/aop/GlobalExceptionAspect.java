@@ -21,12 +21,13 @@ public class GlobalExceptionAspect {
 
     @Around("filterChainPointcut()")
     public Object handleException(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("filter");
         HttpServletResponse response = (HttpServletResponse) joinPoint.getArgs()[1];
         try {
             return joinPoint.proceed();
         } catch (ExpiredJwtException expire) {
             response.sendError(403, "EXPIRES");
-        }catch (SignatureException signature){
+        } catch (SignatureException signature) {
             response.sendError(403, "SIGNATURE");
         }
         return null;

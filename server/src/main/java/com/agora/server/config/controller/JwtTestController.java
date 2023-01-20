@@ -44,11 +44,11 @@ public class JwtTestController {
     }
 
     @GetMapping("jwtdto")
-    public ResponseEntity<ResponseDTO> jwtDto() {
+    public ResponseDTO jwtDto() {
         String accessToken = accessTokenUtil.createAccessToken(UUID.fromString(UUID.randomUUID().toString()), SocialType.GOOGLE.toString());
         ResponseDTO res = new ResponseDTO();
         res.setBody(accessToken);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return res;
     }
 
     @GetMapping("jwt")
