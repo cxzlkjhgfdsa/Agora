@@ -2,7 +2,7 @@
 import styled from "styled-components";
 
 // SignUp 버튼 디자인
-const SignUpButton = styled.div`
+const ButtonBox = styled.div`
   // 글자 크기 및 자간 설정
   font-size: 2rem;
   font-weight: bold;
@@ -32,7 +32,31 @@ const SignUpButton = styled.div`
   background-color: #F6C026;
   border-color: #F6C026;
   color: #FFFFFF;
+
+  // 그림자 설정
+  box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.25)
 `
 
 
-export default SignUpButton
+export const ProgressButton = styled(ButtonBox)`
+`
+
+export const CheckButton = styled(ButtonBox)`
+  // 버튼 크기
+  width: 130px;
+  height: 90px;
+
+  // 글자 크기
+  font-size: 25px;
+`
+
+export const UploadButton = styled(ButtonBox)`
+  // 버튼 크기
+  width: 130px;
+  height: 58px;
+
+  // 글자 크기
+  font-size: 25px;
+  font-weight: normal;
+`
+

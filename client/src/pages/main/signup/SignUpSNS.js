@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ProgressBar from "components/main/signup/progressbar/ProgressBar";
 
 // SNS 이동 버튼
-import SignUpButton from "components/main/signup/button/SignUpButton";
+import { ProgressButton } from "components/main/signup/button/SignUpButton";
 
 // 제목
 import Title from "components/main/signup/title/Title";
@@ -28,9 +28,9 @@ function SignUpSNS() {
       <ProgressBar />
       <Title />
       <h1>This is Sign Up SNS page</h1>
-        <SignUpButton onClick={moveToInput}>
+        <ProgressButton onClick={moveToInput}>
           완료 후 계속
-        </SignUpButton>
+        </ProgressButton>
     </Wrapper>
   )
 }
