@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JwtAuthFilterNew extends AbstractAuthenticationProcessingFilter {
+public class JwtAuthenticateFilter extends AbstractAuthenticationProcessingFilter {
     // todo: https://velog.io/@jkijki12/Spring-Security-%EC%95%84%EB%8A%94%EC%B2%99%ED%95%98%EA%B8%B0 보고 하는 중
 
-    public JwtAuthFilterNew(String defaultFilterProcessesUrl) {
+    public JwtAuthenticateFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
     }
 

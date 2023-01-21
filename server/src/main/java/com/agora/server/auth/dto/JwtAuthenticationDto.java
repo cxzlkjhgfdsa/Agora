@@ -10,12 +10,13 @@ public class JwtAuthenticationDto extends AbstractAuthenticationToken {
 
     public JwtAuthenticationDto(String accessToken) {
         super(null);
+        this.setAuthenticated(false);
         this.accessToken = accessToken;
     }
 
     @Override
     public Object getCredentials() {
-        return null;
+        return "";
     }
 
     /**
