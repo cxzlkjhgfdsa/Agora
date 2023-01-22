@@ -1,7 +1,7 @@
 package com.agora.server.aop;
 
+import com.agora.server.auth.exception.TokenValidFailedException;
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.auth.exception.JwtInvalidException;
 import com.agora.server.user.exception.AlreadyExistUserException;
 import com.agora.server.user.exception.DuplicateNickNameException;
 import com.agora.server.user.exception.NoUserException;
@@ -49,8 +49,8 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @ExceptionHandler(JwtInvalidException.class)
-    public ResponseEntity<ResponseDTO> JwtInvalidException(JwtInvalidException jwt) {
+    @ExceptionHandler(TokenValidFailedException.class)
+    public ResponseEntity<ResponseDTO> TokenValidFailedException(TokenValidFailedException jwt) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(jwt.getMessage());
         res.setState(false);
