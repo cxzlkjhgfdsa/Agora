@@ -25,7 +25,7 @@ public class OauthController {
 
         if(userId == null){
             System.out.println("회원가입 진행 필요");
-            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:9999/regist")
+            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:9998/regist")
                     .queryParam("userId", item.get("id"))
                     .queryParam("type", item.get("type"))
                     .queryParam("nickname", item.get("nickname"))
@@ -37,6 +37,10 @@ public class OauthController {
             );
         }else {
             System.out.println("로그인 진행 필요");
+            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:9998/")
+                    .build()
+                    .encode(StandardCharsets.UTF_8)
+                    .toUriString());
         }
 
 

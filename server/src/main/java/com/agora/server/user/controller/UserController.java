@@ -24,13 +24,14 @@ public class UserController {
      */
     @PostMapping("user/join")
     public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto){
+        ResponseDTO responseDTO = new ResponseDTO();
+
         User joinUser = User.createUser(requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
         ,requestJoinDto.getUser_name(),requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
                 requestJoinDto.getUser_nickname(), requestJoinDto.getUser_photo());
-
         userService.join(joinUser);
 
-        ResponseDTO responseDTO = new ResponseDTO();
+
         responseDTO.setMessage("회원가입에 성공하셨습니다");
         return responseDTO;
     }
