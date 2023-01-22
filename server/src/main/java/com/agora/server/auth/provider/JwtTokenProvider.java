@@ -33,10 +33,16 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private String jwtSecret = "lskdfjlsdkfj";
+    private String jwtSecret;
+
+    public JwtTokenProvider(String jwtSecret) {
+        this.jwtSecret = jwtSecret;
+    }
+
     public String createAccessToken(UUID userId, SocialType socialType) {
         return generateToken(TokenType.ACCESS, userId, socialType);
     }
+
     public String createRefreshToken() {
         return generateToken(TokenType.REFRESH, null, null);
     }
@@ -46,6 +52,7 @@ public class JwtTokenProvider {
             @Nullable UUID userId,
             @Nullable SocialType socialType
     ) {
+        log.info("jwt jwtSecret" + jwtSecret);
         Date now = new Date();
         switch (tokenType) {
             case ACCESS:
