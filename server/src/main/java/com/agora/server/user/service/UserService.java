@@ -51,7 +51,7 @@ public class UserService {
         String refreshToken = jwtTokenProvider.createRefreshToken();
         log.info("create refresh token");
         // refresh token 저장
-        authRepository.save(RefreshToken.createRefreshToken(userInfo.getUser_id().toString(), refreshToken));
+        authRepository.save(RefreshToken.createRefreshToken(userInfo.getUser_id(), refreshToken));
         log.info("save refresh token");
         return AuthenticatedUserInfo.createAuthenticatedUserInfo(
                 accessToken,
