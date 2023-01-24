@@ -24,4 +24,8 @@ public class UserService {
     public void join(User joinUser) {
         userRepository.save(joinUser);
     }
+
+    public User findUserByPhone(String userPhone) {
+        return userRepository.findByUser_phone(userPhone);
+    }
 }

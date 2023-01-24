@@ -18,6 +18,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OauthController {
 
+    /**
+     * 모든 Oauth 로그인이 완료될시 해당 컨트롤러로 옴
+     * @param principal  (Spring Security Session에서 로그인한 유저 정보를 갖고옴)
+     * @param response  (Redirect 를 위한 HttpServletResponse)
+     * @throws IOException
+     */
     @GetMapping("/total/oauth")
     public void totalOauth(@AuthenticationPrincipal PrincipalDetails principal, HttpServletResponse response) throws IOException {
         UUID userId = principal.getUser().getUser_id();
@@ -36,7 +42,7 @@ public class OauthController {
                     .toUriString()
             );
         }else {
-            System.out.println("로그인 진행 필요");
+            System.out.println("회원가입 진행 불필요");
             response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:9998/")
                     .build()
                     .encode(StandardCharsets.UTF_8)
