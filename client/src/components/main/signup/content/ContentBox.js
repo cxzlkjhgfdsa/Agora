@@ -3,7 +3,7 @@ import styled from "styled-components";
 // 글자만 작성하는 경우
 const SubText = styled.div`
   color: #999999;
-  font-size: 30px;
+  font-size: 15px;
 `
 
 // 기본 사이즈 입력칸 

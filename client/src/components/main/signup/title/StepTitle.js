@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 const StepTitleDiv = styled.div`
   // 글자 크기 및 색상 설정
-  font-size: 24px;
+  font-size: 16px;
   color: #F6C026;
   font-weight: normal;
 `

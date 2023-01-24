@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ProgressBar from "components/main/signup/progressbar/ProgressBar";
 
 // SNS 이동 버튼
-import { ProgressButton } from "components/main/signup/button/SignUpButton";
+import { ProgressButton } from "components/main/signup/Button/SignUpButton";
 
 // 제목
 import Title from "components/main/signup/title/Title";
