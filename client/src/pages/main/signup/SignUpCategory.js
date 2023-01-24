@@ -1,13 +1,16 @@
 import ProgressBar from "components/main/signup/progressbar/ProgressBar";
+import Title from "components/main/signup/title/Title";
+import { CategoryItem } from "components/main/signup/category/CategoryItem";
+
 
 function SignUpCategory() {
+
   
 	return (
 		<div>
-			<h1>
-				This is SignUpCategory
-			</h1>
-            <ProgressBar />
+			<ProgressBar />
+			<Title />
+			<CategoryItem />
 		</div>
 	)
   }
