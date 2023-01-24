@@ -5,16 +5,18 @@ import SearchType from "./SearchType";
 const StyledSearchResultSet = styled.div`
   width: 650px;
 
-  margin-bottom: 40px;
-  border: 3px;
+  margin-top: 30px;
 `;
 
-function SearchResultSet({ searchType, dataSet }) {
+function SearchResultSet({ searchType, maxContents, contents }) {
+  let data = contents.slice(0, maxContents);
+
   return (
     <StyledSearchResultSet>
-      <SearchType searchType={searchType} dataSet={dataSet} />
-      <SearchContent />
-      <SearchContent />
+      <SearchType searchType={searchType} />
+      {data.map((item, index) => (
+        <SearchContent key={item + index} content={item} />
+      ))}
     </StyledSearchResultSet>
   );
 }

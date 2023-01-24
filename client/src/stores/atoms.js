@@ -13,19 +13,19 @@ export const DebateInfoAtom = atom({
 
 // 검색창 검색 결과
 // 해시태그 검색 결과
-export const HashTagsSearchResultAtom = atom({
+export const hashTagsSearchResultState = atom({
   key: "HashTagsSearchResult",
   default: [],
 });
 
 // 사용자 이름 검색 결과
-export const UserSearchResultAtom = atom({
-  key: "UserSearchResult",
+export const creatorSearchResultState = atom({
+  key: "CreatorSearchResult",
   default: [],
 });
 
 // 방제 검색 결과
-export const TitleSearchResultAtom = atom({
+export const titleSearchResultState = atom({
   key: "TitleSearchResult",
   default: [],
 });
