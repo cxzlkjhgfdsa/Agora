@@ -14,5 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User checkDuplicateUser(@Param("socialId") String socialId, @Param("socialType") SocialType socialType);
 
     @Query("select u from User u where u.user_id=:userId and u.user_social_type=:socialType")
-    User findByUserAccessTokenInfo(@Param("userId") UUID userId, @Param("socialType") SocialType socialType);
+    User findUserByUser_idAndUser_social_type(@Param("userId") UUID userId, @Param("socialType") SocialType socialType);
+
 }

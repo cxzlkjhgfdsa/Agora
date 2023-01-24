@@ -1,19 +1,15 @@
 package com.agora.server.auth.provider;
 
 import com.agora.server.auth.dto.TokenType;
-import com.agora.server.auth.dto.UserAccessTokenInfo;
+import com.agora.server.auth.dto.UserAuthenticateInfo;
 import com.agora.server.user.controller.dto.SocialType;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Cache;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.codec.DecodingException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,13 +29,15 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtTokenProvider {
+    @Value("jwt.secret")
     private String jwtSecret;
 
     public JwtTokenProvider(String jwtSecret) {
         this.jwtSecret = jwtSecret;
     }
 
-    public String createAccessToken(UUID userId, SocialType socialType) {
+    public String createAccessToken(UUID userId, SocialType socialType) throws NoSuchFieldException {
+        if (userId == null || socialType == null) throw new NoSuchFieldException("사용자 정보가 없습니다.");
         return generateToken(TokenType.ACCESS, userId, socialType);
     }
 
@@ -108,7 +106,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(Claims claims) {
-        return new UsernamePasswordAuthenticationToken(new UserAccessTokenInfo(claims), "", getAuthorities(claims));
+        return new UsernamePasswordAuthenticationToken(new UserAuthenticateInfo(claims), "", getAuthorities(claims));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
