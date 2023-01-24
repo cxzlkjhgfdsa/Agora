@@ -17,5 +17,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserAccessTokenInfo(@Param("userId") UUID userId, @Param("socialType") SocialType socialType);
 
 
-
 }

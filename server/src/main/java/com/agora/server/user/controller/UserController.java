@@ -36,4 +36,10 @@ public class UserController {
         return responseDTO;
     }
 
+    @PostMapping("check/nickname")
+    public ResponseDTO checkNickname(@RequestBody String nickname){
+        return null;
+
+    }
+
 }
