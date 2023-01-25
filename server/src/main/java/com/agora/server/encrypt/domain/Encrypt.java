@@ -17,8 +17,8 @@ import java.util.UUID;
 public class Encrypt {
     @Id
     @GeneratedValue
-    @Column(length = 50)
-    private Long user_security_id;
+    @Column(length = 50, name = "user_security_id")
+    private Long id;
 
     @Column(length = 100)
     private String user_social_id;

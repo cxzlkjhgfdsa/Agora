@@ -1,5 +1,9 @@
 package com.agora.server.user.domain;
 
+import com.agora.server.auth.domain.RefreshToken;
+import com.agora.server.category.domain.Category;
+import com.agora.server.category.domain.UserCategory;
+import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.user.controller.dto.SocialType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,14 +12,17 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User{
-    @Id @GeneratedValue(generator = "uuid2")
+public class User {
+    @Id
+    @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Type(type = "uuid-char")
     @Column(length = 50)
@@ -40,6 +47,15 @@ public class User{
     private String user_photo;
     @Column(length = 200)
     private String user_refresh_token;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserCategory> categories = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Encrypt encrypt;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
 
 
     public static User createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo) {
