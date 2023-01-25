@@ -1,45 +1,39 @@
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { userInfoState } from "stores/atoms";
-
-import KakaoBtn from "../../components/login/KakaoBtn"
-import NaverBtn from "../../components/login/NaverBtn"
+import KakaoBtn from "../../components/login/KakaoBtn";
+import NaverBtn from "../../components/login/NaverBtn";
+import GoogleBtn from "../../components/login/GoogleBtn";
+import styled from 'styled-components'
 
 function Login() {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-
-  const navigate = useNavigate();
-
-  const login = () => {
-    alert("로그인 처리");
-    setUserInfo({ userId: "ssafy123", nickname: "Coffee", isLoggedIn: true });
-    navigate("/debate/list");
-  };
-
-  const logout = () => {
-    alert("로그아웃 처리");
-    setUserInfo({ isLoggedIn: false});
-    //navigate("/");  
-  };
 
   return (
-    <div>
+    <LoginBtnContainer>
       <h1>This is Login page.</h1>
 
-      <KakaoBtn>카카오계정으로 로그인</KakaoBtn>
-      {/* <NaverBtn>네이버 로그인</NaverBtn> */}
+      <div>
+        <GoogleBtn />
+        <KakaoBtn />
+        <NaverBtn />
+      </div>
 
-      { !userInfo.isLoggedIn 
-      ? <button onClick={login}>
-        TEST: 로그인 (다음으로 설정됨 - userId: ssafy123, nickname: Coffee, isLoggedIn: true)
-        </button> 
-      : <button onClick={logout}>
-        TEST: 로그아웃
-        </button>
-      }
-
-    </div>
+    </LoginBtnContainer>
   )
 }
 
 export default Login;
+
+const LoginBtnContainer = styled.div`
+position: relative;
+width: 500px;
+height: 500px;
+margin: 0 auto;
+
+position: absolute; 
+left: 50%; top: 50%; 
+transform: translate(-50%, -50%); 
+text-align: center;
+
+display: flex;
+flex-direction: column;
+justify-content: center; 
+align-items: center;
+`
