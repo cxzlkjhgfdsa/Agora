@@ -17,15 +17,16 @@ public class UserController {
 
 
     /**
-     *  RequestBody로 회원가입자의 정보를 받아옴
-     *  회원가입을 위한 메소드
+     * RequestBody로 회원가입자의 정보를 받아옴
+     * 회원가입을 위한 메소드
+     *
      * @param requestJoinDto
      * @return 회원가입이 정상적으로 실행되었다는 메세지를 보냄
      */
     @PostMapping("user/join")
-    public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto){
+    public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto) {
         User joinUser = User.createUser(requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
-        ,requestJoinDto.getUser_name(),requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
+                , requestJoinDto.getUser_name(), requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
                 requestJoinDto.getUser_nickname(), requestJoinDto.getUser_photo());
 
         userService.join(joinUser);
