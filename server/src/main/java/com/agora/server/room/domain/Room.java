@@ -1,12 +1,10 @@
-package com.agora.server.user.domain;
+package com.agora.server.room.domain;
 
 import lombok.AccessLevel;
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 
 @Entity
