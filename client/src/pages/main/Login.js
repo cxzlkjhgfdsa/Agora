@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { UserInfoAtom } from "stores/atoms";
+import { userInfoState } from "stores/atoms";
 
 function Login() {
-  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   const navigate = useNavigate();
 

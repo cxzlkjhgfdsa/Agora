@@ -4,7 +4,7 @@ import ArrowUpIcon from "assets/icons/Arrow_Up_White.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { UserInfoAtom } from "stores/atoms";
+import { userInfoState } from "stores/atoms";
 
 const Wrapper = styled.div`
   // 좌측 모서리, 우측 모서리 둥글게
@@ -124,7 +124,7 @@ function UserProfileIcon({ nickname }) {
     setIsExpanded(current => !current);
   };
 
-  const setUserInfo = useSetRecoilState(UserInfoAtom);
+  const setUserInfo = useSetRecoilState(userInfoState);
   const navigate = useNavigate();
   const logout = () => {
     alert("로그아웃 처리");

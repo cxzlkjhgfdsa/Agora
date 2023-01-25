@@ -1,12 +1,12 @@
 // Recoil로 관리될 Atom을 정의하고 생성합니다.
 import { atom } from "recoil";
 
-export const UserInfoAtom = atom({
+export const userInfoState = atom({
   key: "UserInfo",
   default: {},
 });
 
-export const DebateInfoAtom = atom({
+export const debateInfoState = atom({
   key: "DebateInfo",
   default: {position: "Speaker"},
 });
