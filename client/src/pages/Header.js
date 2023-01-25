@@ -11,7 +11,7 @@ import RightComponents from "components/header/right/RightComponents";
 
 // 토론방 정보 및 사용자 정보 상태 관리
 import { useRecoilValue } from "recoil";
-import { DebateInfoAtom, UserInfoAtom } from "stores/atoms";
+import { debateInfoState, userInfoState } from "stores/atoms";
 import { useCallback, useLayoutEffect, useState } from "react";
 
 import { debounce } from "lodash";

@@ -1,6 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
 import styled from "styled-components";
+import SearchResultSet from "./SearchResultSet";
 
 const StyledSearchResultWrapper = styled.div`
   background-color: #DFDFDF;
@@ -38,10 +39,9 @@ function SearchResultSetWrapper() {
 
   return (
     <StyledSearchResultWrapper>
-      <SearchResultSet searchType={"해시 태그 검색 결과"} data={[1, 2, 3, 4]} />
-      <SearchResultSet searchType={"사용자 이름 검색 결과"} data={[6, 1, 5, 2]} />
+      {contents}
     </StyledSearchResultWrapper>
   );
 }
 
-export default SearchResult;
+export default SearchResultSetWrapper;

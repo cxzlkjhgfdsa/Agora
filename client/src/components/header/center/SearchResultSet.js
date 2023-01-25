@@ -20,3 +20,5 @@ function SearchResultSet({ searchType, maxContents, contents }) {
     </StyledSearchResultSet>
   );
 }
+
+export default SearchResultSet
