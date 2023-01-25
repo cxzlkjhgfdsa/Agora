@@ -9,13 +9,18 @@ function Login() {
 
   return (
     <LoginBtnContainer>
-      <h1>This is Login page.</h1>
 
-      <div>
-        <GoogleBtn />
-        <KakaoBtn />
-        <NaverBtn />
-      </div>
+      <img src={AgoraLogo} alt="아고라 로고" width="150px"></img>
+
+      <TextContainer>
+        <StyledHr></StyledHr>
+        <StyledText>SNS 간편 로그인/회원가입</StyledText>
+        <StyledHr></StyledHr>
+      </TextContainer>
+
+      <GoogleBtn />
+      <KakaoBtn />
+      <NaverBtn />
 
     </LoginBtnContainer>
   )
@@ -31,11 +36,33 @@ margin: 0 auto;
 
 position: absolute; 
 left: 50%; top: 50%; 
-transform: translate(-50%, -50%); 
+transform: translate(-50%, -40%); 
 text-align: center;
 
 display: flex;
 flex-direction: column;
 justify-content: center; 
 align-items: center;
+`
+
+const TextContainer = styled.div`
+display: flex;
+align-items: center;
+padding: 80px 0px 30px;
+`
+
+const StyledHr = styled.hr`
+flex: auto;
+border: 1.5px solid #D9D9D9;
+width: 5rem;
+
+`
+
+const StyledText = styled.span`
+flex-basis: 70%;
+align-items: center;
+font-size: 15px;
+color: #999999;
+
+
 `
