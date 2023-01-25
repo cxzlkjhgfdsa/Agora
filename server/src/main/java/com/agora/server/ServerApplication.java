@@ -10,8 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 @SpringBootApplication(exclude={SecurityAutoConfiguration.class})
 @PropertySource(value = {
         "classpath:env/env.yml",
-        "classpath:env/env-key.yml",
-        "classpath:application-local.yml",
+        "classpath:application.yml",
         "classpath:application-dev.yml",
         "classpath:application-prod.yml"
 }, factory = EnvConfig.class)
