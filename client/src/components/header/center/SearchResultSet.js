@@ -3,7 +3,7 @@ import SearchContent from "./SearchContent";
 import SearchType from "./SearchType";
 
 const StyledSearchResultSet = styled.div`
-  width: 650px;
+  width: 100%;
 
   margin-top: 30px;
 `;
