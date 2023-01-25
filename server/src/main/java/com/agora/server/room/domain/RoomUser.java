@@ -1,9 +1,9 @@
-package com.agora.server.user.domain;
+package com.agora.server.room.domain;
 
+import com.agora.server.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
