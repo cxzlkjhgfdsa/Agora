@@ -24,4 +24,14 @@ public class UserService {
     public void join(User joinUser) {
         userRepository.save(joinUser);
     }
+
+
+    public User findUserByPhone(String userPhone) {
+        return userRepository.findByUser_phone(userPhone);
+    }
+    public User findUserByNickname(String nickname) {
+        return userRepository.findByUser_nickname(nickname);
+    }
+
+
 }

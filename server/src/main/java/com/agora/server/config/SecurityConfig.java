@@ -35,16 +35,17 @@ public class SecurityConfig {
                 .and()
                     .authorizeRequests()
                     .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .antMatchers("/room/**").permitAll()
                     .anyRequest().permitAll()
                 .and()
                     .oauth2Login()
                     .defaultSuccessUrl("/total/oauth", true)
                     .userInfoEndpoint()
                     .userService(principalOauth2UserService)
-                .and().and()
+                .and()
+                .and()
                 .httpBasic().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(jwtAuthorizationUtil, userRepository), UsernamePasswordAuthenticationFilter.class);
-//                .antMatcher("/room/**");
 
 
         return http.build();
