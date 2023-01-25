@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useMediaQuery } from "react-responsive";
 
 // READY, START 버튼
 import ReadyButton from "./ReadyButton";
@@ -8,9 +9,16 @@ import { useRecoilState } from "recoil";
 import { debateInfoState } from "stores/atoms";
 import LogoIcon from "./LogoIcon";
 
+import HamburgerIcon from "assets/icons/Hamburger_Black.png";
+
 const Wrapper = styled.div`
   height: 100% - 16px;
   padding: 8px;
+`;
+
+const TabletIcon = styled.img`
+  width: 40px;
+  height: 40px;
 `;
 
 function LeftComponents() {
@@ -26,6 +34,13 @@ function LeftComponents() {
     const copiedDebateInfo = { ...debateInfo, isReady: true };
     setDebateInfo(copiedDebateInfo);
   };
+
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1024px)"
+  });
+  const isTablet = useMediaQuery({
+    query: "(max-width: 1023px)"
+  });
 
   // 토론방
   if (curPath.startsWith("/debate/room")) {
@@ -49,12 +64,18 @@ function LeftComponents() {
     }
   }
 
+  const DesktopComponents =
+    <Link to={"/"}>
+      <LogoIcon />
+    </Link>;
+  const TabletComponents =
+    <TabletIcon src={HamburgerIcon} />;
+
   // 그 이외의 페이지는 모두 로고 표시
   return (
     <Wrapper>
-      <Link to={"/"}>
-        <LogoIcon />
-      </Link>
+      {isDesktop && DesktopComponents}
+      {isTablet && TabletComponents}
     </Wrapper>
   );
 }

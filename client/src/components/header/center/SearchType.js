@@ -21,9 +21,9 @@ const StyledTypeLabel = styled.span`
 const StyledSearchAll = styled.span`
   margin-left: 1rem;
   color: #F6C026;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: -0.05em;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  letter-spacing: -0.05rem;
 `;
 
 function SearchType({ searchType }) {

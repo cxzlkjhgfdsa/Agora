@@ -8,7 +8,7 @@ const Button = styled.button`
 
   // 둥근 테두리
   border-style: solid;
-  border-radius: 40px;
+  border-radius: 2rem;
 
   // 기본 마진 및 패딩
   margin: 8px;
@@ -16,22 +16,6 @@ const Button = styled.button`
 
   // 호버링 시 커서 모양
   cursor: pointer;
-`;
-
-// 메인 버튼 (노란색 배경, 노란색 테두리)
-export const MainButton = styled(Button)`
-  // 버튼 크기
-  width: 130px;
-  height: 50px;
-
-  // 글자 크기 및 두께
-  font-size: 20px;
-  font-weight: 700;
-  
-  // 버튼 색상
-  background-color: #F6C026;
-  border-color: #F6C026;
-  color: #333333;
 `;
 
 // 상단바 메인 버튼 (어두운 배경, 어두운 테두리)

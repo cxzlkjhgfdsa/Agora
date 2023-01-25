@@ -33,11 +33,15 @@ const StyledHeader = styled.header`
 `;
 
 const HeaderContents = styled.div`
+  // 높이 고정
+  height: 100%;
+
   // 컴포넌트 배치
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
+  // 고해상도에서 최대 너비 1920px로 가운데 정렬
   margin: 0 auto;
   max-width: 1920px;
 `;

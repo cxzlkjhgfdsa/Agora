@@ -48,7 +48,7 @@ const StyledInput = styled.input`
   height: 36px;
 
   // 글자 설정
-  font-size: 20px;
+  font-size: 1.2rem;
 
   // 위치 설정
   position: absolute;

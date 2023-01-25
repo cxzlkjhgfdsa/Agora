@@ -27,7 +27,6 @@ function RightComponents() {
   const curPath = useLocation().pathname;
   const navigate = useNavigate();
 
-
   // 토론방에서는 나가기 버튼 표시
   if (curPath.startsWith("/debate/room")) {
     const exit = () => {
@@ -54,9 +53,6 @@ function RightComponents() {
   else if (userInfo.isLoggedIn) {
     return (
       <Wrapper>
-        <Link to={"/debate/list"}>
-          <StyledLightButton>둘러보기</StyledLightButton>
-        </Link>
         <UserProfileIcon nickname={userInfo.nickname} />
       </Wrapper>
     );
