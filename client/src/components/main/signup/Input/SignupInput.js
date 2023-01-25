@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 
+// 자식 컴포넌트 import
 import CustomTextInput from './NameInput';
 import NickNameInput from './NickNameInput';
 import BirthInput from './BirthInput';
@@ -41,6 +42,9 @@ export default function SignUp() {
     console.log({
       name: data.get('name'),
       nickName: data.get('nickName'),
+      year: data.get('year'),
+      month: data.get('month'),
+      date: data.get('date'),
       profileImage: data.get('profileImage')
     });
     console.log({data})

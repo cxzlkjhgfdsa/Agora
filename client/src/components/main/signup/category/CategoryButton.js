@@ -1,124 +1,123 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
-import Typography from '@mui/material/Typography';
-import daily from '../../../../assets/signup/daily.png'
-import { useState } from 'react';
+import styled from "styled-components"
+import { SelectAnimation, AppearAnimation } from "./SelectAnimation"
 
 
-const images = [
-  {
-    url: '../../../../assets/signup/daily.png',
-    title: '일상',
-    width: '100%',
-  },
-];
 
-const ImageButton = styled(ButtonBase)(({ theme }) => ({
-  position: 'relative',
-  height: 200,
-  [theme.breakpoints.down('sm')]: {
-    width: '100% !important', // Overrides inline-style
-    height: 100,
-  },
-  '&:hover, &.Mui-focusVisible': {
-    zIndex: 1,
-    '& .MuiImageBackdrop-root': {
-      opacity: 0.15,
-    },
-    '& .MuiImageMarked-root': {
-      opacity: 0,
-    },
-    '& .MuiTypography-root': {
-      border: '4px solid currentColor',
-    },
-  },
-}));
+const ImageCropping = styled.div`
+  position: relative;
+  border-radius: 5px;
+  max-width: 250px;
+  max-height: 125px;
+  overflow: hidden;
 
-const ImageSrc = styled('span')({
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center 40%',
-});
+  &.isActive {
+    box-sizing: border-box;
+    border: solid 5px #f6c026;
+  }
+`
 
-const Image = styled('span')(({ theme }) => ({
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: theme.palette.common.white,
-}));
+const BackgroundImage = styled.img`
+  max-width: 100%;
+  margin-top: -100px;
+`
 
-const ImageBackdrop = styled('span')(({ theme }) => ({
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundColor: theme.palette.common.black,
-  opacity: 0.4,
-  transition: theme.transitions.create('opacity'),
-}));
+const DarkBackground = styled.div`
+  position: absolute;
+  background-color: black;
+  opacity: 0.6;
+  width: 100%;
+  height: 100%;
 
-const ImageMarked = styled('span')(({ theme }) => ({
-  height: 3,
-  width: 18,
-  backgroundColor: theme.palette.common.white,
-  position: 'absolute',
-  bottom: -2,
-  left: 'calc(50% - 9px)',
-  transition: theme.transitions.create('opacity'),
-}));
+  &.isActive-DarkBackground-root{
+    opacity: 0.35;
+  }
+}
+`
 
-export default function ButtonBases() {
-  const [btnActive, setBtnActive] = useState(false)
+const TextBorderWrapper = styled.div`
+  position: absolute;
 
-  const toggleActive = (e) => {
-    setBtnActive((prev) => {
-      return !prev;
-    });
-  };
+  // 크기 설정
+  width: 100%;
+  height: 100%;
 
-  return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: 400,}}>
-      {images.map((image) => (
-        <ImageButton
-        focusRipple
-        key={image.title}
-        style={{
-          width: image.width,
-        }}
-        >
-          <img src={daily}/>
-          <ImageSrc style={{ backgroundImage: `url(${image.url})` }} />
-          <ImageBackdrop className="MuiImageBackdrop-root" sx={{border: 10}}/>
-          <Image>
-            <Typography
-              component="span"
-              variant="subtitle1"
-              color="inherit"
-              sx={{
-                position: 'relative',
-                p: 4,
-                pt: 2,
-                pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-              }}
-            >
-              {image.title}
-              <ImageMarked className="MuiImageMarked-root" />
-            </Typography>
-          </Image>
-        </ImageButton>
-      ))}
-    </Box>
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const TextBorder = styled.div`
+
+  // 크기 설정
+  width: 150px;
+  height: 80px;
+
+  // 테두리 설정
+  border: 5px white solid;
+
+  // 초기 투명도 설정
+  opacity: 0;
+
+  // 선택시 밝기 조절
+  $.isActive-TextBorder-root {
+    opacity: 1;
+  }
+`
+
+const Wrapper = styled.div`
+  &:hover {
+    ${DarkBackground} {
+      opacity: 0.35;
+      animation: ${ SelectAnimation } 0.5s 0s ease 1 forwards;
+    }
+    ${TextBorder} {
+      animation: ${ AppearAnimation } 0.5s 0s ease 1 forwards;
+    }
+  }
+  cursor: pointer;
+`
+
+
+const Typograpy = styled.div`
+  position: absolute;
+  
+  // 크기 설정
+  width: 100%;
+  height: 100%;
+
+  // 텍스트 중앙 위치
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // 폰트 색상 및 사이즈 설정
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+
+  // 드래그 방지
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
+`
+
+function CategoryButton({image, isActive}) {
+  return(
+    <div>
+      <ImageCropping className={isActive ? "isActive": null}>
+        <Wrapper>
+          <DarkBackground className={isActive ? "isActive-DarkBackground-root": null} />
+          <Typograpy>
+            {image.title}
+          </Typograpy>
+          <TextBorderWrapper>
+            <TextBorder className={isActive ? "isActive-TextBorder-root": null} />
+          </TextBorderWrapper>
+        </Wrapper>
+        <BackgroundImage src={image.url}/>
+      </ImageCropping>
+    </div>
   );
 }
+
+export default CategoryButton
