@@ -24,17 +24,22 @@ const StyledHeader = styled.header`
   // 헤더 색상 설정, 배경색 그림자색
   background-color: #FFFFFF;  // 배경색 : 흰색
   box-shadow: 1px 1px 1px #DCDCDC;  // 박스 그림자 설정
-
-  // 컴포넌트 배치
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   
   // 상단 고정
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+`;
+
+const HeaderContents = styled.div`
+  // 컴포넌트 배치
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  margin: 0 auto;
+  max-width: 1920px;
 `;
 
 function Header() {
@@ -83,14 +88,16 @@ function Header() {
   }
   return (
     <StyledHeader>
-      {/* 로고 */}
-      < LeftComponents />
+      <HeaderContents>
+        {/* 로고 */}
+        < LeftComponents />
 
-      {/* 검색창 */}
-      < CenterComponents />
+        {/* 검색창 */}
+        < CenterComponents />
 
-      {/* 그룹 */}
-      < RightComponents />
+        {/* 그룹 */}
+        < RightComponents />
+      </HeaderContents>
     </StyledHeader>
   );
 }

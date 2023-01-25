@@ -12,7 +12,9 @@ const GlobalStyle = createGlobalStyle`
 
   // 상단바에 가리지 않게 상단 패딩
   main {
-    padding-top: 64px; 
+    padding-top: 64px;
+    margin: 0 auto;
+    max-width: 1920px;
   }
 
   a {
