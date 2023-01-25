@@ -31,7 +31,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 log.warn("you need to login");
                 ((HttpServletResponse) response).sendRedirect("/swagger-ui/");
             }
-            chain.doFilter(request, response);
         } catch (MalformedJwtException e) {
             log.error("손상된 토큰입니다.");
             throw new TokenValidFailedException();
@@ -42,5 +41,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
             log.error("만료된 토큰입니다.");
             throw new TokenValidFailedException();
         }
+        chain.doFilter(request, response);
     }
 }

@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -15,5 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.user_id=:userId and u.user_social_type=:socialType")
     User findUserByUser_idAndUser_social_type(@Param("userId") UUID userId, @Param("socialType") SocialType socialType);
+
+    @Query("select u from User u where u.user_phone=:userPhone")
+    User findByUser_phone(@Param("userPhone") String userPhone);
+
+    @Query("select u from User u where u.user_nickname=:userNickname")
+    User findByUser_nickname(@Param("userNickname") String userNickname);
 
 }
