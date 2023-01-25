@@ -39,17 +39,17 @@ function LoginRedirectHandler() {
         async function getAccessTokenWithUserInfos() {
             try {
                 console.log("userPK >> ", userPK)
-                // const { data } = await axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/total/oauth?userPK=${userPK}`); // response.data를 data라는 이름으로 저장
-                // console.log("data >> ", data)
+                const { data } = await axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/total/oauth?userPK=${userPK}`); // response.data를 data라는 이름으로 저장
+                console.log("data >> ", data)
 
-                // // const { message, body: loginResponseDto, statusCode, state } = data
-                // const loginResponseDto = data.body;
-                // console.log("loginResponseDto >> " + loginResponseDto);
-                // const userInfo = {
-                //     isLoggedIn: true,
-                //     ...loginResponseDto,
-                // }
-                // setUserInfo(userInfo); 
+                // const { message, body: loginResponseDto, statusCode, state } = data
+                const loginResponseDto = data.body;
+                console.log("loginResponseDto >> " + loginResponseDto);
+                const userInfo = {
+                    isLoggedIn: true,
+                    ...loginResponseDto,
+                }
+                setUserInfo(userInfo); 
             } catch(err) {
                 console.log("error occured")
                 console.log("ERROR >>", err);

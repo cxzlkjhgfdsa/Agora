@@ -3,6 +3,8 @@ import NaverBtn from "../../components/login/NaverBtn";
 import GoogleBtn from "../../components/login/GoogleBtn";
 import styled from 'styled-components'
 
+import AgoraLogo from "assets/icons/AgoraLogo.png";
+
 function Login() {
 
   return (

@@ -1,10 +1,14 @@
-import { useRecoilState } from "recoil";
+import { useResetRecoilState } from "recoil";
 
 import { userInfoState } from "stores/atoms";
 
 function Logout() {
-    const [ userInfo, setUserInfo ] = useRecoilState(userInfoState);
+    const resetUserInfo = useResetRecoilState(userInfoState);
 
+    const logout = () => {
+        resetUserInfo();
+        window.location.href = '/';
+    }
 
     return (
         <div>
@@ -14,3 +18,5 @@ function Logout() {
         </div>
     )
 }
+
+export default Logout;
