@@ -32,12 +32,14 @@ const InfoWrapper = styled.div`
 
 const Title = styled.p`
   // 글자수 초과 시 생략 처리
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
+  
   color: #000000;
   font-size: 30px;
   line-height: 36px;
+  letter-spacing: -0.05em;
   margin: 0px;
 `;
 
@@ -48,6 +50,7 @@ const EtcInfo = styled.span`
   color: #000000;
   font-size: 20px;
   line-height: 24px;
+  margin-right: 8px;
 `;
 
 function SearchContent({ content }) {
@@ -61,7 +64,7 @@ function SearchContent({ content }) {
       <Thumbnail src="https://picsum.photos/192/108" />
       <InfoWrapper>
         {/* 방 제목 */}
-        <Title>{title}</Title>
+        <Title title={title}>{title}</Title>
         
         {/* 작성자 / 시청자 수 */}
         <EtcInfoWrapper>
