@@ -2,12 +2,12 @@
 import { atom } from "recoil";
 
 export const userInfoState = atom({
-  key: "UserInfo",
-  default: {},
+  key: "userInfoState",
+  default: { isLoggedIn: false },
 });
 
 export const debateInfoState = atom({
-  key: "DebateInfo",
+  key: "debateInfoState",
   default: {position: "Speaker"},
 });
 
