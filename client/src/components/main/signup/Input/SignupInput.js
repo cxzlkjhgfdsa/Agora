@@ -5,7 +5,9 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
 
+// 자식 컴포넌트 import
 import CustomTextInput from './NameInput';
 import NickNameInput from './NickNameInput';
 import BirthInput from './BirthInput';
@@ -26,12 +28,23 @@ const theme = createTheme({
 });
 
 export default function SignUp() {
+  
+  // 임시 이동 함수 작성
+  const navigate = useNavigate();
+
+  const moveToCategory = () => {
+    navigate("/user/signup/category")
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      nickName: data.get('nickName'),
       name: data.get('name'),
+      nickName: data.get('nickName'),
+      year: data.get('year'),
+      month: data.get('month'),
+      date: data.get('date'),
       profileImage: data.get('profileImage')
     });
     console.log({data})
@@ -65,8 +78,9 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, height: 55, color: '#ffffff', fontWeight: 'bold', fontSize: 20 }}
+              sx={{ mt: 3, mb: 2, height: 55, color: '#ffffff', fontWeight: 'bold', fontSize: 20, marginBottom: 10}}
               color="custom"
+              onClick={moveToCategory}
             >
               완료 후 계속
             </Button>
