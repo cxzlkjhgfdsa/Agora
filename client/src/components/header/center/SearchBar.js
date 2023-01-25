@@ -33,8 +33,8 @@ const StyledImg = styled.img`
 
   // 위치 설정
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 2px;
+  left: 2px;
 `;
 
 // 검색어 입력 컴포넌트
@@ -44,7 +44,7 @@ const StyledInput = styled.input`
   border-color: transparent;
 
   // 크기 설정
-  width: 650px;
+  width: calc( 30rem - 44px );
   height: 36px;
 
   // 글자 설정

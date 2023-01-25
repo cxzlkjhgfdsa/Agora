@@ -12,14 +12,14 @@ const StyledSearchType = styled.div`
 
 // 검색 유형을 표시하는 span
 const StyledTypeLabel = styled.span`
-  font-size: 30px;
-  line-height: 36px;
+  font-size: 1.2rem;
+  line-height: 1.44rem;
   color: #000000;
 `;
 
 // 모두보기 텍스트
 const StyledSearchAll = styled.span`
-  margin-left: 20px;
+  margin-left: 1rem;
   color: #F6C026;
   font-size: 20px;
   line-height: 24px;

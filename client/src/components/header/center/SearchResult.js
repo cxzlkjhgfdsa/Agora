@@ -6,16 +6,16 @@ import SearchResultSet from "./SearchResultSet";
 const StyledSearchResultWrapper = styled.div`
   background-color: #DFDFDF;
 
-  width: 650px;
+  width: 26rem;
   max-height: 650px;
   overflow: auto;
 
   border-radius: 0px 0px 10px 10px;
 
-  padding: 0px 50px 20px 50px;
+  padding: 0 2rem 1rem 2rem;
 
   position: absolute;
-  top: 60px;
+  top: 40px;
   left: 0;
 `;
 

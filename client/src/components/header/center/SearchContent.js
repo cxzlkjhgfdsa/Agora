@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const StyledSearchContent = styled.div`
-  width: 100%;
-  height: 108px;
+  width: 26rem;
+  height: 4.32rem;
 
-  margin: 10px 0px;
+  margin: 8px 0px;
 
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@ const StyledSearchContent = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  width: 192px;
+  width: 7.68rem;
   height: 100%;
 
   position: absolute;
@@ -22,12 +22,12 @@ const Thumbnail = styled.img`
 `;
 
 const InfoWrapper = styled.div`
-  width: 450px;
+  width: 18rem;
   height: 100%;
 
   position: absolute;
   top: 0;
-  left: 200px;
+  left: calc( 7.68rem + 8px );
 `;
 
 const Title = styled.p`
@@ -37,19 +37,19 @@ const Title = styled.p`
   text-overflow: ellipsis;
   
   color: #000000;
-  font-size: 30px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
+  font-size: 1.2rem;
+  line-height: 1.44rem;
+  letter-spacing: -0.05rem;
   margin: 0px;
 `;
 
 const EtcInfoWrapper = styled.div`
-  margin-top: 8px;
+  // margin-top: 0px;
 `;
 const EtcInfo = styled.span`
-  color: #000000;
-  font-size: 20px;
-  line-height: 24px;
+  color: #000;
+  font-size: 0.8rem;
+  line-height: 0.96rem;
   margin-right: 8px;
 `;
 
