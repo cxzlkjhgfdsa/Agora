@@ -49,9 +49,8 @@ public class Room {
     @Column
     private String room_category;
 
-    public static Room createRoom(Long room_id, String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category) {
+    public static Room createRoom(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category) {
         Room room = new Room();
-        room.room_id = room_id;
         room.room_name = room_name;
         room.room_creater_name = room_creater_name;
         room.room_debate_type = room_debate_type;
