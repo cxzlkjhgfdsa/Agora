@@ -32,9 +32,10 @@ const InfoWrapper = styled.div`
 
 const Title = styled.p`
   // 글자수 초과 시 생략 처리
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
+  
   color: #000000;
   font-size: 1.2rem;
   line-height: 1.44rem;
@@ -63,7 +64,7 @@ function SearchContent({ content }) {
       <Thumbnail src="https://picsum.photos/192/108" />
       <InfoWrapper>
         {/* 방 제목 */}
-        <Title>{title}</Title>
+        <Title title={title}>{title}</Title>
         
         {/* 작성자 / 시청자 수 */}
         <EtcInfoWrapper>

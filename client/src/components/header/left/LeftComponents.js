@@ -9,8 +9,8 @@ import { debateInfoState } from "stores/atoms";
 import LogoIcon from "./LogoIcon";
 
 const Wrapper = styled.div`
-  height: 70px;
-  padding: 12px;
+  height: 100% - 16px;
+  padding: 8px;
 `;
 
 function LeftComponents() {

@@ -21,4 +21,4 @@ function SearchResultSet({ searchType, maxContents, contents }) {
   );
 }
 
-export default SearchResultSet
+export default SearchResultSet;

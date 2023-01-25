@@ -19,7 +19,7 @@ import { debounce } from "lodash";
 // 상단바
 const StyledHeader = styled.header`
   // 높이 고정
-  height: 94px;
+  height: 64px;
 
   // 헤더 색상 설정, 배경색 그림자색
   background-color: #FFFFFF;  // 배경색 : 흰색
