@@ -14,7 +14,7 @@ import { debateInfoState, userInfoState } from "stores/atoms";
 
 // 상단바 우측 컴포넌트 Wrapper
 const Wrapper = styled.div`
-  height: 70px;
+  height: 48px;
   padding: 12px;
   display: flex;
   align-items: center;

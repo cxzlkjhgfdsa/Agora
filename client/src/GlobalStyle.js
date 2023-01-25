@@ -10,11 +10,6 @@ const GlobalStyle = createGlobalStyle`
     color: #4C4556;
   }
 
-  // body 마진 제거
-  body {
-    margin: 0px;
-  }
-
   // 상단바에 가리지 않게 상단 패딩
   main {
     padding-top: 64px; 

@@ -7,6 +7,8 @@ import SearchIcon from "assets/icons/Search_Gray.png";
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import SearchResult from "./SearchResult";
+import { useSetRecoilState } from "recoil";
+import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
 
 // 검색바 전체
 const StyledSearchBar = styled.div`
@@ -18,7 +20,7 @@ const StyledSearchBar = styled.div`
   background-color: #EBEBEB;
 
   // 둥근 테두리
-  border-radius: 10px;
+  border-radius: 10px 10px ${({ isSearched }) => isSearched ? "0px 0px" : "10px 10px"};
 
   position: relative;
 `;
@@ -31,8 +33,8 @@ const StyledImg = styled.img`
 
   // 위치 설정
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 2px;
+  left: 2px;
 `;
 
 // 검색어 입력 컴포넌트
@@ -42,7 +44,7 @@ const StyledInput = styled.input`
   border-color: transparent;
 
   // 크기 설정
-  width: 650px;
+  width: calc( 30rem - 44px );
   height: 36px;
 
   // 글자 설정
@@ -58,6 +60,14 @@ const StyledInput = styled.input`
 function SearchBar() {
   // 사용자 입력 검색어
   const [searchString, setSearchString] = useState("");
+  
+  // 검색결과 State
+  const setHashTagsContents = useSetRecoilState(hashTagsSearchResultState);
+  const setTitleContents = useSetRecoilState(titleSearchResultState);
+  const setCreatorContents = useSetRecoilState(creatorSearchResultState);
+
+  // 검색결과 존재 여부 State, 검색결과 창 띄우기
+  const [isSearched, setIsSearched] = useState(false);
 
   // 키워드, 해시태그 토큰화
   const tokenize = (inputString) => {
@@ -90,6 +100,12 @@ function SearchBar() {
     // 입력값 반영
     setSearchString(inputString);
     
+    // 기존 검색결과 삭제
+    setIsSearched(false);
+    setHashTagsContents([]);
+    setTitleContents([]);
+    setCreatorContents([]);
+    
     // 모두 삭제해서 빈 문자열이 됐을 경우 호출 건너뛰기
     if (inputString === "") {
       return;
@@ -108,13 +124,34 @@ function SearchBar() {
       if (event.target.value === "") {
         return;
       }
-
+      
       // 키워드와 해시태그 토큰화, 키워드는 String, 해시태그는 String Array
       const [keyword, hashTags] = tokenize(inputString);
-    
+
+      // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색
       await console.log("API를 호출했습니다.");
       console.log("    검색어 : `" + keyword + "`");
       console.log("    해시태그 : " + hashTags);
+
+      // 사용자 및 방제 검색
+      if (keyword !== "") {
+        setTitleContents([
+          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+          { title: "감자전 vs 김치전 어느 쪽이 더 존맛?", creator: "막걸리러버", viewers: 22, hashTags: ["감자전", "김치전", "전", "막걸리"] },
+        ]);
+        setCreatorContents([
+          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+        ]);
+      }
+      // 해시태그 검색
+      else {
+        setHashTagsContents([
+          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+          { title: "감튀 vs 고구마튀김 어느 쪽이 주류?", creator: "콜레스테롤수집가", viewers: 80, hashTags: ["감자", "고구마", "튀김", "솔직히감튀임난"] },      
+        ]);
+      }
+      setIsSearched(true);
+
     }, 500)
     , []
   );
@@ -128,7 +165,7 @@ function SearchBar() {
   };
 
   return (
-    <StyledSearchBar>
+    <StyledSearchBar isSearched={isSearched}>
       <StyledImg src={SearchIcon} />
       <StyledInput
         type="text"
@@ -137,7 +174,7 @@ function SearchBar() {
         onChange={changeEvent}
         onKeyDown={pressEnter}
       />
-      <SearchResult />
+      {isSearched && <SearchResult />}
     </StyledSearchBar>
   );
 }
