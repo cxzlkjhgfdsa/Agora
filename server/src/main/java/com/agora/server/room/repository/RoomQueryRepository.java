@@ -4,6 +4,7 @@ import com.agora.server.room.controller.dto.QResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
@@ -94,6 +95,33 @@ public class RoomQueryRepository {
                 .limit(10)
                 .fetch();
     }
+
+    public List<ResponseRoomInfoDto> findByCategories(List<String> categories) {
+        return queryFactory.select(
+                        new QResponseRoomInfoDto(
+                                room.room_id,
+                                room.room_name,
+                                room.room_creater_name,
+                                room.room_debate_type,
+                                room.room_opinion_left,
+                                room.room_opinion_right,
+                                room.room_hashtags,
+                                room.room_watch_cnt,
+                                room.room_phase,
+                                room.room_start_time,
+                                room.room_thumbnail_url,
+                                room.room_category,
+                                room.room_state))
+                .from(room)
+                .where(
+                        roomCategoryeq(categories)
+                        )
+                .orderBy(room.room_watch_cnt.desc())
+                .limit(5)
+                .fetch();
+    }
+
+
 
     public List<ResponseRoomInfoDto> findByHashTags(RoomSearchCondition condition){
         return queryFactory.select(
@@ -189,6 +217,13 @@ public class RoomQueryRepository {
         return StringUtils.hasText(searchWord) ? room.room_name.contains(searchWord) : null;
     }
 
+    private BooleanBuilder roomCategoryeq(List<String> categories) {
+        BooleanBuilder builder = new BooleanBuilder();
+        for (String category : categories) {
+            builder.or(room.room_category.eq(category));
+        }
+        return categories.size()>0 ? builder : null;
+    }
 
 
 }

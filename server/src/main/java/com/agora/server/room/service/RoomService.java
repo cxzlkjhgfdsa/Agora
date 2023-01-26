@@ -5,6 +5,7 @@ import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
+import com.agora.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,9 @@ public class RoomService {
 
     public List<ResponseRoomInfoDto> topReadystate() {
         return roomQueryRepository.findByWatchCntReadystate();
+    }
+
+    public List<ResponseRoomInfoDto> searchTopCategory(List<String> categories) {
+        return roomQueryRepository.findByCategories(categories);
     }
 }
