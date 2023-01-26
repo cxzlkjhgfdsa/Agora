@@ -35,7 +35,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collet = new ArrayList<GrantedAuthority>();
-        collet.add(() -> {return user.getUser_social_id();});
         return collet;
     }
 

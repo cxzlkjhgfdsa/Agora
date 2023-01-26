@@ -20,6 +20,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
@@ -29,7 +30,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(claims));
             } else {
                 log.warn("you need to login");
-                ((HttpServletResponse) response).sendRedirect("/swagger-ui/");
             }
         } catch (MalformedJwtException e) {
             log.error("손상된 토큰입니다.");
@@ -40,7 +40,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다.");
             throw new TokenValidFailedException();
+        }finally {
+            chain.doFilter(request, response);
         }
-        chain.doFilter(request, response);
     }
 }

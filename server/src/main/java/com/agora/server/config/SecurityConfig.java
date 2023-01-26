@@ -3,6 +3,7 @@ package com.agora.server.config;
 import com.agora.server.auth.filter.JwtAuthenticationFilter;
 import com.agora.server.auth.provider.JwtTokenProvider;
 import com.agora.server.config.filter.CorsFilterConfig;
+import com.agora.server.config.filter.MyFilter;
 import com.agora.server.user.oauth.OAuth2AuthenticationFailureHandler;
 import com.agora.server.user.oauth.OAuth2AuthenticationSuccessHandler;
 import com.agora.server.user.repository.UserRepository;
@@ -16,7 +17,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
+import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -37,26 +48,8 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-//                .addFilter(corsFilter.corsFilter())
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-//                .and()
-//                    .authorizeRequests()
-//                    .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                    .antMatchers("/room/**").permitAll()
-//                    .anyRequest().permitAll()
-//                .and()
-//                    .oauth2Login()
-//                    .defaultSuccessUrl("/total/oauth", true)
-//                    .userInfoEndpoint()
-//                    .userService(principalOauth2UserService)
-//                .and()
-//                .and()
-//                .httpBasic().disable()
-//                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class)
-//                .antMatcher("/valide/**");
-                .cors()
-                .and()
+
+                .addFilter(corsFilter.corsFilter())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -70,25 +63,26 @@ public class SecurityConfig {
 //                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
 //                .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/oauth2/**", "/swagger-ui/", "/total/oauth").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/room/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
-//                .authorizationEndpoint()
-//                .baseUri("/oauth2/authorize")
-//                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-//                .and()
-//                .redirectionEndpoint()
-//                .baseUri("/oauth2/callback/*")
                 //.defaultSuccessUrl("/total/oauth", true)
-//                .and()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorization")
+//                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/login/oauth2/code/*")
+                .and()
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService)
                 .and()
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new MyFilter(), FilterSecurityInterceptor.class);
         return http.build();
     }
 }

@@ -80,4 +80,23 @@ public class UserController {
         // 구글은 생각해봐야함
     }
 
+
+    /**
+     * 인증 테스트
+     * @return
+     */
+    @GetMapping("moon")
+    public String moon(){
+        return "moon";
+    }
+
+    /**
+     * 인증 테스트
+     * @return
+     */
+    @GetMapping("/room")
+    public String room(){
+        return "room";
+    }
+
 }
