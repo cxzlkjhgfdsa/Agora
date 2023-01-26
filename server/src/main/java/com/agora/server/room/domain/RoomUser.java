@@ -26,5 +26,10 @@ public class RoomUser {
 
     private String room_user_side;
 
+    public static RoomUser createRoomUser(User user){
+        RoomUser roomUser = new RoomUser();
+        roomUser.setUser(user);
+        return roomUser;
+    }
 
 }
