@@ -25,15 +25,6 @@ public class JwtTestController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-
-    @Value("${oauth.naver.redirect.header}")
-    private String getRedirectHeader;
-
-    @Value("${oauth.naver.redirect.header-value}")
-    private String getRedirectHeaderValue;
-
     @GetMapping("create")
     public String createToken() throws NoSuchFieldException {
         return jwtTokenProvider.createAccessToken(UUID.randomUUID(), SocialType.GOOGLE);

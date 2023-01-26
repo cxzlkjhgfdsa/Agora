@@ -38,24 +38,19 @@ public class User {
 
     @Column(length = 30)
     private String user_age;
-    @Column(length = 100)
+    @Column(unique = true, length = 100)
     private String user_phone;
     @Column(unique = true, length = 30)
     private String user_nickname;
 
     @Column(length = 200)
     private String user_photo;
-    @Column(length = 200)
-    private String user_refresh_token;
 
     @OneToMany(mappedBy = "user")
     private List<UserCategory> categories = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Encrypt encrypt;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
 
 
     public static User createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo) {
@@ -67,6 +62,15 @@ public class User {
         user.user_phone = user_phone;
         user.user_nickname = user_nickname;
         user.user_photo = user_photo;
+        return user;
+    }
+
+    public static User createOAuthUser(SocialType socialType, String social_id, String nickname, String profile) {
+        User user = new User();
+        user.user_social_type = socialType;
+        user.user_social_id = social_id;
+        user.user_nickname = nickname;
+        user.user_photo = profile;
         return user;
     }
 
