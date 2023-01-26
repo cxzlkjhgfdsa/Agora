@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { userInfoState } from "stores/atoms";
+import { useMediaQuery } from "react-responsive";
 
 const Wrapper = styled.div`
   // 좌측 모서리, 우측 모서리 둥글게
@@ -53,13 +54,11 @@ const IDLabel = styled.span`
   // 글자 정렬
   text-align: center;
 
-  // 크기 설정
-  width: 5rem;
-
   // 위치 설정
   position: absolute;
   top: 0.5rem;
   left: calc( 2.5rem + 4px );
+  right: ${({ isExpanded }) => isExpanded ? "8px" : "48px"};
 `;
 
 // 아래 화살표 아이콘
@@ -139,24 +138,32 @@ function UserProfileIcon({ nickname }) {
     navigate("/");
   };
 
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
+
   return (
     <Wrapper className="bg-dark border-dark" expanded={isExpanded}>
       <Round className="bg-main border-main" />
-      <IDLabel>{nickname}</IDLabel>
-      <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
-      {isExpanded &&
-        <ExpandedProfile>
-          <Link to={"/user/mypage"}>
-            <ExpandedWhiteElement>
-              <ExpandedIconElement src={MyPageIcon} />
-              My Page
-            </ExpandedWhiteElement>
-          </Link>
-          <ExpandedRedElement onClick={logout}>
-            <ExpandedIconElement src={LogoutIcon} />
-            Logout
-          </ExpandedRedElement>
-        </ExpandedProfile>
+      <IDLabel isExpanded={!isDesktop}>{nickname}</IDLabel>
+      {isDesktop &&
+        <>
+          <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
+          {isExpanded &&
+            <ExpandedProfile>
+              <Link to={"/user/mypage"}>
+                <ExpandedWhiteElement>
+                  <ExpandedIconElement src={MyPageIcon} />
+                  My Page
+                </ExpandedWhiteElement>
+              </Link>
+              <ExpandedRedElement onClick={logout}>
+                <ExpandedIconElement src={LogoutIcon} />
+                Logout
+              </ExpandedRedElement>
+            </ExpandedProfile>
+          }
+        </>
       }
     </Wrapper>
   );
