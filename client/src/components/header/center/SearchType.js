@@ -12,9 +12,9 @@ const StyledSearchType = styled.div`
 
 // 검색 유형을 표시하는 span
 const StyledTypeLabel = styled.span`
+  font-weight: 600;
   font-size: 1.2rem;
   line-height: 1.44rem;
-  color: #000000;
 `;
 
 // 모두보기 텍스트
@@ -41,7 +41,7 @@ function SearchType({ searchType }) {
       <StyledTypeLabel>{searchTypeLabel}</StyledTypeLabel>
       <Link to={"/debate/search/" + searchType} style={{ display: "flex", alignItems: "center" }}>
         <StyledSearchAll>모두보기</StyledSearchAll>
-        <img src={RightArrow} style={{ marginLeft: "8px" }} />
+        <img src={RightArrow} style={{ marginLeft: "8px", width: "6px", height: "10px" }} alt={""} />
       </Link>
     </StyledSearchType>
   );

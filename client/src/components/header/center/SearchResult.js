@@ -25,7 +25,7 @@ function SearchResultSetWrapper() {
   const titleContents = useRecoilValue(titleSearchResultState);
 
   // 해시태그로만 검색했을 때 결과
-  let contents = <SearchResultSet searchType={"hashtags"} maxContents={4} contents={hashTagsContents} />;
+  let contents = <SearchResultSet searchType={"hashtags"} maxContents={2} contents={hashTagsContents} />;
   
   // 그 외 검색결과 (사용자 이름 검색결과 및 방제 검색결과)
   if (creatorContents.length > 0 || titleContents.length > 0) {
