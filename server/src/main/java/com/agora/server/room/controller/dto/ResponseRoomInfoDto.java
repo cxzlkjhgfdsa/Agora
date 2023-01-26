@@ -14,6 +14,8 @@ public class ResponseRoomInfoDto {
 
     private String room_name;
 
+    private String room_creater_name;
+
     private DebateType room_debate_type;
 
     private String room_opinion_left;
@@ -35,8 +37,9 @@ public class ResponseRoomInfoDto {
 
 
     @QueryProjection
-    public ResponseRoomInfoDto(String room_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, Long room_watch_cnt, Integer room_phase, LocalDateTime room_start_time, String room_thumbnail_url, String room_category) {
+    public ResponseRoomInfoDto(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, Long room_watch_cnt, Integer room_phase, LocalDateTime room_start_time, String room_thumbnail_url, String room_category) {
         this.room_name = room_name;
+        this.room_creater_name = room_creater_name;
         this.room_debate_type = room_debate_type;
         this.room_opinion_left = room_opinion_left;
         this.room_opinion_right = room_opinion_right;
