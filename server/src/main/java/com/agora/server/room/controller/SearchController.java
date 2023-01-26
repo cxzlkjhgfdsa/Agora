@@ -43,6 +43,18 @@ public class SearchController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("search/main/topReadystate")
+    public ResponseEntity<ResponseDTO> topReadystate(){
+        List<ResponseRoomInfoDto> topReadystate = roomService.topReadystate();
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(topReadystate);
+        responseDTO.setMessage("토론준비중 리스트입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("search/dropdown")
     public ResponseEntity<ResponseDTO> searchDropdown(
             RoomSearchCondition condition) {

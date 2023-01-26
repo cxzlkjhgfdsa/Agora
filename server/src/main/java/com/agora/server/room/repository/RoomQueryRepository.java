@@ -71,6 +71,30 @@ public class RoomQueryRepository {
                 .fetch();
     }
 
+    public List<ResponseRoomInfoDto> findByWatchCntReadystate() {
+        return queryFactory.select(
+                        new QResponseRoomInfoDto(
+                                room.room_id,
+                                room.room_name,
+                                room.room_creater_name,
+                                room.room_debate_type,
+                                room.room_opinion_left,
+                                room.room_opinion_right,
+                                room.room_hashtags,
+                                room.room_watch_cnt,
+                                room.room_phase,
+                                room.room_start_time,
+                                room.room_thumbnail_url,
+                                room.room_category,
+                                room.room_state
+                        ))
+                .from(room)
+                .where(room.room_state.eq(false))
+                .orderBy(room.room_watch_cnt.desc())
+                .limit(10)
+                .fetch();
+    }
+
     public List<ResponseRoomInfoDto> findByHashTags(RoomSearchCondition condition){
         return queryFactory.select(
                 new QResponseRoomInfoDto(

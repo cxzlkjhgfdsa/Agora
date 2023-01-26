@@ -51,4 +51,8 @@ public class RoomService {
     public List<ResponseRoomInfoDto> topInprogress() {
         return roomQueryRepository.findByWatchCntInprogress();
     }
+
+    public List<ResponseRoomInfoDto> topReadystate() {
+        return roomQueryRepository.findByWatchCntReadystate();
+    }
 }
