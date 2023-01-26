@@ -18,7 +18,7 @@ const ImageCropping = styled.div`
 
 const BackgroundImage = styled.img`
   max-width: 100%;
-  margin-top: -100px;
+  margin-top: -90px;
 `
 
 const DarkBackground = styled.div`
