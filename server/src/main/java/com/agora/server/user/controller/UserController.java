@@ -1,7 +1,11 @@
 package com.agora.server.user.controller;
 
 import com.agora.server.auth.provider.JwtTokenProvider;
+import com.agora.server.category.domain.Category;
+import com.agora.server.category.domain.UserCategory;
+import com.agora.server.category.repository.UserCategoryRepository;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.user.controller.dto.LoginResponseDto;
 import com.agora.server.user.controller.dto.RequestJoinDto;
 import com.agora.server.user.domain.User;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +31,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    private final UserCategoryRepository userCategoryRepository;
     private final JwtTokenProvider tokenProvider;
 
 
@@ -36,7 +43,7 @@ public class UserController {
      * @return 회원가입이 정상적으로 실행되었다는 메세지를 보냄
      */
     @PostMapping("user/join")
-    public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto) {
+    public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = new ResponseDTO();
 
         User DuplicationUser = userService.findUserByPhone(requestJoinDto.getUser_phone());
@@ -44,12 +51,20 @@ public class UserController {
             responseDTO.setMessage("이미 등록된 회원번호 입니다");
             return responseDTO;
         }
+        Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
+        List<Category> categoryList = userService.findById(requestJoinDto.getCategories());
 
-        User joinUser = User.createUser(requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
+
+        User joinUser = User.createUser(encrypt, requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
                 , requestJoinDto.getUser_name(), requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
                 requestJoinDto.getUser_nickname(), requestJoinDto.getUser_photo());
-        userService.join(joinUser);
+        User saveUser = userService.join(joinUser); // 1차캐시로 영속성 컨텍스트에 user를 올림
+        // 더티 체킹과 변경감지 !! 다시 공부하기
 
+        for(Category category : categoryList) {
+            UserCategory userCategory = userCategoryRepository.save(UserCategory.createUserCategory(saveUser, category));
+            saveUser.addCategories(userCategory);
+        }
 
         responseDTO.setMessage("회원가입에 성공하셨습니다");
         return responseDTO;

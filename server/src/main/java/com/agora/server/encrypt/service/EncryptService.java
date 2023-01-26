@@ -22,7 +22,7 @@ public class EncryptService {
     public String getEncryptedUserName(RequestJoinDto requestJoinDto) throws Exception {
         byte[] key = EncryptionUtil.generateKey("AES", 128);
         String salt = EncryptionUtil.byteArrayToHex(key);
-        Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id(), UUID.randomUUID(), salt);
+        Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
         encryptionRepository.save(encrypt);
 
         return EncryptionUtil.aesEncrypt(requestJoinDto.getUser_name(), key);

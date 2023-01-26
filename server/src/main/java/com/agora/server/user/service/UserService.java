@@ -3,6 +3,8 @@ package com.agora.server.user.service;
 import com.agora.server.auth.domain.RefreshToken;
 import com.agora.server.auth.provider.JwtTokenProvider;
 import com.agora.server.auth.repository.AuthRepository;
+import com.agora.server.category.domain.Category;
+import com.agora.server.category.repository.CategoryRepository;
 import com.agora.server.user.controller.dto.SocialType;
 import com.agora.server.user.domain.User;
 import com.agora.server.auth.dto.AuthenticatedUserInfo;
@@ -12,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthRepository authRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CategoryRepository categoryRepository;
 
     /**
      * SocialType 과 Social측에서 제공하는 고유 ID를 통해 회원가입 되어있는 유저인지 확인
@@ -31,8 +38,8 @@ public class UserService {
         return userRepository.checkDuplicateUser(socialId, socialType);
     }
 
-    public void join(User joinUser) {
-        userRepository.save(joinUser);
+    public User join(User joinUser) {
+        return userRepository.save(joinUser);
     }
 
     /**
@@ -61,12 +68,22 @@ public class UserService {
                 userInfo.getUser_photo()
         );
     }
+
     public User findUserByPhone(String userPhone) {
         return userRepository.findByUser_phone(userPhone);
     }
+
     public User findUserByNickname(String nickname) {
         return userRepository.findByUser_nickname(nickname);
     }
 
-
+    public List<Category> findById(List<Long> categories) {
+        List<Category> categoryList = new ArrayList<>();
+        for (Long item :
+                categories) {
+            Optional<Category> categoryItem = categoryRepository.findById(item);
+            categoryList.add(categoryItem.get());
+        }
+        return categoryList;
+    }
 }

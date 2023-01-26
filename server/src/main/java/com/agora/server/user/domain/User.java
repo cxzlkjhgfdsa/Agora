@@ -13,6 +13,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,8 +54,9 @@ public class User {
     private Encrypt encrypt;
 
 
-    public static User createUser(SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo) {
+    public static User createUser(Encrypt encrypt, SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo) {
         User user = new User();
+        user.encrypt = encrypt;
         user.user_social_type = user_social_type;
         user.user_social_id = user_social_id;
         user.user_name = user_name;
@@ -72,6 +74,11 @@ public class User {
         user.user_nickname = nickname;
         user.user_photo = profile;
         return user;
+    }
+
+    public void addCategories(UserCategory userCategory){
+        // 카테고리 추가 하기 위한 add
+        this.categories.add(userCategory);
     }
 
 }

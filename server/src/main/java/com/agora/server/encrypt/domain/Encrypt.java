@@ -1,5 +1,6 @@
 package com.agora.server.encrypt.domain;
 
+import com.agora.server.encrypt.util.EncryptionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @Entity
@@ -23,18 +25,19 @@ public class Encrypt {
     @Column(length = 100)
     private String user_social_id;
 
-    @Type(type = "uuid-char")
-    @Column(length = 100)
-    private UUID secret_key;
 
     @Column(length = 100)
     private String salt;
 
-    public static Encrypt createEncrypt(String user_social_id, UUID secret_key, String salt) {
+    public static Encrypt createEncrypt(String user_social_id) throws NoSuchAlgorithmException {
         Encrypt encrypt = new Encrypt();
         encrypt.user_social_id = user_social_id;
-        encrypt.secret_key = secret_key;
-        encrypt.salt = salt;
+        encrypt.salt = generateSalt();
         return encrypt;
+    }
+
+    private static String generateSalt() throws NoSuchAlgorithmException {
+        byte[] key = EncryptionUtil.generateKey("AES", 128);
+        return EncryptionUtil.byteArrayToHex(key);
     }
 }
