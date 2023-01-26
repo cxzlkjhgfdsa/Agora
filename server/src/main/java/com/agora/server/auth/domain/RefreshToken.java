@@ -19,6 +19,7 @@ public class RefreshToken {
     @Type(type = "uuid-char")
     private UUID user_id;
 
+    @Column(length = 100)
     private String refresh_token;
 
     public static RefreshToken createRefreshToken(UUID user_id, String refresh_token) {
