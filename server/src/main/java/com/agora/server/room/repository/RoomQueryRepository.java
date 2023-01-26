@@ -28,6 +28,7 @@ public class RoomQueryRepository {
     public List<ResponseRoomInfoDto> findByWatchCntTop5() {
         return queryFactory.select(
                         new QResponseRoomInfoDto(
+                                room.room_id,
                                 room.room_name,
                                 room.room_creater_name,
                                 room.room_debate_type,
@@ -47,7 +48,9 @@ public class RoomQueryRepository {
 
     public List<ResponseRoomInfoDto> findByHashTags(RoomSearchCondition condition){
         return queryFactory.select(
-                new QResponseRoomInfoDto( room.room_name,
+                new QResponseRoomInfoDto(
+                        room.room_id,
+                        room.room_name,
                         room.room_creater_name,
                         room.room_debate_type,
                         room.room_opinion_left,
@@ -59,7 +62,8 @@ public class RoomQueryRepository {
                         room.room_thumbnail_url,
                         room.room_category))
                 .from(room)
-                .where(roomHashtagsHas(condition.getHashTags()))
+                .where(
+                        roomHashtagsHas(condition.getHashTags()))
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(2)
                 .fetch();
@@ -69,6 +73,7 @@ public class RoomQueryRepository {
     public List<ResponseRoomInfoDto> findBySearchWordRoomName(RoomSearchCondition condition){
         return queryFactory.select(
                         new QResponseRoomInfoDto(
+                                room.room_id,
                                 room.room_name,
                                 room.room_creater_name,
                                 room.room_debate_type,
@@ -82,7 +87,8 @@ public class RoomQueryRepository {
                                 room.room_category))
                 .from(room)
                 .where(
-                        roomNameHas(condition.getSearchWord())
+                        roomNameHas(condition.getSearchWord()),
+                        roomHashtagsHas(condition.getHashTags())
                 )
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(2)
@@ -92,6 +98,7 @@ public class RoomQueryRepository {
     public List<ResponseRoomInfoDto> findBySearchWordCreaterName(RoomSearchCondition condition){
         return queryFactory.select(
                         new QResponseRoomInfoDto(
+                                room.room_id,
                                 room.room_name,
                                 room.room_creater_name,
                                 room.room_debate_type,
@@ -105,7 +112,8 @@ public class RoomQueryRepository {
                                 room.room_category))
                 .from(room)
                 .where(
-                        createrNameHas(condition.getSearchWord())
+                        createrNameHas(condition.getSearchWord()),
+                        roomHashtagsHas(condition.getHashTags())
                 )
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(2)

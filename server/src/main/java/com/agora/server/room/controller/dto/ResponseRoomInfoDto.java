@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ResponseRoomInfoDto {
 
+    private Long room_id;
+
     private String room_name;
 
     private String room_creater_name;
@@ -37,7 +39,8 @@ public class ResponseRoomInfoDto {
 
 
     @QueryProjection
-    public ResponseRoomInfoDto(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, Long room_watch_cnt, Integer room_phase, LocalDateTime room_start_time, String room_thumbnail_url, String room_category) {
+    public ResponseRoomInfoDto(Long room_id, String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, Long room_watch_cnt, Integer room_phase, LocalDateTime room_start_time, String room_thumbnail_url, String room_category) {
+        this.room_id = room_id;
         this.room_name = room_name;
         this.room_creater_name = room_creater_name;
         this.room_debate_type = room_debate_type;
