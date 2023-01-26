@@ -6,10 +6,22 @@ import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+// 이동을 위한 useNavigate 선언
+import { useNavigate } from "react-router-dom";
+
+
 
 // 사진 import
 import food from "../../../../assets/signup/food.jpg"
 import daily from "../../../../assets/signup/daily.png"
+import cinema from "../../../../assets/signup/cinema.jpg"
+import game from "../../../../assets/signup/game.jpg"
+import IT from "../../../../assets/signup/IT.jpg"
+import Love from "../../../../assets/signup/Love.jpg"
+import sports from "../../../../assets/signup/sports.jpg"
+import fashion from "../../../../assets/signup/fashion.jpg"
+import study from "../../../../assets/signup/study.jpg"
+import music from "../../../../assets/signup/music.jpg"
 
 // Button 컴포넌트 import
 import CategoryButton from "./CategoryButton";
@@ -37,14 +49,14 @@ function CategoryItem() {
   const imageUrls = [
     {id: 1, url: daily, title: '일상'},
     {id: 2, url: food, title: '음식'},
-    {id: 3, url: food, title: '영화/드라마'},
-    {id: 4, url: food, title: '연애'},
-    {id: 5, url: food, title: '게임'},
-    {id: 6, url: food, title: 'IT/전자제품'},
-    {id: 7, url: food, title: '스포츠'},
-    {id: 8, url: food, title: '패션'},
-    {id: 9, url: food, title: '공부'},
-    {id: 10, url: food, title: '음악'},
+    {id: 3, url: cinema, title: '영화/드라마'},
+    {id: 4, url: Love, title: '연애'},
+    {id: 5, url: game, title: '게임'},
+    {id: 6, url: IT, title: 'IT/전자제품'},
+    {id: 7, url: sports, title: '스포츠'},
+    {id: 8, url: fashion, title: '패션'},
+    {id: 9, url: study, title: '공부'},
+    {id: 10, url: music, title: '음악'},
   ];
 
   const ImageList = imageUrls.map((image) => (
@@ -59,11 +71,17 @@ function CategoryItem() {
     </Grid>
 
   ));
+  
+  // 데이터 제출 함수
+  // const handleForm = () => {
+  //   console.log(select)
+  // }
 
-  const handleForm = () => {
-    console.log(select)
+  // 다음 항목 이동을 위한 임시 함수
+  const navigate = useNavigate();
+  const moveToComplete = () => {
+    navigate("/user/signup/complete")
   }
-
 
   return(
     <ThemeProvider theme={theme}>
@@ -80,7 +98,7 @@ function CategoryItem() {
               sx={{mb: 2, height: 55, width: 396, color: '#ffffff', fontWeight: 'bold', fontSize: 20, marginBottom: 10}}
               color="custom"
               disabled={select.length===0 ? true : false}
-              onClick={handleForm}
+              onClick={moveToComplete}
             >
               선택({select.length}/3) 후 계속
             </Button>

@@ -29,13 +29,13 @@ const theme = createTheme({
 
 export default function SignUp() {
   
-  // 임시 이동 함수 작성
+  // 임시 페이지 이동 함수
   const navigate = useNavigate();
-
   const moveToCategory = () => {
     navigate("/user/signup/category")
   }
 
+  // 데이터 제출 함수 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

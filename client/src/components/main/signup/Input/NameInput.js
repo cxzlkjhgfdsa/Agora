@@ -14,6 +14,7 @@ function CustomTextInput ({color}) {
         label="이름"
         autoFocus
         color={color}
+        error={false ? true : false}
       />
     </Grid>
 
