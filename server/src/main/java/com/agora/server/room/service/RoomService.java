@@ -33,7 +33,7 @@ public class RoomService {
 
     public Map<String, List<ResponseRoomInfoDto>> searchDropdown(RoomSearchCondition roomSearchCondition){
         Map<String, List<ResponseRoomInfoDto>> searchMap = new HashMap<>();
-        if(roomSearchCondition.getHashTags().size()>0){
+        if(roomSearchCondition.getSearchWord().length()==0 && roomSearchCondition.getHashTags().size()>0){
             searchMap.put("findByHashTags",roomQueryRepository.findByHashTags(roomSearchCondition));
         } else{
             searchMap.put("findByHashTags",new ArrayList<>());
