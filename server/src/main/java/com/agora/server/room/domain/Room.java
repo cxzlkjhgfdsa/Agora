@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +22,9 @@ public class Room {
 
     @Column(length = 100)
     private String room_creater_name;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<RoomUser> room_users = new ArrayList<>();
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -49,9 +54,8 @@ public class Room {
     @Column
     private String room_category;
 
-    public static Room createRoom(Long room_id, String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category) {
+    public static Room createRoom(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category) {
         Room room = new Room();
-        room.room_id = room_id;
         room.room_name = room_name;
         room.room_creater_name = room_creater_name;
         room.room_debate_type = room_debate_type;
@@ -62,4 +66,10 @@ public class Room {
         room.room_category = room_category;
         return room;
     }
+
+    public void addRoomUser(RoomUser roomUser){
+        room_users.add(roomUser);
+        roomUser.setRoom(this);
+    }
+
 }
