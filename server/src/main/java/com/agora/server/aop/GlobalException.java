@@ -1,16 +1,18 @@
 package com.agora.server.aop;
 
+import com.agora.server.auth.exception.TokenValidFailedException;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.user.exception.AlreadyExistUserException;
 import com.agora.server.user.exception.DuplicateNickNameException;
 import com.agora.server.user.exception.NoUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
-public class GlobalException {
+@RestControllerAdvice
+public class GlobalException extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ResponseDTO> NullPointerException(NullPointerException nullPointerException) {
         ResponseDTO res = new ResponseDTO();
@@ -27,24 +29,31 @@ public class GlobalException {
     }
 
     @ExceptionHandler(AlreadyExistUserException.class)
-    public ResponseEntity<ResponseDTO> AlreadyExistUserException(AlreadyExistUserException a){
+    public ResponseEntity<ResponseDTO> AlreadyExistUserException(AlreadyExistUserException a) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(a.getMessage());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @ExceptionHandler(DuplicateNickNameException.class)
-    public ResponseEntity<ResponseDTO> DuplicateNickNameException(DuplicateNickNameException d){
+    public ResponseEntity<ResponseDTO> DuplicateNickNameException(DuplicateNickNameException d) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(d.getMessage());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @ExceptionHandler(NoUserException.class)
-    public ResponseEntity<ResponseDTO> NoUserException(NoUserException nu){
+    public ResponseEntity<ResponseDTO> NoUserException(NoUserException nu) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(nu.getMessage());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @ExceptionHandler(TokenValidFailedException.class)
+    public ResponseEntity<ResponseDTO> TokenValidFailedException(TokenValidFailedException jwt) {
+        ResponseDTO res = new ResponseDTO();
+        res.setMessage(jwt.getMessage());
+        res.setState(false);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }

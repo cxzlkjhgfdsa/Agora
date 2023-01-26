@@ -4,14 +4,14 @@ import com.agora.server.config.EnvConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.persistence.EntityManager;
 
 
-@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
+@SpringBootApplication
 @PropertySource(value = {
         "classpath:env/env.yml",
         "classpath:env/env-key.yml",
@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
         "classpath:application-dev.yml",
         "classpath:application-prod.yml"
 }, factory = EnvConfig.class)
+@EnableAspectJAutoProxy
 public class ServerApplication {
 
     public static void main(String[] args) {
