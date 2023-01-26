@@ -3,17 +3,17 @@ package com.agora.server.room.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.room.controller.dto.RequestRoomCreateDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
+import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,6 +49,20 @@ public class RoomController {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(hot5);
         responseDTO.setMessage("화제의 토론 Top5 리스트입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("room/search")
+    public ResponseEntity<ResponseDTO> searchDropdown(
+            RoomSearchCondition condition) {
+
+        Map<String,List<ResponseRoomInfoDto>> searchMap = roomService.searchDropdown(condition);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(searchMap);
+        responseDTO.setMessage("드랍다운 맵입니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);

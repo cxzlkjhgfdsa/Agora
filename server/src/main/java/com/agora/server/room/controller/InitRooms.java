@@ -34,7 +34,7 @@ public class InitRooms {
                 DebateType debateType = i % 2 == 0 ? DebateType.FORMAL : DebateType.SHORT;
                 String category = i % 2 == 0 ? "음악" : "일상";
                 Long watchcnt = Long.valueOf(i);
-                em.persist(Room.createDummyRoom(i+"번",i+"작성자",debateType,"leftopinon","rightopinion","#"+i,"https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",category,watchcnt,(i%3)+1));
+                em.persist(Room.createDummyRoom(i+"번",i+"작성자",debateType,"leftopinon","rightopinion","#"+i+",#"+(i+200),"https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",category,watchcnt,(i%3)+1));
             }
         }
     }
