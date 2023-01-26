@@ -1,22 +1,31 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.auth.provider.JwtTokenProvider;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.user.controller.dto.LoginResponseDto;
 import com.agora.server.user.controller.dto.RequestJoinDto;
 import com.agora.server.user.domain.User;
+import com.agora.server.user.repository.UserRepository;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
+
+    private final JwtTokenProvider tokenProvider;
 
 
     /**
@@ -66,8 +75,30 @@ public class UserController {
      * @return
      */
     @PostMapping("user/login")
-    public ResponseDTO login(@RequestBody UUID user_id){
-        return null;
+    public ResponseDTO login(@RequestBody UUID user_id) throws NoSuchFieldException {
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        Optional<User> Ouser = userRepository.findById(user_id);
+
+        if(Ouser.isPresent()){
+            // 유저 정상적으로 찾았을 시
+            User user = Ouser.get();
+            String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
+
+            LoginResponseDto loginResponseDto = new LoginResponseDto();
+            loginResponseDto.setUserId(user.getUser_id());
+            loginResponseDto.setUserNickname(user.getUser_nickname());
+            loginResponseDto.setUserPhoto(user.getUser_photo());
+            loginResponseDto.setSocialType(user.getUser_social_type());
+            loginResponseDto.setAccessToken(acessToken);
+        }else{
+            // 잘못된 접근
+            log.error("잘못된 접근");
+            responseDTO.setState(false);
+            responseDTO.setMessage("잘못된 접근입니다");
+        }
+
+        return responseDTO;
     }
 
     /**

@@ -40,6 +40,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         }else {
             log.info("회원가입 진행 불필요");
             response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/login/redirect-handler")
+                            .queryParam("userId", userId)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString());
