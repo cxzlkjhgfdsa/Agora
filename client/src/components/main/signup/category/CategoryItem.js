@@ -60,6 +60,11 @@ function CategoryItem() {
 
   ));
 
+  const handleForm = () => {
+    console.log(select)
+  }
+
+
   return(
     <ThemeProvider theme={theme}>
       <Box
@@ -75,6 +80,7 @@ function CategoryItem() {
               sx={{mb: 2, height: 55, width: 396, color: '#ffffff', fontWeight: 'bold', fontSize: 20, marginBottom: 10}}
               color="custom"
               disabled={select.length===0 ? true : false}
+              onClick={handleForm}
             >
               선택({select.length}/3) 후 계속
             </Button>

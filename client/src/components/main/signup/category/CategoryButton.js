@@ -53,6 +53,9 @@ const TextBorder = styled.div`
 
   // 테두리 설정
   border: 5px white solid;
+
+  // 초기 테두리 투명도 설정
+  opacity: 0;
 `
 
 const Wrapper = styled.div`
