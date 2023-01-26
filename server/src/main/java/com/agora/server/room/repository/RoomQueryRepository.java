@@ -115,7 +115,9 @@ public class RoomQueryRepository {
     private BooleanBuilder roomHashtagsHas(List<String> hashTags) {
         BooleanBuilder builder = new BooleanBuilder();
         for (String hashTag : hashTags) {
-            builder.and(room.room_hashtags.contains(hashTag));
+            builder.or(room.room_hashtags.startsWith(hashTag+","));
+            builder.or(room.room_hashtags.contains(","+hashTag+","));
+            builder.or(room.room_hashtags.endsWith(","+hashTag));
         }
         return hashTags.size()>0 ? builder : null;
     }
