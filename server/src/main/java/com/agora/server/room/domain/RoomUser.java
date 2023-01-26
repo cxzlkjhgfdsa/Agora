@@ -4,11 +4,12 @@ import com.agora.server.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RoomUser {
 
@@ -25,6 +26,10 @@ public class RoomUser {
 
     private String room_user_side;
 
-
+    public static RoomUser createRoomUser(User user){
+        RoomUser roomUser = new RoomUser();
+        roomUser.setUser(user);
+        return roomUser;
+    }
 
 }

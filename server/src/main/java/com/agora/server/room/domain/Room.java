@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +22,9 @@ public class Room {
 
     @Column(length = 100)
     private String room_creater_name;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<RoomUser> room_users = new ArrayList<>();
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -78,4 +83,10 @@ public class Room {
         room.room_start_time = LocalDateTime.now();
         return room;
     }
+
+    public void addRoomUser(RoomUser roomUser){
+        room_users.add(roomUser);
+        roomUser.setRoom(this);
+    }
+
 }
