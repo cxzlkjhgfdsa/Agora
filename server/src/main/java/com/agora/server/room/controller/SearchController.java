@@ -31,6 +31,18 @@ public class SearchController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("search/main/topInprogress")
+    public ResponseEntity<ResponseDTO> topInprogress(){
+        List<ResponseRoomInfoDto> topInprogress = roomService.topInprogress();
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(topInprogress);
+        responseDTO.setMessage("열띤 토론중 리스트입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("search/dropdown")
     public ResponseEntity<ResponseDTO> searchDropdown(
             RoomSearchCondition condition) {

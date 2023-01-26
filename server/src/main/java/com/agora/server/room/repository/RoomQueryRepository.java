@@ -39,10 +39,35 @@ public class RoomQueryRepository {
                                 room.room_phase,
                                 room.room_start_time,
                                 room.room_thumbnail_url,
-                                room.room_category))
+                                room.room_category,
+                                room.room_state))
                 .from(room)
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(5)
+                .fetch();
+    }
+
+    public List<ResponseRoomInfoDto> findByWatchCntInprogress() {
+        return queryFactory.select(
+                        new QResponseRoomInfoDto(
+                                room.room_id,
+                                room.room_name,
+                                room.room_creater_name,
+                                room.room_debate_type,
+                                room.room_opinion_left,
+                                room.room_opinion_right,
+                                room.room_hashtags,
+                                room.room_watch_cnt,
+                                room.room_phase,
+                                room.room_start_time,
+                                room.room_thumbnail_url,
+                                room.room_category,
+                                room.room_state
+                        ))
+                .from(room)
+                .where(room.room_state.eq(true))
+                .orderBy(room.room_watch_cnt.desc())
+                .limit(10)
                 .fetch();
     }
 
@@ -60,7 +85,8 @@ public class RoomQueryRepository {
                         room.room_phase,
                         room.room_start_time,
                         room.room_thumbnail_url,
-                        room.room_category))
+                        room.room_category,
+                        room.room_state))
                 .from(room)
                 .where(
                         roomHashtagsHas(condition.getHashTags()))
@@ -84,7 +110,8 @@ public class RoomQueryRepository {
                                 room.room_phase,
                                 room.room_start_time,
                                 room.room_thumbnail_url,
-                                room.room_category))
+                                room.room_category,
+                                room.room_state))
                 .from(room)
                 .where(
                         roomNameHas(condition.getSearchWord()),
@@ -109,7 +136,8 @@ public class RoomQueryRepository {
                                 room.room_phase,
                                 room.room_start_time,
                                 room.room_thumbnail_url,
-                                room.room_category))
+                                room.room_category,
+                                room.room_state))
                 .from(room)
                 .where(
                         createrNameHas(condition.getSearchWord()),
@@ -136,6 +164,7 @@ public class RoomQueryRepository {
     private BooleanExpression roomNameHas(String searchWord) {
         return StringUtils.hasText(searchWord) ? room.room_name.contains(searchWord) : null;
     }
+
 
 
 }

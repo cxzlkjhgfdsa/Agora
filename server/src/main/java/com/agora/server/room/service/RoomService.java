@@ -48,4 +48,7 @@ public class RoomService {
         return searchMap;
     }
 
+    public List<ResponseRoomInfoDto> topInprogress() {
+        return roomQueryRepository.findByWatchCntInprogress();
+    }
 }
