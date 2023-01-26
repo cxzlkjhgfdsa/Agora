@@ -26,8 +26,8 @@ export const StyledDarkButton = styled(Button)`
   color: #FFFFFF;
 
   // 마진 및 패딩
-  margin: 4px 12px 4px 12px;
-  padding: 8px 20px 8px 20px;
+  margin: 4px 4px;
+  padding: 8px 20px;
 `;
 
 // 상단바 서브 버튼 (투명 배경, 투명 테두리)
