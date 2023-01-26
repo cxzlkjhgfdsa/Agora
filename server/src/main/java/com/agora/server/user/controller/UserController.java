@@ -1,6 +1,8 @@
 package com.agora.server.user.controller;
 
+import com.agora.server.auth.domain.RefreshToken;
 import com.agora.server.auth.provider.JwtTokenProvider;
+import com.agora.server.auth.repository.AuthRepository;
 import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.category.repository.UserCategoryRepository;
@@ -33,6 +35,7 @@ public class UserController {
 
     private final UserCategoryRepository userCategoryRepository;
     private final JwtTokenProvider tokenProvider;
+    private final AuthRepository authRepository;
 
 
     /**
@@ -61,7 +64,7 @@ public class UserController {
         User saveUser = userService.join(joinUser); // 1차캐시로 영속성 컨텍스트에 user를 올림
         // 더티 체킹과 변경감지 !! 다시 공부하기
 
-        for(Category category : categoryList) {
+        for (Category category : categoryList) {
             UserCategory userCategory = userCategoryRepository.save(UserCategory.createUserCategory(saveUser, category));
             saveUser.addCategories(userCategory);
         }
@@ -101,6 +104,8 @@ public class UserController {
             // 유저 정상적으로 찾았을 시
             User user = Ouser.get();
             String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
+            String refreshToken = tokenProvider.createRefreshToken();
+            authRepository.save(RefreshToken.createRefreshToken(user.getUser_id(), refreshToken));
 
             LoginResponseDto loginResponseDto = new LoginResponseDto();
             loginResponseDto.setUserId(user.getUser_id());
