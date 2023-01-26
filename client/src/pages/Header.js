@@ -3,6 +3,7 @@
 
 // 헤더 컴포넌트를 불러 와 페이지에 배치합니다.
 import styled from "styled-components";
+import { useMediaQuery } from "react-responsive";
 
 // 라우터 이동을 위한 Link
 import LeftComponents from "components/header/left/LeftComponents";
@@ -15,6 +16,7 @@ import { debateInfoState, userInfoState } from "stores/atoms";
 import { useCallback, useLayoutEffect, useState } from "react";
 
 import { debounce } from "lodash";
+import ToggleMenu from "components/header/left/ToggleMenu";
 
 // 상단바
 const StyledHeader = styled.header`
@@ -24,6 +26,8 @@ const StyledHeader = styled.header`
   // 헤더 색상 설정, 배경색 그림자색
   background-color: #FFFFFF;  // 배경색 : 흰색
   box-shadow: 1px 1px 1px #DCDCDC;  // 박스 그림자 설정
+
+  z-index: 2;
   
   // 상단 고정
   position: fixed;
@@ -51,9 +55,15 @@ function Header() {
   const userInfo = useRecoilValue(userInfoState);
   const debateInfo = useRecoilValue(debateInfoState);
 
-  // console.log(userInfo);
-  // console.log(debateInfo);
+  console.log(userInfo);
+  console.log(debateInfo);
 
+  // 태블릿 미디어 쿼리
+  const isTablet = useMediaQuery({
+    query: "(max-width: 1023px)"
+  });
+  
+  // 스크롤 이벤트 State
   const [isHeaderShow, setIsHeaderShow] = useState(true);
   const [prevY, setPrevY] = useState(0);
 
@@ -102,6 +112,9 @@ function Header() {
         {/* 그룹 */}
         < RightComponents />
       </HeaderContents>
+      
+      {/* 토글 메뉴 */}
+      {isTablet && <ToggleMenu />}
     </StyledHeader>
   );
 }
