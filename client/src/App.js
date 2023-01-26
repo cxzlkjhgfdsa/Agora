@@ -18,6 +18,7 @@ import Welcome from "pages/main/Welcome";
 import DebateList from "pages/main/debate/DebateList";
 import DebateRoom from "pages/main/debate/DebateRoom";
 import MyPage from "pages/main/MyPage";
+import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 
 function App() {
   return (
@@ -25,9 +26,11 @@ function App() {
       <GlobalStyle />
       <BrowserRouter>
         <Header />
+        
         <main>
           <Routes>
             <Route path="/" element={<Welcome />} />
+            <Route path="/user/login/redirect-handler" element={<LoginRedirectHandler />} />
             <Route path="/user/login" element={<Login />} />
             <Route path="/user/signup/SNS" element={<SignUpSNS />} />
             <Route path="/user/signup/input" element={<SignUpInput />} />
