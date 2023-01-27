@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -101,7 +102,8 @@ public class UserController {
             User user = Ouser.get();
             String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
             String refreshToken = tokenProvider.createRefreshToken();
-            authRepository.save(RefreshToken.createRefreshToken(user.getUser_id(), refreshToken));
+            //authRepository.save(RefreshToken.createRefreshToken(user.getUser_id(), refreshToken));
+            userService.saveRefreshToken(user.getUser_id(), refreshToken);
 
             LoginResponseDto loginResponseDto = new LoginResponseDto();
             loginResponseDto.setUserId(user.getUser_id());
