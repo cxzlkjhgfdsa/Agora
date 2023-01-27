@@ -17,7 +17,7 @@ export const userInfoState = atom({
     socialType: "",
     userPhoto: "",
   },
-  //effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const debateInfoState = atom({
