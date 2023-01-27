@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledSearchContent = styled.div`
@@ -36,8 +37,8 @@ const Title = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   
-  color: #000000;
   font-size: 1.2rem;
+  font-weight: 500;
   line-height: 1.44rem;
   letter-spacing: -0.05rem;
   margin: 0px;
@@ -47,40 +48,43 @@ const EtcInfoWrapper = styled.div`
   // margin-top: 0px;
 `;
 const EtcInfo = styled.span`
-  color: #000;
   font-size: 0.8rem;
   line-height: 0.96rem;
   margin-right: 8px;
 `;
 
 function SearchContent({ content }) {
-  const title = content.title;
-  const creator = content.creator;
-  const viewers = content.viewers;
-  const hashTags = content.hashTags;
+  const roomId = content.room_id;
+  const title = content.room_name;
+  const creator = content.room_creater_name;
+  const viewers = content.room_watch_cnt;
+  const hashTags = content.room_hashtags.split(",");
+  const imageUrl = content.room_thumbnail_url;
 
   return (
-    <StyledSearchContent>
-      <Thumbnail src="https://picsum.photos/192/108" />
-      <InfoWrapper>
-        {/* 방 제목 */}
-        <Title title={title}>{title}</Title>
-        
-        {/* 작성자 / 시청자 수 */}
-        <EtcInfoWrapper>
-          <EtcInfo>@{creator}</EtcInfo>
-          <EtcInfo>/</EtcInfo>
-          <EtcInfo>시청자 {viewers}명</EtcInfo>
-        </EtcInfoWrapper>
-        
-        {/* 해시태그 */}
-        <EtcInfoWrapper>
-          {hashTags.map((item) => (
-            <EtcInfo key={item}>#{ item }</EtcInfo>
-          ))}
-        </EtcInfoWrapper>
-      </InfoWrapper>
-    </StyledSearchContent>
+    <Link to={"/debate/room/" + roomId}>
+      <StyledSearchContent>
+        <Thumbnail src={imageUrl} />
+        <InfoWrapper>
+          {/* 방 제목 */}
+          <Title title={title}>{title}</Title>
+          
+          {/* 작성자 / 시청자 수 */}
+          <EtcInfoWrapper>
+            <EtcInfo>@{creator}</EtcInfo>
+            <EtcInfo>/</EtcInfo>
+            <EtcInfo>시청자 {viewers}명</EtcInfo>
+          </EtcInfoWrapper>
+          
+          {/* 해시태그 */}
+          <EtcInfoWrapper>
+            {hashTags.map((item) => (
+              <EtcInfo key={item}>{ item }</EtcInfo>
+            ))}
+          </EtcInfoWrapper>
+        </InfoWrapper>
+      </StyledSearchContent>
+    </Link>
   );
 }
 

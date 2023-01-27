@@ -1,18 +1,21 @@
 import styled from "styled-components";
 import ArrowDownIcon from "assets/icons/Arrow_Down_White.png";
 import ArrowUpIcon from "assets/icons/Arrow_Up_White.png";
+import LogoutIcon from "assets/icons/Logout_Color.png";
+import MyPageIcon from "assets/icons/Mypage_White.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { userInfoState } from "stores/atoms";
+import { useMediaQuery } from "react-responsive";
 
 const Wrapper = styled.div`
   // 좌측 모서리, 우측 모서리 둥글게
   border-radius: 35px 10px ${({expanded}) => expanded ? "0px" : "10px"} 35px;
   
   // 크기 설정
-  width: 246px;
-  height: 70px;
+  width: 10.5rem;
+  height: 48px;
 
   position: relative;
 
@@ -25,13 +28,13 @@ const Round = styled.div`
   border-radius: 35px;
 
   // 크기 설정
-  width: 50px;
-  height: 50px;
+  width: 2rem;
+  height: 2rem;
 
   // 위치 설정
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0.5rem;
+  left: 0.5rem;
 `;
 
 // 사용자 닉네임 라벨
@@ -40,8 +43,8 @@ const IDLabel = styled.span`
   background-color: transparent;
 
   // 글꼴 설정
-  line-height: 30px;
-  font-size: 1.5rem;
+  line-height: 2rem;
+  font-size: 1rem;
   color: #FFFFFF;
   
   // 글자수 초과 시 생략 처리
@@ -51,25 +54,23 @@ const IDLabel = styled.span`
   // 글자 정렬
   text-align: center;
 
-  // 크기 설정
-  width: 120px;
-
   // 위치 설정
   position: absolute;
-  top: 20px;
-  left: 70px;
+  top: 0.5rem;
+  left: calc( 2.5rem + 4px );
+  right: ${({ isExpanded }) => isExpanded ? "8px" : "48px"};
 `;
 
 // 아래 화살표 아이콘
 const Icon = styled.img`
   // 크기 설정
-  width: 40px;
-  height: 40px;
+  width: 2rem;
+  height: 2rem;
 
   // 위치 설정
   position: absolute;
-  top: 15px;
-  right: 10px;
+  top: 0.5rem;
+  right: 0.5rem;
 
   // 호버 시 커서 모양 변경
   cursor: pointer;
@@ -81,7 +82,7 @@ const ExpandedProfile = styled.ul`
   background-color: #222222;
 
   // 크기 설정
-  width: 212px;
+  width: calc( 100% - 1.5rem );
 
   // 마진 및 패딩
   margin: 0px;
@@ -92,7 +93,7 @@ const ExpandedProfile = styled.ul`
 
   // 위치 설정 : 사용자 프로필 바로 아래
   position: absolute;
-  top: 70px;
+  top: 48px;
   right: 0;
 
   // 구분점 없애기
@@ -101,10 +102,10 @@ const ExpandedProfile = styled.ul`
 // 확장 프로필 리스트
 const ExpandedElement = styled.li`
   background-color: transparent;
-
+  
   text-align: center;
-  font-size: 25px;
-  line-height: 30px;
+  font-size: 1rem;
+  line-height: 1rem;
   letter-spacing: -0.05em;
 
   margin: 12px 0px;
@@ -116,6 +117,11 @@ const ExpandedWhiteElement = styled(ExpandedElement)`
 `;
 const ExpandedRedElement = styled(ExpandedElement)`
   color: #EF404A;
+`;
+const ExpandedIconElement = styled.img`
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
 `;
 
 function UserProfileIcon({ nickname }) {
@@ -132,18 +138,32 @@ function UserProfileIcon({ nickname }) {
     navigate("/");
   };
 
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
+
   return (
     <Wrapper className="bg-dark border-dark" expanded={isExpanded}>
       <Round className="bg-main border-main" />
-      <IDLabel>{nickname}</IDLabel>
-      <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
-      {isExpanded &&
-        <ExpandedProfile>
-          <Link to={"/user/mypage"}>
-            <ExpandedWhiteElement>My Page</ExpandedWhiteElement>
-          </Link>
-          <ExpandedRedElement onClick={logout}>Logout</ExpandedRedElement>
-        </ExpandedProfile>
+      <IDLabel isExpanded={!isDesktop}>{nickname}</IDLabel>
+      {isDesktop &&
+        <>
+          <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
+          {isExpanded &&
+            <ExpandedProfile>
+              <Link to={"/user/mypage"}>
+                <ExpandedWhiteElement>
+                  <ExpandedIconElement src={MyPageIcon} />
+                  My Page
+                </ExpandedWhiteElement>
+              </Link>
+              <ExpandedRedElement onClick={logout}>
+                <ExpandedIconElement src={LogoutIcon} />
+                Logout
+              </ExpandedRedElement>
+            </ExpandedProfile>
+          }
+        </>
       }
     </Wrapper>
   );

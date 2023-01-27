@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import NoContents from "./NoContents";
 import SearchContent from "./SearchContent";
 import SearchType from "./SearchType";
 
@@ -17,6 +18,7 @@ function SearchResultSet({ searchType, maxContents, contents }) {
       {data.map((item, index) => (
         <SearchContent key={item + index} content={item} />
       ))}
+      {data.length === 0 && <NoContents />}
     </StyledSearchResultSet>
   );
 }
