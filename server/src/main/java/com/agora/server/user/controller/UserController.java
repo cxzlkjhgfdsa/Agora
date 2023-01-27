@@ -19,10 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,18 +46,12 @@ public class UserController {
      * @return 회원가입이 정상적으로 실행되었다는 메세지를 보냄
      */
     @PostMapping("user/join")
-    public ResponseDTO userJoin(@RequestBody RequestJoinDto requestJoinDto) throws Exception {
+    public ResponseEntity<ResponseDTO> userJoin(@RequestBody RequestJoinDto requestJoinDto) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
 
-        User DuplicationUser = userService.findUserByPhone(requestJoinDto.getUser_phone());
-        if (DuplicationUser != null) {
-            responseDTO.setMessage("이미 등록된 회원번호 입니다");
-            return responseDTO;
-        }
         Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
         List<Category> categoryList = userService.findById(requestJoinDto.getCategories());
         String encryptedUserName = encryptService.getEncryptedUserName(encrypt, requestJoinDto);
-
 
         User joinUser = User.createUser(encrypt, requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
                 , encryptedUserName, requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
@@ -72,16 +63,16 @@ public class UserController {
             UserCategory userCategory = userCategoryRepository.save(UserCategory.createUserCategory(saveUser, category));
             saveUser.addCategories(userCategory);
         }
-
+        responseDTO.setState(true);
         responseDTO.setMessage("회원가입에 성공하셨습니다");
-        return responseDTO;
+        return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("check/nickname")
-    public ResponseEntity<ResponseDTO> checkNickname(@RequestBody String nickname) {
+    @GetMapping("user/check/nickname")
+    public ResponseEntity<ResponseDTO> checkNickname(@RequestParam String nickname) {
         ResponseDTO responseDTO = new ResponseDTO();
-
         User findUser = userService.findUserByNickname(nickname);
+
         if (findUser == null) {
             responseDTO.setMessage("사용 가능한 닉네임입니다");
             responseDTO.setState(true);
@@ -93,10 +84,10 @@ public class UserController {
     }
 
     /**
-     * 로그인 메소드 구현
-     *
-     * @param user_id
+     * 로그인 구현 메소드
+     * @param loginRequestDto
      * @return
+     * @throws NoSuchFieldException
      */
     @PostMapping("user/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDto loginRequestDto) throws NoSuchFieldException {
@@ -128,37 +119,6 @@ public class UserController {
             responseDTO.setMessage("잘못된 접근입니다");
         }
         return ResponseEntity.ok(responseDTO);
-    }
-
-    /**
-     * 로그아웃 메소드 구현
-     */
-    @PostMapping("user/logout")
-    public void logout() {
-        //토큰 만료, 
-        // 카카오,네이버는 자체 토큰 만료 가능
-        // 구글은 생각해봐야함
-    }
-
-
-    /**
-     * 인증 테스트
-     *
-     * @return
-     */
-    @GetMapping("moon")
-    public String moon() {
-        return "moon";
-    }
-
-    /**
-     * 인증 테스트
-     *
-     * @return
-     */
-    @GetMapping("/room")
-    public String room() {
-        return "room";
     }
 
 }
