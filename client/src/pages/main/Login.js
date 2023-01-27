@@ -1,45 +1,68 @@
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { userInfoState } from "stores/atoms";
+import KakaoBtn from "../../components/login/KakaoBtn";
+import NaverBtn from "../../components/login/NaverBtn";
+import GoogleBtn from "../../components/login/GoogleBtn";
+import styled from 'styled-components'
 
-import KakaoBtn from "../../components/login/KakaoBtn"
-import NaverBtn from "../../components/login/NaverBtn"
+import AgoraLogo from "assets/icons/AgoraLogo.png";
 
 function Login() {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-
-  const navigate = useNavigate();
-
-  const login = () => {
-    alert("로그인 처리");
-    setUserInfo({ userId: "ssafy123", nickname: "Coffee", isLoggedIn: true });
-    navigate("/debate/list");
-  };
-
-  const logout = () => {
-    alert("로그아웃 처리");
-    setUserInfo({ isLoggedIn: false});
-    //navigate("/");  
-  };
 
   return (
-    <div>
-      <h1>This is Login page.</h1>
+    <LoginBtnContainer>
 
-      <KakaoBtn>카카오계정으로 로그인</KakaoBtn>
-      {/* <NaverBtn>네이버 로그인</NaverBtn> */}
+      <img src={AgoraLogo} alt="아고라 로고" width="150px"></img>
 
-      { !userInfo.isLoggedIn 
-      ? <button onClick={login}>
-        TEST: 로그인 (다음으로 설정됨 - userId: ssafy123, nickname: Coffee, isLoggedIn: true)
-        </button> 
-      : <button onClick={logout}>
-        TEST: 로그아웃
-        </button>
-      }
+      <TextContainer>
+        <StyledHr></StyledHr>
+        <StyledText>SNS 간편 로그인/회원가입</StyledText>
+        <StyledHr></StyledHr>
+      </TextContainer>
 
-    </div>
+      <GoogleBtn />
+      <KakaoBtn />
+      <NaverBtn />
+
+    </LoginBtnContainer>
   )
 }
 
 export default Login;
+
+const LoginBtnContainer = styled.div`
+position: relative;
+width: 500px;
+height: 500px;
+margin: 0 auto;
+
+position: absolute; 
+left: 50%; top: 50%; 
+transform: translate(-50%, -40%); 
+text-align: center;
+
+display: flex;
+flex-direction: column;
+justify-content: center; 
+align-items: center;
+`
+
+const TextContainer = styled.div`
+display: flex;
+align-items: center;
+padding: 80px 0px 30px;
+`
+
+const StyledHr = styled.hr`
+flex: auto;
+border: 1.5px solid #D9D9D9;
+width: 5rem;
+
+`
+
+const StyledText = styled.span`
+flex-basis: 70%;
+align-items: center;
+font-size: 15px;
+color: #999999;
+
+
+`
