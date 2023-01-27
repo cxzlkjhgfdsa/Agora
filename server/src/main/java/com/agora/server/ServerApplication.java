@@ -8,11 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @PropertySource(value = {
-        "classpath:env/env.yml",
         "classpath:env/env-key.yml",
-        "classpath:application-local.yml",
-        "classpath:application-dev.yml",
-        "classpath:application-prod.yml"
 }, factory = EnvConfig.class)
 @EnableAspectJAutoProxy
 public class ServerApplication {
