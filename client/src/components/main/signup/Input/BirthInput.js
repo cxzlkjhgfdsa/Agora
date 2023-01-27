@@ -1,8 +1,21 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import FormHelperText from '@mui/material/FormHelperText';
+
+// recoil import
+import { useRecoilState } from 'recoil';
+import { birthValidState } from 'stores/SignUpStates';
 
 function BirthInput({color}) {
+
+  const [birthValid, setBirthValid] = useRecoilState(birthValidState);
+  
+  // birthValid 초기화 함수
+  const resetBrithValid = () => {
+    setBirthValid("notChecked")
+  }
+
   return(
     <Grid container item xs={12} spacing={1}>
       <Grid item xs={4}>
@@ -14,6 +27,8 @@ function BirthInput({color}) {
           name="year"
           autoComplete="year"
           color={color}
+          error={birthValid==="notValid" ? true : false}
+          onChange={resetBrithValid}
         />
       </Grid>
       <Grid item xs={4}>
@@ -25,6 +40,8 @@ function BirthInput({color}) {
           name="month"
           autoComplete="month"
           color={color}
+          error={birthValid==="notValid" ? true : false}
+          onChange={resetBrithValid}
         />
       </Grid>
       <Grid item xs={4}>
@@ -36,8 +53,13 @@ function BirthInput({color}) {
           name="date"
           autoComplete="date"
           color={color}
+          error={birthValid==="notValid" ? true : false}
+          onChange={resetBrithValid}
         />
       </Grid>
+      <FormHelperText error sx={{marginLeft: 3}}>
+        {(birthValid === "notValid" ? "생년월일을 정확히 입력하세요" : null)}
+      </FormHelperText>
     </Grid>
   )
 }
