@@ -6,28 +6,17 @@ import com.agora.server.config.filter.CorsFilterConfig;
 import com.agora.server.config.filter.MyFilter;
 import com.agora.server.user.oauth.OAuth2AuthenticationFailureHandler;
 import com.agora.server.user.oauth.OAuth2AuthenticationSuccessHandler;
-import com.agora.server.user.repository.UserRepository;
 import com.agora.server.user.service.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
-import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
-import org.springframework.security.web.session.SessionManagementFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +27,6 @@ public class SecurityConfig {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final UserRepository userRepository;
     private final PrincipalOauth2UserService principalOauth2UserService;
 
     private final OAuth2AuthenticationSuccessHandler successHandler;
@@ -59,18 +47,13 @@ public class SecurityConfig {
                 .disable()
                 .httpBasic()
                 .disable()
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-//                .and()
                 .authorizeRequests()
-                .antMatchers("/room/**").authenticated()
+                .antMatchers("/api/v1/room/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
-                //.defaultSuccessUrl("/total/oauth", true)
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization")
-//                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/login/oauth2/code/*")
