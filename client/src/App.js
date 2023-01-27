@@ -19,6 +19,7 @@ import DebateList from "pages/main/debate/DebateList";
 import DebateRoom from "pages/main/debate/DebateRoom";
 import MyPage from "pages/main/MyPage";
 import ScrollToTop from "components/common/ScrollToTop";
+import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Welcome />} />
+            <Route path="/user/login/redirect-handler" element={<LoginRedirectHandler />} />
             <Route path="/user/login" element={<Login />} />
             <Route path="/user/signup/SNS" element={<SignUpSNS />} />
             <Route path="/user/signup/input" element={<SignUpInput />} />
