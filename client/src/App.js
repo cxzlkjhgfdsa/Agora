@@ -18,12 +18,14 @@ import Welcome from "pages/main/Welcome";
 import DebateList from "pages/main/debate/DebateList";
 import DebateRoom from "pages/main/debate/DebateRoom";
 import MyPage from "pages/main/MyPage";
+import ScrollToTop from "components/common/ScrollToTop";
 
 function App() {
   return (
     <RecoilRoot>
       <GlobalStyle />
       <BrowserRouter>
+        <ScrollToTop />
         <Header />
         <main>
           <Routes>
