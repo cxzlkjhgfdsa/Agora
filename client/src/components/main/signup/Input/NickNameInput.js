@@ -6,26 +6,33 @@ import Grid from '@mui/material/Grid';
 // recoil import
 import { useRecoilState } from 'recoil';
 import { nicknameCheckState } from 'stores/SignUpStates';
+import { nicknameValidState } from 'stores/SignUpStates';
 
 function NickNameInput({color}) {
 
   // useState 선언
   const [nickName, setNickName] = useState("");
+  // 닉네임 인증 확인용 변수
   const [isValid, setIsValid] = useRecoilState(nicknameCheckState)
+  const [nicknameValid, setNicknameValid] = useRecoilState(nicknameValidState)
   
-
+  // 닉네임 데이터 저장
   const handleNickName = (e) => {
     const value = e.target.value;
-    // 입력이 들어올 경우 Valid 처리k
-    setIsValid("valid");
+    // 입력이 들어올 경우 notChecked 처리
+    setIsValid("notChecked");
+    setNicknameValid("notChecked")
     // 현재 저장된 NickName을 현재 컴포넌트에 저장
     setNickName(value);
   }
 
+  // 닉네임 인증 함수
   const checkNickName = () => {
-    console.log(nickName);
+
     
-    setIsValid("notValid");
+    setIsValid("valid");
+    setNicknameValid("notChecked")
+    console.log(nickName, isValid);
   }
 
   return(
@@ -40,8 +47,12 @@ function NickNameInput({color}) {
           autoComplete="nickName"
           color={color}
           onChange={handleNickName}
-          error={isValid !== 'notValid' ? false : true}
-          helperText={isValid === "notValid" ? "이미 사용 중인 닉네임입니다" : (isValid === "Valid" ? "사용 가능한 닉네임입니다" : null)}
+          error={isValid === 'notValid' | nicknameValid === 'notValid' ? true : false}
+          helperText={isValid === "notValid" 
+            ? "이미 사용 중인 닉네임입니다" 
+            : (isValid === "valid" 
+              ? "사용 가능한 닉네임입니다" 
+              : (nicknameValid === "notValid") ? "닉네임을 인증해주세요" : null)}
         />
       </Grid>
       <Grid item xs={3}>
