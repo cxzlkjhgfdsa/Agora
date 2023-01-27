@@ -3,6 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.room.controller.dto.ModalRoomSearchCondition;
 import com.agora.server.room.controller.dto.RequestRoomCategoryDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("api/v1/")
 public class SearchController {
 
     private final RoomService roomService;
@@ -126,7 +129,7 @@ public class SearchController {
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(searchPage);
-        responseDTO.setMessage("해시태그 검색 전체 결과입니다");
+        responseDTO.setMessage("방 제목 검색 전체 결과입니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
@@ -140,10 +143,23 @@ public class SearchController {
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(searchPage);
-        responseDTO.setMessage("해시태그 검색 전체 결과입니다");
+        responseDTO.setMessage("방장 이름 검색 전체 결과입니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("search/main/modal")
+    public ResponseEntity<ResponseDTO> searchShowallCreatername(
+            ModalRoomSearchCondition modalRoomSearchCondition, Pageable pageable){
+
+        Page<ResponseRoomInfoDto> searchPage = roomService.modalRoomSearch(modalRoomSearchCondition, pageable);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(searchPage);
+        responseDTO.setMessage("모달 검색 전체 결과입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
 }

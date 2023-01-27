@@ -1,10 +1,12 @@
 package com.agora.server.room.repository;
 
+import com.agora.server.room.controller.dto.ModalRoomSearchCondition;
 import com.agora.server.room.controller.dto.QResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import static com.agora.server.room.domain.QRoom.room;
 
@@ -117,7 +118,7 @@ public class RoomQueryRepository {
                                 room.room_state))
                 .from(room)
                 .where(
-                        roomCategoryeq(categories)
+                        roomCategoryListeq(categories)
                         )
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(5)
@@ -268,6 +269,7 @@ public class RoomQueryRepository {
                 .select(room.count())
                 .from(room)
                 .where(
+                        roomNameHas(condition.getSearchWord()),
                         roomHashtagsHas(condition.getHashTags())
                 );
 
@@ -304,11 +306,65 @@ public class RoomQueryRepository {
                 .select(room.count())
                 .from(room)
                 .where(
+                        createrNameHas(condition.getSearchWord()),
                         roomHashtagsHas(condition.getHashTags())
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+
+    public Page<ResponseRoomInfoDto> findAllByModalConditionPages(ModalRoomSearchCondition modalRoomSearchCondition, Pageable pageable) {
+        List<ResponseRoomInfoDto> content = queryFactory.select(
+                        new QResponseRoomInfoDto(
+                                room.room_id,
+                                room.room_name,
+                                room.room_creater_name,
+                                room.room_debate_type,
+                                room.room_opinion_left,
+                                room.room_opinion_right,
+                                room.room_hashtags,
+                                room.room_watch_cnt,
+                                room.room_phase,
+                                room.room_start_time,
+                                room.room_thumbnail_url,
+                                room.room_category,
+                                room.room_state))
+                .from(room)
+                .where(
+                        room.room_state.eq(modalRoomSearchCondition.getRoomstate()),
+                        roomCategoryeq(modalRoomSearchCondition.getCategory())
+                )
+                .orderBy(
+                        roomSort(modalRoomSearchCondition.getOrder())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(room.count())
+                .from(room)
+                .where(
+                        room.room_state.eq(modalRoomSearchCondition.getRoomstate()),
+                        roomCategoryeq(modalRoomSearchCondition.getCategory())
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+
+    }
+
+    private OrderSpecifier<?> roomSort(String order) {
+        switch (order){
+            case "createnew" :
+                return new OrderSpecifier<>(Order.ASC, room.room_start_time);
+            case "createold" :
+                return new OrderSpecifier<>(Order.DESC, room.room_start_time);
+            case "watchcnt"  :
+                return new OrderSpecifier<>(Order.DESC, room.room_watch_cnt);
+        }
+        return null;
+    }
+
 
     private BooleanBuilder roomHashtagsHas(List<String> hashTags) {
         BooleanBuilder builder = new BooleanBuilder();
@@ -327,7 +383,7 @@ public class RoomQueryRepository {
         return StringUtils.hasText(searchWord) ? room.room_name.contains(searchWord) : null;
     }
 
-    private BooleanBuilder roomCategoryeq(List<String> categories) {
+    private BooleanBuilder roomCategoryListeq(List<String> categories) {
         BooleanBuilder builder = new BooleanBuilder();
         for (String category : categories) {
             builder.or(room.room_category.eq(category));
@@ -335,6 +391,8 @@ public class RoomQueryRepository {
         return categories.size()>0 ? builder : null;
     }
 
-
+    private BooleanExpression roomCategoryeq(String category) {
+        return category.equals("all") ? null : room.room_category.eq(category);
+    }
 
 }

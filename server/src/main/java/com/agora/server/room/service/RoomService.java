@@ -1,5 +1,6 @@
 package com.agora.server.room.service;
 
+import com.agora.server.room.controller.dto.ModalRoomSearchCondition;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.agora.server.room.domain.Room;
@@ -72,5 +73,9 @@ public class RoomService {
 
     public Page<ResponseRoomInfoDto> searchShowallCreatername(RoomSearchCondition condition, Pageable pageable) {
         return roomQueryRepository.findAllByCreaternamePages(condition, pageable);
+    }
+
+    public Page<ResponseRoomInfoDto> modalRoomSearch(ModalRoomSearchCondition modalRoomSearchCondition, Pageable pageable) {
+        return roomQueryRepository.findAllByModalConditionPages(modalRoomSearchCondition, pageable);
     }
 }
