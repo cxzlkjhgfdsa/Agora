@@ -26,6 +26,8 @@ const StyledHeader = styled.header`
   // 헤더 색상 설정, 배경색 그림자색
   background-color: #FFFFFF;  // 배경색 : 흰색
   box-shadow: 1px 1px 1px #DCDCDC;  // 박스 그림자 설정
+
+  z-index: 1;
   
   // 상단 고정
   position: fixed;
