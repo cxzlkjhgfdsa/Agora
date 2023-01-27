@@ -12,11 +12,13 @@ import com.agora.server.user.dto.LoginDTO;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,8 @@ public class UserService {
     private final AuthRepository authRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final CategoryRepository categoryRepository;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * SocialType 과 Social측에서 제공하는 고유 ID를 통해 회원가입 되어있는 유저인지 확인
@@ -81,5 +85,10 @@ public class UserService {
             categoryList.add(categoryItem.get());
         }
         return categoryList;
+    }
+
+    public void saveRefreshToken(UUID uuid, String refreshToken){
+        String userId = uuid.toString();
+        redisTemplate.opsForValue().set(userId, refreshToken, 10, TimeUnit.DAYS);
     }
 }
