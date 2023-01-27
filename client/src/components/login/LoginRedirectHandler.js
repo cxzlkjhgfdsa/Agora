@@ -31,7 +31,7 @@ function LoginRedirectHandler() {
     const [setUserInfo] = useSetRecoilState(userInfoState);
     const navigate = useNavigate();
 
-    const userId = new URL(window.location.href).searchParams.get("user_id");
+    const userId = new URL(window.location.href).searchParams.get("userId");
 
     const axios = customAxios();
 
@@ -49,7 +49,7 @@ function LoginRedirectHandler() {
 
                 // const { message, body: loginResponseDto, statusCode, state } = data
                 const loginResponseDto = data.body;
-                console.log("loginResponseDto >> " + loginResponseDto);
+                console.log("loginResponseDto >> ", loginResponseDto);
                 const userInfo = {
                     isLoggedIn: true,
                     ...loginResponseDto,
