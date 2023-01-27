@@ -7,6 +7,7 @@ import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +60,17 @@ public class RoomService {
 
     public List<ResponseRoomInfoDto> searchTopCategory(List<String> categories) {
         return roomQueryRepository.findByCategories(categories);
+    }
+
+    public Page<ResponseRoomInfoDto> searchShowallHashTags(RoomSearchCondition condition, Pageable pageable) {
+        return roomQueryRepository.findAllByHashTagsPages(condition, pageable);
+    }
+
+    public Page<ResponseRoomInfoDto> searchShowallRoomname(RoomSearchCondition condition, Pageable pageable) {
+        return roomQueryRepository.findAllByRoomnamePages(condition, pageable);
+    }
+
+    public Page<ResponseRoomInfoDto> searchShowallCreatername(RoomSearchCondition condition, Pageable pageable) {
+        return roomQueryRepository.findAllByCreaternamePages(condition, pageable);
     }
 }

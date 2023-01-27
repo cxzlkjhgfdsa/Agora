@@ -6,11 +6,14 @@ import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.room.controller.dto.RequestRoomCategoryDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
+import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.RoomService;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.dto.LoginDTO;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,6 +99,48 @@ public class SearchController {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(searchMap);
         responseDTO.setMessage("드랍다운 맵입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("search/showall/hashtags")
+    public ResponseEntity<ResponseDTO> searchShowallHashtag(
+            RoomSearchCondition condition, Pageable pageable){
+
+        Page<ResponseRoomInfoDto> searchPage = roomService.searchShowallHashTags(condition, pageable);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(searchPage);
+        responseDTO.setMessage("해시태그 검색 전체 결과입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("search/showall/roomname")
+    public ResponseEntity<ResponseDTO> searchShowallRoomname(
+            RoomSearchCondition condition, Pageable pageable){
+
+        Page<ResponseRoomInfoDto> searchPage = roomService.searchShowallRoomname(condition, pageable);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(searchPage);
+        responseDTO.setMessage("해시태그 검색 전체 결과입니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("search/showall/creatername")
+    public ResponseEntity<ResponseDTO> searchShowallCreatername(
+            RoomSearchCondition condition, Pageable pageable){
+
+        Page<ResponseRoomInfoDto> searchPage = roomService.searchShowallCreatername(condition, pageable);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setBody(searchPage);
+        responseDTO.setMessage("해시태그 검색 전체 결과입니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
