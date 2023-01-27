@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // 자식 컴포넌트 import
 import CustomTextInput from './NameInput';
@@ -16,8 +16,7 @@ import ImageInput from './ProfileImgInput';
 import { SubText } from '../content/ContentBox';
 
 // recoil import
-import { useRecoilState } from 'recoil';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { nameValidState } from 'stores/SignUpStates';
 import { nicknameValidState } from 'stores/SignUpStates';
@@ -26,6 +25,7 @@ import { phoneValidState } from 'stores/SignUpStates';
 
 import { nicknameCheckState } from 'stores/SignUpStates';
 import { phoneCheckState } from 'stores/SignUpStates';
+import { inputDataState } from 'stores/SignUpStates';
 
 // theme 선언: mui customization
 const theme = createTheme({
@@ -47,14 +47,13 @@ export default function SignUp() {
   const [birthValid, setBrithValid] = useRecoilState(birthValidState)
   const [phoneValid, setPhoneValid] = useRecoilState(phoneValidState)
 
+  const setInputData = useSetRecoilState(inputDataState)
+
   const nicknameCheck = useRecoilValue(nicknameCheckState)
   const phoneCheck = useRecoilValue(phoneCheckState)
 
-  // 임시 페이지 이동 함수
-  // const navigate = useNavigate();
-  // const moveToCategory = () => {
-  //   navigate("/user/signup/category")
-  // }
+  // 페이지 이동 함수
+  const navigate = useNavigate();
 
   // 데이터 제출 함수 
   const handleSubmit = (event) => {
@@ -89,7 +88,7 @@ export default function SignUp() {
 
     // 3. birth valid 확인
     // 3.1. birthPattern 정의
-    const birthPattern = /^(19[0-9][0-9]|20\d{2})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/
+    const birthPattern = /^([0-9][0-9]|20\d{2})(0[0-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/
     let birth
     // 3.2. birth data 공백 확인
     if (formData.year === "" | formData.month === "" | formData.date === "") {
@@ -107,7 +106,7 @@ export default function SignUp() {
         date = '0' + date
       };
 
-      birth = formData.year + '-' + month + '-' + date
+      birth = formData.year + month + date
 
       if (!birthPattern.test(birth)) {
         setBrithValid("notValid")
@@ -124,6 +123,20 @@ export default function SignUp() {
     else {
       setPhoneValid("notValid")
     };
+
+    // 5. Axios 데이터 전송
+    if (nameValid === "valid" & nicknameValid === "valid" & birthValid === "valid" & phoneValid === "valid") {
+      // 5.1. recoil 데이터 저장
+      setInputData({
+        user_name: formData.name,
+        user_age: birth,
+        user_nickname: formData.nickname,
+        user_phone: formData.phone,
+        user_photo: formData.profileImage,
+      })
+      // 5.2. category 페이지로 이동
+      navigate("/user/signup/category")
+    }
   };
 
   // valid 확인용 임시 버튼

@@ -5,11 +5,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from "axios";
 
 // 이동을 위한 useNavigate 선언
-import { useNavigate } from "react-router-dom";
-
-
+// import { useNavigate } from "react-router-dom";
 
 // 사진 import
 import food from "../../../../assets/signup/food.jpg"
@@ -22,6 +21,11 @@ import sports from "../../../../assets/signup/sports.jpg"
 import fashion from "../../../../assets/signup/fashion.jpg"
 import study from "../../../../assets/signup/study.jpg"
 import music from "../../../../assets/signup/music.jpg"
+
+
+// recoil import
+import { useRecoilState } from "recoil";
+import { inputDataState } from "stores/SignUpStates";
 
 // Button 컴포넌트 import
 import CategoryButton from "./CategoryButton";
@@ -44,7 +48,10 @@ const ButtonWrapper = styled.div`
 // 본함수 설정
 function CategoryItem() {
   
+  // 선택 항목 저장 변수
   const [select, setSelect] = useState([]);
+  // 전체 데이터 저장 변수 선언
+  const [inputData, setInputData] = useRecoilState(inputDataState)
   
   const imageUrls = [
     {id: 1, url: daily, title: '일상'},
@@ -71,17 +78,44 @@ function CategoryItem() {
     </Grid>
 
   ));
-  
-  // 데이터 제출 함수
-  // const handleForm = () => {
-  //   console.log(select)
+    
+  // 다음 항목 이동을 위한 임시 함수
+  // const navigate = useNavigate();
+  // const moveToComplete = () => {
+  //   navigate("/user/signup/complete")
   // }
 
-  // 다음 항목 이동을 위한 임시 함수
-  const navigate = useNavigate();
-  const moveToComplete = () => {
-    navigate("/user/signup/complete")
+  // 데이터 제출 함수
+  const handleForm = () => {
+    setInputData({
+      user_name: inputData.user_name,
+      user_age: inputData.user_age,
+      user_nickname: inputData.user_nickname,
+      user_phone: inputData.user_phone,
+      user_photo: inputData.user_photo,
+      categories: select,
+      user_social_type: "KAKAO",
+      user_social_id: "social id",
+    })
+    
+    axios({
+      method: "post",
+      url: "https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/user/join",
+      data: inputData,
+      headers: {
+        withCredentials : true,
+      }
+    })
+    .then((response) => {
+      console.log(response.data)
+      console.log(inputData)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  
   }
+
 
   return(
     <ThemeProvider theme={theme}>
@@ -98,7 +132,7 @@ function CategoryItem() {
               sx={{mb: 2, height: 55, width: 396, color: '#ffffff', fontWeight: 'bold', fontSize: 20, marginBottom: 10}}
               color="custom"
               disabled={select.length===0 ? true : false}
-              onClick={moveToComplete}
+              onClick={handleForm}
             >
               선택({select.length}/3) 후 계속
             </Button>

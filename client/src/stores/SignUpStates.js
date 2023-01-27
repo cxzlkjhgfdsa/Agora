@@ -29,3 +29,8 @@ export const phoneValidState = atom({
   key: 'phoneValidState',
   default: 'notChecked'
 })
+
+export const inputDataState = atom({
+  key: 'inputDataState',
+  default: null
+})

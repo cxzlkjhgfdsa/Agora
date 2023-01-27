@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import axios from 'axios';
 
 // recoil import
 import { useRecoilState } from 'recoil';
@@ -28,11 +29,28 @@ function NickNameInput({color}) {
 
   // 닉네임 인증 함수
   const checkNickName = () => {
-
+    axios({
+      // 목업 서버 url
+      method: 'get',
+      url: "https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/user/check/nickname?",
+      params: {
+        "nickname" : nickName
+      }
+    })
+    .then((response) => {
+      if (response.data.state === "TRUE") {
+        setIsValid("valid");
+        setNicknameValid("notChecked")
+      }
+      else {
+        setIsValid("notValid")
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    });
     
-    setIsValid("valid");
-    setNicknameValid("notChecked")
-    console.log(nickName, isValid);
+
   }
 
   return(

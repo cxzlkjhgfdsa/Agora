@@ -23,7 +23,7 @@ function BirthInput({color}) {
           required
           fullWidth
           id="year"
-          label="생년(0000)"
+          label="년도(00)"
           name="year"
           autoComplete="year"
           color={color}
