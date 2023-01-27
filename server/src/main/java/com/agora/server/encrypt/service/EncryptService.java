@@ -3,13 +3,11 @@ package com.agora.server.encrypt.service;
 import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.encrypt.repository.EncryptionRepository;
 import com.agora.server.encrypt.util.EncryptionUtil;
-import com.agora.server.user.controller.dto.RequestJoinDto;
+import com.agora.server.user.controller.dto.request.RequestJoinDto;
 import com.agora.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,12 +17,10 @@ public class EncryptService {
 
 
     @Transactional
-    public String getEncryptedUserName(RequestJoinDto requestJoinDto) throws Exception {
-        byte[] key = EncryptionUtil.generateKey("AES", 128);
-        String salt = EncryptionUtil.byteArrayToHex(key);
-        Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
+    public String getEncryptedUserName(Encrypt encrypt, RequestJoinDto requestJoinDto) throws Exception {
         encryptionRepository.save(encrypt);
-
+        String salt = encrypt.getSalt();
+        byte[] key = EncryptionUtil.hexToByteArray(salt);
         return EncryptionUtil.aesEncrypt(requestJoinDto.getUser_name(), key);
     }
 

@@ -1,6 +1,7 @@
-package com.agora.server.user.controller.dto;
+package com.agora.server.user.controller.dto.request;
 
 
+import com.agora.server.user.controller.dto.SocialType;
 import lombok.Getter;
 import lombok.Setter;
 
