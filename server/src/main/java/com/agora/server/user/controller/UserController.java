@@ -10,14 +10,13 @@ import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.encrypt.service.EncryptService;
 import com.agora.server.user.controller.dto.request.LoginRequestDto;
-import com.agora.server.user.controller.dto.response.LoginResponseDto;
 import com.agora.server.user.controller.dto.request.RequestJoinDto;
+import com.agora.server.user.controller.dto.response.LoginResponseDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +26,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private final UserService userService;
@@ -45,7 +45,7 @@ public class UserController {
      * @param requestJoinDto
      * @return 회원가입이 정상적으로 실행되었다는 메세지를 보냄
      */
-    @PostMapping("user/join")
+    @PostMapping("join")
     public ResponseEntity<ResponseDTO> userJoin(@RequestBody RequestJoinDto requestJoinDto) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
 
@@ -68,7 +68,7 @@ public class UserController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("user/check/nickname")
+    @GetMapping("check/nickname")
     public ResponseEntity<ResponseDTO> checkNickname(@RequestParam String nickname) {
         ResponseDTO responseDTO = new ResponseDTO();
         User findUser = userService.findUserByNickname(nickname);
@@ -85,11 +85,12 @@ public class UserController {
 
     /**
      * 로그인 구현 메소드
+     *
      * @param loginRequestDto
      * @return
      * @throws NoSuchFieldException
      */
-    @PostMapping("user/login")
+    @PostMapping("login")
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDto loginRequestDto) throws NoSuchFieldException {
         ResponseDTO responseDTO = new ResponseDTO();
 
@@ -120,5 +121,4 @@ public class UserController {
         }
         return ResponseEntity.ok(responseDTO);
     }
-
 }
