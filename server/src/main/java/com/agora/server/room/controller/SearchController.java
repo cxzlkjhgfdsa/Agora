@@ -3,6 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.room.controller.dto.RequestRoomCategoryDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.agora.server.room.service.RoomService;
@@ -66,7 +67,7 @@ public class SearchController {
 
     @GetMapping("search/main/topCategory")
     public ResponseEntity<ResponseDTO> searchTopCategory(
-            LoginDTO requestUser){
+            RequestRoomCategoryDto requestUser){
 
         User user = userRepository.findUserByUser_idAndUser_social_type(requestUser.getUserId(), requestUser.getSocialType());
         List<String> categories = new ArrayList<>();
