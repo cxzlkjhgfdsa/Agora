@@ -28,7 +28,6 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Header />
-        
         <main>
           <Routes>
             <Route path="/" element={<Welcome />} />
