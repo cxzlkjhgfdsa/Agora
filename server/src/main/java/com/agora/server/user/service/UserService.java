@@ -69,10 +69,6 @@ public class UserService {
         );
     }
 
-    public User findUserByPhone(String userPhone) {
-        return userRepository.findByUser_phone(userPhone);
-    }
-
     public User findUserByNickname(String nickname) {
         return userRepository.findByUser_nickname(nickname);
     }

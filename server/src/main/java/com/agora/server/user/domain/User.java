@@ -39,7 +39,7 @@ public class User {
 
     @Column(length = 30)
     private String user_age;
-    @Column(unique = true, length = 100)
+    @Column(length = 100)
     private String user_phone;
     @Column(unique = true, length = 30)
     private String user_nickname;
