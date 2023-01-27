@@ -26,8 +26,6 @@ const StyledHeader = styled.header`
   // 헤더 색상 설정, 배경색 그림자색
   background-color: #FFFFFF;  // 배경색 : 흰색
   box-shadow: 1px 1px 1px #DCDCDC;  // 박스 그림자 설정
-
-  z-index: 2;
   
   // 상단 고정
   position: fixed;
@@ -69,11 +67,13 @@ function Header() {
 
   // 스크롤이 멈췄는지 확인해주는 핸들러
   const stopScroll = useCallback((e) => {
-    // 스크롤이 가장 끝까지 올라가면 헤더보임.
-    // 스크롤이 멈추면 헤더안보임
+    console.log(123);
+    // 스크롤이 가장 끝까지 올라가면 헤더 보여주기
     if (window.scrollY === 0) {
-      setIsHeaderShow(true)
-    } else {
+      setIsHeaderShow(true);
+    }
+    // 스크롤이 멈추면 스크롤 방향에 따라 헤더 보이기/숨기기
+    else {
       const diff = window.scrollY - prevY;
       if (diff > 0) {
         setIsHeaderShow(false);
@@ -85,16 +85,9 @@ function Header() {
   }, [prevY]);
   
   // 스크롤의 멈춤은 디바운스를 이용한다. (디바운스가 마지막 그룹의 이벤트를 노티해주는 특성 이용)
-  const debounceScroll = useCallback(debounce(stopScroll, 300), [prevY]);
-  const scrollDetectHandler = useCallback(
-    (...e) => {
-      debounceScroll(...e);
-    },
-    [prevY]
-  );
-
+  const debounceScroll = debounce(stopScroll, 300);
   useLayoutEffect(() => {
-    window.addEventListener("scroll", scrollDetectHandler);
+    window.addEventListener("scroll", debounceScroll);
   }, [prevY]);
 
   if (!isHeaderShow) {
