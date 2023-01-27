@@ -61,7 +61,7 @@ public class InitRooms {
                 DebateType debateType = i % 2 == 0 ? DebateType.FORMAL : DebateType.SHORT;
                 String category = (i%10)+"번";
                 Long watchcnt = Long.valueOf(i);
-                Room dummyRoom = Room.createDummyRoom(i + "번", i + "작성자", debateType, "leftopinon", "rightopinion", "#" + i + ",#" + (i + 200), "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg", category, watchcnt, (i % 3) + 1);
+                Room dummyRoom = Room.createDummyRoom(i + "번", i + "작성자", debateType, "leftopinon", "rightopinion", "#" + (i%10) + ",#" + ((i + 200)%200+20), "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg", category, watchcnt, (i % 3) + 1);
                 if(i%5==0){
                     dummyRoom.roomStart();
                 }
