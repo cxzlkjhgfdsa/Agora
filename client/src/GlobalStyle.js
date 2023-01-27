@@ -11,6 +11,10 @@ const GlobalStyle = createGlobalStyle`
     color: #000000;
   }
 
+  body {
+    margin: 0;
+  }
+
   // 상단바에 가리지 않게 상단 패딩
   main {
     padding-top: 64px;
