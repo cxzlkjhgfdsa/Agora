@@ -6,15 +6,15 @@ const StyledHashTag = styled.span`
   margin: 2px;
   padding: 0px 8px;
 
-  background-color: #DFDFDF;
+  background-color: ${({color}) => color ? color : "#DFDFDF"};
   border: 1px solid #606060;
   border-radius: 8px;
 `;
 
-function HashTag({ tag }) {
+function HashTag({ tag, color }) {
   return (
     <Link to={"/" + tag}>
-      <StyledHashTag>
+      <StyledHashTag color={color}>
         {tag}
       </StyledHashTag>
     </Link>
