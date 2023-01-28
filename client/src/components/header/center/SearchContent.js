@@ -1,3 +1,4 @@
+import HashTag from "components/common/HashTag";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -78,8 +79,8 @@ function SearchContent({ content }) {
           
           {/* 해시태그 */}
           <EtcInfoWrapper>
-            {hashTags.map((item) => (
-              <EtcInfo key={item}>{ item }</EtcInfo>
+            {hashTags.map((item, index) => (
+              <HashTag key={item + index } tag={item} color={"#CFCFCF"} />
             ))}
           </EtcInfoWrapper>
         </InfoWrapper>
