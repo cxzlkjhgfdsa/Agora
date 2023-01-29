@@ -12,12 +12,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { debateInfoState, userInfoState } from "stores/atoms";
 
+import { useMediaQuery } from "react-responsive";
+
 // 상단바 우측 컴포넌트 Wrapper
 const Wrapper = styled.div`
-  height: 48px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
+  height: calc( 100% - 16px );
+  padding: 8px;
 `;
 
 function RightComponents() {
@@ -27,6 +27,9 @@ function RightComponents() {
   const curPath = useLocation().pathname;
   const navigate = useNavigate();
 
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1024px)"
+  });
 
   // 토론방에서는 나가기 버튼 표시
   if (curPath.startsWith("/debate/room")) {
@@ -54,9 +57,6 @@ function RightComponents() {
   else if (userInfo.isLoggedIn) {
     return (
       <Wrapper>
-        <Link to={"/debate/list"}>
-          <StyledLightButton>둘러보기</StyledLightButton>
-        </Link>
         <UserProfileIcon nickname={userInfo.nickname} />
       </Wrapper>
     );
@@ -65,12 +65,14 @@ function RightComponents() {
   else {
     return (
       <Wrapper>
-        <Link to={"/debate/list"}>
-          <StyledLightButton>둘러보기</StyledLightButton>
-        </Link>
-        <Link to={"/user/signup/SNS"}>
-          <StyledLightButton>회원가입</StyledLightButton>
-        </Link>
+        {isDesktop && <>
+          <Link to={"/debate/list"}>
+            <StyledLightButton>둘러보기</StyledLightButton>
+          </Link>
+          <Link to={"/user/signup/SNS"}>
+            <StyledLightButton>회원가입</StyledLightButton>
+          </Link>
+        </>}
         <Link to={"/user/login"}>
           <StyledDarkButton>로그인</StyledDarkButton>
         </Link>

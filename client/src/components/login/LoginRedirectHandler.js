@@ -1,11 +1,11 @@
 import { atom, selector, useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom"
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import customAxios from "../../utils/customAxios";
 import Spinner from "../common/Spinner";
 
-import { userInfoState } from "stores/atoms";
+import { userInfoState } from "../../stores/atoms";
 import ErrorBoundary from "./ErrorBoundary";
 
  
@@ -31,20 +31,25 @@ function LoginRedirectHandler() {
     const [setUserInfo] = useSetRecoilState(userInfoState);
     const navigate = useNavigate();
 
-    const userPK = new URL(window.location.href).searchParams.get("userPK");
+    const userId = new URL(window.location.href).searchParams.get("userId");
 
     const axios = customAxios();
 
     useEffect(() => {
         async function getAccessTokenWithUserInfos() {
             try {
-                console.log("userPK >> ", userPK)
-                const { data } = await axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/total/oauth?userPK=${userPK}`); // response.data를 data라는 이름으로 저장
+                console.log("userId >> ", userId)
+                const { data } = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/total/oauth`, {
+                    data: {
+                        user_id : userId
+                    },
+                }); 
+                // response.data를 data라는 이름으로 저장
                 console.log("data >> ", data)
 
                 // const { message, body: loginResponseDto, statusCode, state } = data
                 const loginResponseDto = data.body;
-                console.log("loginResponseDto >> " + loginResponseDto);
+                console.log("loginResponseDto >> ", loginResponseDto);
                 const userInfo = {
                     isLoggedIn: true,
                     ...loginResponseDto,
@@ -58,7 +63,7 @@ function LoginRedirectHandler() {
 
         getAccessTokenWithUserInfos();
         navigate("/");
-    }, [setUserInfo, axios, navigate, userPK]);
+    }, [setUserInfo, axios, navigate, userId]);
 
 
     return (

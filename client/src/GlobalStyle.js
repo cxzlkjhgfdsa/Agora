@@ -7,12 +7,19 @@ const GlobalStyle = createGlobalStyle`
   * {
     // 폰트 설정, !important -> 이후에 선언한 CSS 무시
     font-family: 'Inter', san-serif !important;
-    color: #4C4556;
+    // color: #4C4556;
+    color: #000000;
+  }
+
+  body {
+    margin: 0;
   }
 
   // 상단바에 가리지 않게 상단 패딩
   main {
-    padding-top: 64px; 
+    padding-top: 64px;
+    margin: 0 auto;
+    max-width: 1920px;
   }
 
   a {

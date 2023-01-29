@@ -9,6 +9,7 @@ import { useCallback, useState } from "react";
 import SearchResult from "./SearchResult";
 import { useSetRecoilState } from "recoil";
 import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
+import API from "api/axios";
 
 // 검색바 전체
 const StyledSearchBar = styled.div`
@@ -48,7 +49,7 @@ const StyledInput = styled.input`
   height: 36px;
 
   // 글자 설정
-  font-size: 20px;
+  font-size: 1.2rem;
 
   // 위치 설정
   position: absolute;
@@ -127,31 +128,40 @@ function SearchBar() {
       
       // 키워드와 해시태그 토큰화, 키워드는 String, 해시태그는 String Array
       const [keyword, hashTags] = tokenize(inputString);
+      
+      // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색      
+      API.get("/room/search", {
+        params: {
+          searchWord: keyword,
+          hashTags: hashTags.join(",")
+        }
+      }).then(({ data }) => {
+        // 사용자 및 방제 검색
+        setTitleContents(data.body.searchByRoomName);
+        setCreatorContents(data.body.searchByCreaterName);
+        setHashTagsContents(data.body.findByHashTags);
 
-      // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색
-      await console.log("API를 호출했습니다.");
-      console.log("    검색어 : `" + keyword + "`");
-      console.log("    해시태그 : " + hashTags);
+        // 검색결과 창 표시
+        setIsSearched(true);
+      });
 
-      // 사용자 및 방제 검색
-      if (keyword !== "") {
-        setTitleContents([
-          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-          { title: "감자전 vs 김치전 어느 쪽이 더 존맛?", creator: "막걸리러버", viewers: 22, hashTags: ["감자전", "김치전", "전", "막걸리"] },
-        ]);
-        setCreatorContents([
-          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-        ]);
-      }
-      // 해시태그 검색
-      else {
-        setHashTagsContents([
-          { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-          { title: "감튀 vs 고구마튀김 어느 쪽이 주류?", creator: "콜레스테롤수집가", viewers: 80, hashTags: ["감자", "고구마", "튀김", "솔직히감튀임난"] },      
-        ]);
-      }
-      setIsSearched(true);
-
+      // 프론트 더미 데이터
+      // if (keyword !== "") {
+      //   setTitleContents([
+      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+      //     { title: "감자전 vs 김치전 어느 쪽이 더 존맛?", creator: "막걸리러버", viewers: 22, hashTags: ["감자전", "김치전", "전", "막걸리"] },
+      //   ]);
+      //   setCreatorContents([
+      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+      //   ]);
+      // }
+      // // 해시태그 검색
+      // else {
+      //   setHashTagsContents([
+      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
+      //     { title: "감튀 vs 고구마튀김 어느 쪽이 주류?", creator: "콜레스테롤수집가", viewers: 80, hashTags: ["감자", "고구마", "튀김", "솔직히감튀임난"] },      
+      //   ]);
+      // }
     }, 500)
     , []
   );
