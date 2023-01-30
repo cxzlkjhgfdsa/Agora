@@ -1,4 +1,7 @@
 spring:
+  redis:
+    host: 127.0.0.1 #redis host를 집어넣으면 됩니다
+    port: 6379    #redis port를 집어넣으면 됩니다
   config:
     activate:
       on-profile: local

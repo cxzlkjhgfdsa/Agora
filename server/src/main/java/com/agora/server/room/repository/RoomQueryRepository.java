@@ -4,6 +4,8 @@ import com.agora.server.room.controller.dto.ModalRoomSearchCondition;
 import com.agora.server.room.controller.dto.QResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
+import com.agora.server.room.domain.QRoomUser;
+import com.agora.server.room.domain.RoomUser;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -20,6 +22,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.agora.server.room.domain.QRoom.room;
+import static com.agora.server.room.domain.QRoomUser.roomUser;
 
 @Repository
 public class RoomQueryRepository {
@@ -31,7 +34,7 @@ public class RoomQueryRepository {
     }
 
     public List<ResponseRoomInfoDto> findByWatchCntTop5() {
-        return queryFactory.select(
+        List<ResponseRoomInfoDto> roomlist = queryFactory.select(
                         new QResponseRoomInfoDto(
                                 room.room_id,
                                 room.room_name,
@@ -45,11 +48,15 @@ public class RoomQueryRepository {
                                 room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
-                                room.room_state))
+                                room.room_state
+                        )
+                )
                 .from(room)
                 .orderBy(room.room_watch_cnt.desc())
                 .limit(5)
                 .fetch();
+
+        return roomlist;
     }
 
     public List<ResponseRoomInfoDto> findByWatchCntInprogress() {
