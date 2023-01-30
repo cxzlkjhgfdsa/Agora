@@ -5,7 +5,7 @@ import WelcomeImage from "assets/images/Welcome_Image.png";
 import styled from "styled-components";
 import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { userInfoState } from "stores/atoms";
+import { userInfoState } from "stores/userInfoState";
 import { useNavigate } from "react-router";
 
 const WelcomeWrapper = styled.div`

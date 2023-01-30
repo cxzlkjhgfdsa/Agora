@@ -171,6 +171,276 @@ function SearchRoom() {
           "room_thumbnail_url": "https://picsum.photos/400/225",
           "room_category": "음식"
         }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
+      ],
+      // 추가 데이터, Page 2
+      [
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 1",
+          "room_creater_name": "추가1",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#1",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 2",
+          "room_creater_name": "추가2",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#2",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        },
+        {
+          "room_id": 127,
+          "room_name": "추가 토론방 3",
+          "room_creater_name": "추가3",
+          "room_debate_type": "SHORT",
+          "room_opinion_left": "leftopinon",
+          "room_opinion_right": "rightopinion",
+          "room_hashtags": "#page1,#3",
+          "room_watch_cnt": 140,
+          "room_phase": 2,
+          "room_start_time": "2023-01-26T14:09:54.00494",
+          "room_thumbnail_url": "https://picsum.photos/400/225",
+          "room_category": "음식"
+        }
       ]];
       
       return data[page];
@@ -193,7 +463,7 @@ function SearchRoom() {
   useEffect(() => {
     // 마지막 요소가 view에 들어온데다 데이터 대기중도 아니고 마지막 페이지가 아닐 경우 페이지 갱신
     console.log(inView);
-    if (inView && !loading && page < 2) {
+    if (inView && !loading && page < 9) {
       setPage(current => current + 1);
     }
   }, [inView, loading, page]);

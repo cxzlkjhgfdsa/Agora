@@ -5,33 +5,3 @@ export const debateInfoState = atom({
   key: "debateInfoState",
   default: {position: "Speaker"},
 });
-
-// 검색창 검색 결과
-// 해시태그 검색 결과
-export const hashTagsSearchResultState = atom({
-  key: "HashTagsSearchResult",
-  default: [],
-});
-
-// 사용자 이름 검색 결과
-export const creatorSearchResultState = atom({
-  key: "CreatorSearchResult",
-  default: [],
-});
-
-// 방제 검색 결과
-export const titleSearchResultState = atom({
-  key: "TitleSearchResult",
-  default: [],
-});
-
-// 토글 메뉴 출력 여부
-export const showToggleMenuState = atom({
-  key: "ShowToggleMenu",
-  default: false,
-});
-// 토글 메뉴 아이템
-export const toggleMenuItemsState = atom({
-  key: "ToggleMenuItems",
-  default: [],
-});

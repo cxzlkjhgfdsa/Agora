@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import customAxios from "../../utils/customAxios";
 import Spinner from "../common/Spinner";
 
-import { userInfoState } from "../../stores/atoms";
+import { userInfoState } from "../../stores/userInfoState";
 import ErrorBoundary from "./ErrorBoundary";
 
  
