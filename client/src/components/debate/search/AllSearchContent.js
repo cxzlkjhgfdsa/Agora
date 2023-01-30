@@ -71,7 +71,7 @@ const EtcInfo = styled.span`
 `;
 
 function AllSearchContent({ content }) {
-  const roomUrl = content.room_id ? "/debate/room" + content.room_id : "/no-page";
+  const roomUrl = content.room_id ? "/debate/room/" + content.room_id : "/no-page";
   const title = content.room_name ? content.room_name : "토론방 정보 로딩 실패";
   const creator = content.room_creater_name;
   const viewers = content.room_watch_cnt;
