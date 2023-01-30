@@ -12,10 +12,8 @@ import java.util.UUID;
 public class UserAuthenticateInfo {
     private UUID id;
 
-    private SocialType socialType;
 
     public UserAuthenticateInfo(Claims claims) {
         this.id = UUID.fromString(claims.get("id").toString());
-        this.socialType = SocialType.valueOf(claims.get("socialType").toString());
     }
 }

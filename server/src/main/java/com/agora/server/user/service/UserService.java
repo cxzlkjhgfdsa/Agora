@@ -57,7 +57,7 @@ public class UserService {
         // login
         User userInfo = userRepository.findUserByUser_idAndUser_social_type(user.getUserId(), user.getSocialType());
         log.info("find user success");
-        String accessToken = jwtTokenProvider.createAccessToken(userInfo.getUser_id(), userInfo.getUser_social_type());
+        String accessToken = jwtTokenProvider.createAccessToken(userInfo.getUser_id());
         log.info("create access token");
         String refreshToken = jwtTokenProvider.createRefreshToken();
         log.info("create refresh token");
@@ -87,8 +87,11 @@ public class UserService {
         return categoryList;
     }
 
-    public void saveRefreshToken(UUID uuid, String refreshToken){
+    public void saveRefreshToken(UUID uuid, String refreshToken) {
         String userId = uuid.toString();
+        log.info("user service userid : " + userId);
         redisTemplate.opsForValue().set(userId, refreshToken, 10, TimeUnit.DAYS);
+        String token = (String) redisTemplate.opsForValue().get(userId);
+        System.out.println("token = " + token);
     }
 }

@@ -3,7 +3,6 @@ package com.agora.server.config;
 import com.agora.server.auth.filter.JwtAuthenticationFilter;
 import com.agora.server.auth.provider.JwtTokenProvider;
 import com.agora.server.config.filter.CorsFilterConfig;
-import com.agora.server.config.filter.MyFilter;
 import com.agora.server.user.oauth.OAuth2AuthenticationFailureHandler;
 import com.agora.server.user.oauth.OAuth2AuthenticationSuccessHandler;
 import com.agora.server.user.service.PrincipalOauth2UserService;
@@ -17,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Base64;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +49,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/room/**").authenticated()
+                .antMatchers("/api/v2/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
@@ -64,8 +65,7 @@ public class SecurityConfig {
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new MyFilter(), FilterSecurityInterceptor.class);
+                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

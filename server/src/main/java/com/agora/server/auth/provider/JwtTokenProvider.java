@@ -4,6 +4,7 @@ import com.agora.server.auth.dto.TokenType;
 import com.agora.server.auth.dto.UserAuthenticateInfo;
 import com.agora.server.user.controller.dto.SocialType;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -19,53 +20,57 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    @Value("jwt.secret")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    public JwtTokenProvider(String jwtSecret) {
-        this.jwtSecret = jwtSecret;
+    private String fromConfigSecret;
+
+    public JwtTokenProvider(String fromConfigSecret) {
+        log.info("fromConfigSecret: " + fromConfigSecret);
+        this.fromConfigSecret = getEncodedSecret(fromConfigSecret);
     }
 
-    public String createAccessToken(UUID userId, SocialType socialType) throws NoSuchFieldException {
-        if (userId == null || socialType == null) throw new NoSuchFieldException("사용자 정보가 없습니다.");
-        return generateToken(TokenType.ACCESS, userId, socialType);
+    private String getEncodedSecret(String secret) {
+        return Base64.getEncoder().encodeToString(secret.getBytes());
+
+    }
+
+
+    public String createAccessToken(UUID userId) throws NoSuchFieldException {
+        if (userId == null) throw new NoSuchFieldException("사용자 정보가 없습니다.");
+        return generateToken(TokenType.ACCESS, userId);
     }
 
     public String createRefreshToken() {
-        return generateToken(TokenType.REFRESH, null, null);
+        return generateToken(TokenType.REFRESH, null);
     }
 
     protected String generateToken(
             TokenType tokenType,
-            @Nullable UUID userId,
-            @Nullable SocialType socialType
+            @Nullable UUID userId
     ) {
-        log.info("jwt jwtSecret" + jwtSecret);
+        log.info("generate token secret " + getEncodedSecret(jwtSecret));
         Date now = new Date();
         switch (tokenType) {
             case ACCESS:
                 return Jwts.builder()
                         .claim("id", userId)
-                        .claim("socialType", socialType)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + Duration.ofMinutes(10).toMillis()))
-                        .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                        .signWith(SignatureAlgorithm.HS256, getEncodedSecret(jwtSecret))
                         .compact();
             case REFRESH:
                 return Jwts.builder()
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + Duration.ofDays(10).toMillis()))
-                        .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                        .signWith(SignatureAlgorithm.HS256, getEncodedSecret(jwtSecret))
                         .compact();
         }
         return null;
@@ -79,23 +84,28 @@ public class JwtTokenProvider {
             return null;
         } else if (isBearerToken(token)) {
             String accessToken = token.replace("Bearer ", "");
-            return resolveToken(accessToken);
+            return resolveToken(accessToken).getBody();
         }
         return null;
     }
 
     public boolean refreshTokenValidation(String refreshToken) {
-        return resolveToken(refreshToken) != null;
+        Jws<Claims> claimsJws = resolveToken(refreshToken);
+        System.out.println(claimsJws.getBody());
+        return true;
     }
 
-    public Claims resolveToken(String token) {
+    public Jws<Claims> resolveToken(String token) {
         log.info("token resolver working.....");
-        return Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-    }
+        if (fromConfigSecret == null)
+            fromConfigSecret = getEncodedSecret(jwtSecret);
 
+        log.info("jwt secret in resolve token: " + this.fromConfigSecret);
+        log.info("token: " + token);
+        return Jwts.parser()
+                .setSigningKey(this.fromConfigSecret)
+                .parseClaimsJws(token);
+    }
 
     private boolean isBearerToken(String header) {
         return header.startsWith("Bearer ");

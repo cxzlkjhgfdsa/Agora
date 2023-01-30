@@ -18,7 +18,7 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(nullPointerException.getMessage());
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -32,21 +32,21 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     public ResponseEntity<ResponseDTO> AlreadyExistUserException(AlreadyExistUserException a) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(a.getMessage());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
     }
 
     @ExceptionHandler(DuplicateNickNameException.class)
     public ResponseEntity<ResponseDTO> DuplicateNickNameException(DuplicateNickNameException d) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(d.getMessage());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
     }
 
     @ExceptionHandler(NoUserException.class)
     public ResponseEntity<ResponseDTO> NoUserException(NoUserException nu) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(nu.getMessage());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
     }
 
     @ExceptionHandler(TokenValidFailedException.class)
@@ -54,6 +54,14 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(jwt.getMessage());
         res.setState(false);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
+    }
+
+    @ExceptionHandler(NoSuchFieldException.class)
+    public ResponseEntity<ResponseDTO> NoSuchFieldException(NoSuchFieldException jwt) {
+        ResponseDTO res = new ResponseDTO();
+        res.setMessage(jwt.getMessage());
+        res.setState(false);
+        return ResponseEntity.ok(res);
     }
 }

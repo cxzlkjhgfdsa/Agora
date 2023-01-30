@@ -33,13 +33,13 @@ public class JwtAuthenticationFilter extends GenericFilter {
             }
         } catch (MalformedJwtException e) {
             log.error("손상된 토큰입니다.");
-            throw new TokenValidFailedException();
+            throw new TokenValidFailedException("손상된 토큰입니다.");
         } catch (DecodingException e) {
             log.error("잘못된 인증입니다.");
-            throw new TokenValidFailedException();
+            throw new TokenValidFailedException("잘못된 인증입니다.");
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다.");
-            throw new TokenValidFailedException();
+            throw new TokenValidFailedException("만료된 토큰입니다.");
         }finally {
             chain.doFilter(request, response);
         }

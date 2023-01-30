@@ -100,7 +100,7 @@ public class UserController {
         if (Ouser.isPresent()) {
             // 유저 정상적으로 찾았을 시
             User user = Ouser.get();
-            String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
+            String accessToken = tokenProvider.createAccessToken(user.getUser_id());
             String refreshToken = tokenProvider.createRefreshToken();
             //authRepository.save(RefreshToken.createRefreshToken(user.getUser_id(), refreshToken));
             userService.saveRefreshToken(user.getUser_id(), refreshToken);
@@ -110,7 +110,7 @@ public class UserController {
             loginResponseDto.setUserNickname(user.getUser_nickname());
             loginResponseDto.setUserPhoto(user.getUser_photo());
             loginResponseDto.setSocialType(user.getUser_social_type());
-            loginResponseDto.setAccessToken(acessToken);
+            loginResponseDto.setAccessToken(accessToken);
             responseDTO.setBody(loginResponseDto);
             responseDTO.setState(true);
             responseDTO.setStatusCode(200);
