@@ -8,7 +8,7 @@ import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import SearchResult from "./SearchResult";
 import { useSetRecoilState } from "recoil";
-import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
+import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/SearchRoomStates";
 import API from "api/axios";
 
 // 검색바 전체

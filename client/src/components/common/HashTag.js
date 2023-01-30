@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledHashTag = styled.span`
@@ -13,11 +12,9 @@ const StyledHashTag = styled.span`
 
 function HashTag({ tag, color }) {
   return (
-    <Link to={"/" + tag}>
-      <StyledHashTag color={color}>
-        {tag}
-      </StyledHashTag>
-    </Link>
+    <StyledHashTag color={color}>
+      {tag}
+    </StyledHashTag>
   );
 }
 

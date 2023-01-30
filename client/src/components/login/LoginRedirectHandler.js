@@ -1,11 +1,11 @@
-import { atom, selector, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom"
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 import customAxios from "../../utils/customAxios";
 import Spinner from "../common/Spinner";
 
-import { userInfoState } from "../../stores/atoms";
+import { userInfoState } from "../../stores/userInfoState";
 import ErrorBoundary from "./ErrorBoundary";
 
  
@@ -28,24 +28,26 @@ public class LoginResponseDto {
 */
 
 function LoginRedirectHandler() {
-    const [setUserInfo] = useSetRecoilState(userInfoState);
+    const setUserInfo = useSetRecoilState(userInfoState);
     const navigate = useNavigate();
 
-    const userId = new URL(window.location.href).searchParams.get("userId");
-
     const axios = customAxios();
+    const userId = new URL(window.location.href).searchParams.get("userId");
 
     useEffect(() => {
         async function getAccessTokenWithUserInfos() {
             try {
                 console.log("userId >> ", userId)
-                const { data } = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/total/oauth`, {
-                    data: {
-                        user_id : userId
-                    },
-                }); 
+                const { data } = await axios.post(
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/v1/user/login`, 
+                    { user_id : userId },
+                ); 
                 // response.data를 data라는 이름으로 저장
                 console.log("data >> ", data)
+                
+                if(!data.state) {
+                    throw new Error('data state is false')
+                }
 
                 // const { message, body: loginResponseDto, statusCode, state } = data
                 const loginResponseDto = data.body;
@@ -61,14 +63,13 @@ function LoginRedirectHandler() {
             }
         }
 
-        getAccessTokenWithUserInfos();
-        navigate("/");
+        getAccessTokenWithUserInfos().then(() => navigate("/debate/list"));
+    
     }, [setUserInfo, axios, navigate, userId]);
 
 
     return (
         <ErrorBoundary>
-            <h1>login handler</h1>
             <Spinner />
         </ErrorBoundary>
     )

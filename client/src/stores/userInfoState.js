@@ -1,21 +1,28 @@
-// import { atom } from "recoil";
-// import { recoilPersist } from "recoil-persist";
+import { atom } from "recoil";
 
-// export const persistAtom = recoilPersist({
-//   key: "user-info",
-//   storage: sessionStorage,
-// })
+const sessionStorageEffect = key => ({setSelf, onSet}) => {
+    const savedValue = sessionStorage.getItem(key)
+    if (savedValue != null) {
+      setSelf(JSON.parse(savedValue));
+    }
+  
+    onSet((newValue, _, isReset) => {
+      isReset
+        ? sessionStorage.removeItem(key)
+        : sessionStorage.setItem(key, JSON.stringify(newValue));
+    });
+}
 
-// export const userInfoState = atom({
-//     key: "userInfoState",
-//     default: { 
-//       isLoggedIn: false,
-//       accessToken: "",
-//       userId: "",
-//       userNickname: "",
-//       socialType: "",
-//       userPhoto: "",
-//     },
-//     effects_UNSTABLE: [persistAtom],
-//   });
+export const userInfoState = atom({
+    key: "userInfoState",
+    default: { 
+      isLoggedIn: false,
+      accessToken: "",
+      userId: "",
+      userNickname: "",
+      socialType: "",
+      userPhoto: "",
+    },
+    effects: [sessionStorageEffect('user_info')],
+  });
 

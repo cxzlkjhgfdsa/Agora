@@ -10,7 +10,8 @@ import UserProfileIcon from "./UserProfileIcon";
 // 라우터 이동을 위한 Link
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { debateInfoState, userInfoState } from "stores/atoms";
+import { debateInfoState } from "stores/atoms";
+import { userInfoState } from "stores/userInfoState";
 
 import { useMediaQuery } from "react-responsive";
 

@@ -12,7 +12,8 @@ import RightComponents from "components/header/right/RightComponents";
 
 // 토론방 정보 및 사용자 정보 상태 관리
 import { useRecoilValue } from "recoil";
-import { debateInfoState, userInfoState } from "stores/atoms";
+import { debateInfoState } from "stores/atoms";
+import { userInfoState } from "stores/userInfoState";
 import { useCallback, useLayoutEffect, useState } from "react";
 
 import { debounce } from "lodash";
@@ -69,7 +70,6 @@ function Header() {
 
   // 스크롤이 멈췄는지 확인해주는 핸들러
   const stopScroll = useCallback((e) => {
-    console.log(123);
     // 스크롤이 가장 끝까지 올라가면 헤더 보여주기
     if (window.scrollY === 0) {
       setIsHeaderShow(true);
