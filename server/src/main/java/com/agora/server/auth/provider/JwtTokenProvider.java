@@ -33,7 +33,6 @@ public class JwtTokenProvider {
     private String fromConfigSecret;
 
     public JwtTokenProvider(String fromConfigSecret) {
-        log.info("fromConfigSecret: " + fromConfigSecret);
         this.fromConfigSecret = getEncodedSecret(fromConfigSecret);
     }
 
@@ -41,7 +40,6 @@ public class JwtTokenProvider {
         return Base64.getEncoder().encodeToString(secret.getBytes());
 
     }
-
 
     public String createAccessToken(UUID userId) throws NoSuchFieldException {
         if (userId == null) throw new NoSuchFieldException("사용자 정보가 없습니다.");
@@ -77,10 +75,8 @@ public class JwtTokenProvider {
     }
 
     public Claims accessTokenValidation(HttpServletRequest req) {
-        log.info("validate access token start");
         String token = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (isEmpty(token)) {
-            log.error("access token is null");
             return null;
         } else if (isBearerToken(token)) {
             String accessToken = token.replace("Bearer ", "");
@@ -89,19 +85,9 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean refreshTokenValidation(String refreshToken) {
-        Jws<Claims> claimsJws = resolveToken(refreshToken);
-        System.out.println(claimsJws.getBody());
-        return true;
-    }
-
     public Jws<Claims> resolveToken(String token) {
-        log.info("token resolver working.....");
         if (fromConfigSecret == null)
             fromConfigSecret = getEncodedSecret(jwtSecret);
-
-        log.info("jwt secret in resolve token: " + this.fromConfigSecret);
-        log.info("token: " + token);
         return Jwts.parser()
                 .setSigningKey(this.fromConfigSecret)
                 .parseClaimsJws(token);

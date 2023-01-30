@@ -24,14 +24,12 @@ public class TokenService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public String refreshAccessTokenByRefreshToken(HttpServletRequest req, HttpServletResponse res) throws NoSuchFieldException, IOException {
-        //ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         // access token resolve
         Claims claims = jwtTokenProvider.accessTokenValidation(req);
         UUID userId = UUID.fromString(claims.get("id").toString());
-        log.info("userid : " + userId);
+
 
         String refreshToken = redisTemplate.opsForValue().get(userId.toString());
-        log.info("refresh token: " + refreshToken);
         if (refreshToken == null)
             res.sendRedirect("/login");
         return jwtTokenProvider.createAccessToken(userId);
