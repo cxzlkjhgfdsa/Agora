@@ -1,9 +1,32 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { debateInfoState } from "stores/atoms";
+import customAxios from "utils/customAxios";
 
 function DebateList() {
   const setDebateInfo = useSetRecoilState(debateInfoState);
+
+  useEffect(() => {
+    async function getHot5() {
+      try {
+        const axios = customAxios();
+        const hot5List = axios.get(`${process.env.SERVER_BASE_URL}/room/main/hot5`).data.body;
+        console.log("hot5List ", hot5List);
+        return hot5List;
+      } catch(err) {
+        console.warn(err);
+      }
+    }
+
+    function setDebates(debateList) {
+      debateList.map((debate) => {
+
+      })
+    }
+
+    const hot5List = getHot5();
+  }, [])
 
   return (
     <div>
