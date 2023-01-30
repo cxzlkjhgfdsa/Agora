@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import RightArrow from "assets/icons/Right_Arrow_Yellow.png";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { searchKeywordState, searchStringHashTagsState } from "stores/SearchRoomStates";
 
 // 검색 유형, 모두보기 버튼을 갖는 Wrapper
 const StyledSearchType = styled.div`
@@ -36,10 +38,13 @@ function SearchType({ searchType }) {
     searchTypeLabel = "사용자 검색결과";
   }
 
+  const keyword = useRecoilValue(searchKeywordState);
+  const hashTags = useRecoilValue(searchStringHashTagsState);
+
   return (
     <StyledSearchType>
       <StyledTypeLabel>{searchTypeLabel}</StyledTypeLabel>
-      <Link to={"/debate/search/" + searchType} style={{ display: "flex", alignItems: "center" }}>
+      <Link to={`/debate/search?searchWord=${keyword}&hashTags=${hashTags}&searchType=${searchType}`} style={{ display: "flex", alignItems: "center" }}>
         <StyledSearchAll>모두보기</StyledSearchAll>
         <img src={RightArrow} style={{ marginLeft: "8px", width: "6px", height: "10px" }} alt={""} />
       </Link>
