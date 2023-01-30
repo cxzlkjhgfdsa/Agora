@@ -22,9 +22,4 @@ public class ServerApplication {
         SpringApplication.run(ServerApplication.class, args);
     }
 
-    @Bean
-    JPAQueryFactory jpaQueryFactory(EntityManager em){
-        return new JPAQueryFactory(em);
-    }
-
 }
