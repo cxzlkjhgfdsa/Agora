@@ -6,7 +6,8 @@ import ReadyButton from "./ReadyButton";
 import StartButton from "./StartButton";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { debateInfoState, showToggleMenuState } from "stores/atoms";
+import { debateInfoState } from "stores/atoms";
+import { showToggleMenuState } from "stores/ToggleMenuStates";
 import LogoIcon from "./LogoIcon";
 
 import HamburgerIcon from "assets/icons/Hamburger_Black.png";

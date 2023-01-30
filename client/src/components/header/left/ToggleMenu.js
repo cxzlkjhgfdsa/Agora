@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { showToggleMenuState, userInfoState } from "stores/atoms";
+import { showToggleMenuState } from "stores/ToggleMenuStates";
+import { userInfoState } from "stores/userInfoState";
 import styled from "styled-components";
 import SearchBar from "../center/SearchBar";
 import ToggleMenuItem from "./ToggleMenuItem";
