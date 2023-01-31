@@ -1,17 +1,23 @@
-FROM node:14-alpine AS builder
+FROM node:14-alpine as builder
+
+ENV REACT_APP_SERVER_BASE_URL http://i8a705.p.ssafy.io:9999/
 
 WORKDIR /app
-# package.json 워킹 디렉토리에 복사 (.은 설정한 워킹 디렉토리를 뜻함)
-COPY client/package.json .
-# 명령어 실행 (의존성 설치)
+
+COPY package.json .
+
 RUN npm install
-# 현재 디렉토리의 모든 파일을 도커 컨테이너의 워킹 디렉토리에 복사한다.
-COPY client/. .
 
+COPY . .
 
+RUN npm run build
 
-# 3000번 포트 노출
-EXPOSE 3000
+FROM nginx:1.19-alpine
 
-# npm start 스크립트 실행
-CMD ["npm", "start"]
+COPY --from=builder /app/build /usr/share/nginx/html
+
+COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
