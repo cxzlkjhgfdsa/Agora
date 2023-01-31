@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('client exist') {
       when {
-        expression { sh 'docker inspect --format '{{.Name}}' client &>/dev/null && sh exec/rm-client.sh || echo "Not exists"' }
+        expression { sh 'docker inspect --format "{{.Name}}" client &>/dev/null && sh exec/rm-client.sh || echo "Not exists"' }
       }
         }
         stage('client build') {
@@ -34,8 +34,7 @@ pipeline {
     }
     stage('server exist') {
       when {
-        expression { sh 'docker inspect --format '{{.Name}}' server &>/dev/null && sh exec/rm-server.sh || echo "Not exists"
-' }
+        expression { sh 'docker inspect --format "{{.Name}}" server &>/dev/null && sh exec/rm-server.sh || echo "Not exists"' }
       }
     }
     stage('server build') {
