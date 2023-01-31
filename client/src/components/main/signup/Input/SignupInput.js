@@ -1,7 +1,6 @@
 // 모듈 import
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -91,7 +90,7 @@ export default function SignUp() {
     // 3. birth valid 확인
     // 3.1. birthPattern 정의
     const birthPattern = /^([0-9][0-9]|20\d{2})(0[0-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/
-    let birth
+
     // 3.2. birth data 공백 확인
     if (birthData.length !== 6) {
       setBrithValid("notValid")

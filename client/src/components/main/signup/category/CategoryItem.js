@@ -5,10 +5,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import axios from "axios";
+import customAxios from "utils/customAxios";
 
 // 이동을 위한 useNavigate 선언
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // 사진 import
 import food from "../../../../assets/signup/food.jpg"
@@ -83,43 +83,40 @@ function CategoryItem() {
     >
       <CategoryButton image={image} isActive={select.includes(image.id)} />
     </Grid>
-
   ));
     
   // 다음 항목 이동을 위한 임시 함수
-  // const navigate = useNavigate();
-  // const moveToComplete = () => {
-  //   navigate("/user/signup/complete")
-  // }
+  const navigate = useNavigate();
 
   // 데이터 제출 함수
   const handleForm = () => {
-    
-    console.log(nameData)
-    console.log(nicknameData)
-    console.log(birthData)
-    console.log(phoneData)
-    console.log(socialData)
-    console.log(profileData)
 
-    // axios({
-    //   method: "post",
-    //   url: "https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/user/join",
-    //   data: inputData,
-    //   headers: {
-    //     withCredentials : true,
-    //   }
-    // })
-    // .then((response) => {
-    //   console.log(response.data)
-    //   console.log(inputData)
-    // })
-    // .catch((error) => {
-    //   console.log(error)
-    // })
-  
+    const axios = customAxios()
+
+    axios.post(
+      'https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/api/v1/user/join',
+      {
+        "user_name": nameData,
+        "user_age": birthData,
+        "user_nickname": nicknameData, 
+        "user_phone": phoneData, 
+        "user_photo": profileData, 
+        "user_social_type": socialData.type, 
+        "user_social_id": socialData.userId,
+        "categories" : select,
+      },
+      {
+      withCredentials: false
+      }
+    )
+    .then((response) => {
+      console.log(response.data)
+      navigate("/user/signup/complete")
+    })
+    .catch((error) => {
+      console.log(error)
+    })  
   }
-
 
   return(
     <ThemeProvider theme={theme}>
@@ -147,7 +144,6 @@ function CategoryItem() {
         </Container>
       </Box>
     </ThemeProvider>
-
   );
 }
 
