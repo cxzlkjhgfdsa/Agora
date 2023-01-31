@@ -1,23 +1,40 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { debateInfoState } from "stores/atoms";
+import { useCallback, useEffect } from "react";
+import { useRecoilState } from "recoil";
+
+import styled from "styled-components"
+
 import customAxios from "utils/customAxios";
 
+import Header from "../../Header";
+
+import { debateRoomsAtomFamily, debateRoomsSelectorFamily } from "stores/debateRoomStates";
+
 function DebateList() {
-  const setDebateInfo = useSetRecoilState(debateInfoState);
+  const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsAtomFamily);
+  const [debateRoomSelector, setDebateRoomSelector] = useRecoilState(debateRoomsSelectorFamily);
+
+  let debateList_hot = [];
+  let debateList_inProgress = [];
+  let debateList_waiting = [];
+
+  const getDebateList = useCallback(async (url) => {
+    const axios = customAxios();
+    try {
+      const debateList = (await axios.get(`${process.env.SERVER_BASE_URL}`+url)).data.body;
+      return debateList;
+    } catch(err) {
+      console.warn(err);
+    }
+  }, []);
+
+  const setDebateList = useCallback((debateList) => {
+    debateList.map((debate) => {
+
+    })
+  }, []);
 
   useEffect(() => {
-    async function getHot5() {
-      try {
-        const axios = customAxios();
-        const hot5List = axios.get(`${process.env.SERVER_BASE_URL}/room/main/hot5`).data.body;
-        console.log("hot5List ", hot5List);
-        return hot5List;
-      } catch(err) {
-        console.warn(err);
-      }
-    }
+    const hot5List = getDebateList("/room/main/hot5");
 
     function setDebates(debateList) {
       debateList.map((debate) => {
@@ -25,23 +42,39 @@ function DebateList() {
       })
     }
 
-    const hot5List = getHot5();
+    return (() => {
+      // reset all selector
+    })
   }, [])
 
   return (
-    <div>
-      <h1>This is DebateList page.</h1>
-      <Link to={"/debate/room/1"} onClick={() => setDebateInfo({isLeader: true, position: "Speaker"})}>
-        <h2>1번 방 들어가기 (방장, 발언자)</h2>
-      </Link>
-      <Link to={"/debate/room/2"} onClick={() => setDebateInfo({isLeader: false, position: "Speaker"})}>
-        <h2>2번 방 들어가기 (발언자)</h2>
-      </Link>
-      <Link to={"/debate/room/3"} onClick={() => setDebateInfo({isLeader: false, position: "Audience"})}>
-        <h2>3번 방 들어가기 (시청자)</h2>
-      </Link>
-    </div>
+    <MainWrapper>
+      <Header></Header>
+      <h1>메인 페이지</h1>
+      <DebateContainerHot debateList={debateList_hot}/>
+
+      <DebateContainerInProgress debateList={debateList_inProgress}/>
+      
+      <DebateContainerWaiting debateList={debateList_waiting}/>
+  
+    </MainWrapper>
   )
 }
 
 export default DebateList;
+
+const MainWrapper = styled.div`
+
+`
+
+const DebateContainerHot = styled.div`
+
+`
+
+const DebateContainerInProgress = styled.div`
+
+`
+
+const DebateContainerWaiting = styled.div`
+
+`
