@@ -6,34 +6,34 @@ pipeline {
         steps {
           script {
             try {
-              echo 'stop web service container'
-              sh 'docker stop server'
-              sh 'docker stop client'
-            }catch {
-              echo 'no container running'
+            echo 'stop web service container'
+            sh 'docker stop server'
+            sh 'docker stop client'
+            }catch (e) {
+            echo 'no container running'
             }
           }
         }
       }
-      stage('prune container'){
-        steps{
-          script {
-            try {
-              sh 'docker container prune'
-            } catch {
-              echo 'no container stopped'
-            }
-          }
-        }
-      }
-      stage('remove images'){
+      stage('prune container') {
         steps {
           script {
             try {
-              sh 'docker rmi agora:server'
-              sh 'docker rmi agora:client'
-            } catch {
-              echo 'no images exist'
+            sh 'docker container prune'
+            } catch (e) {
+            echo 'no container stopped'
+            }
+          }
+        }
+      }
+      stage('remove images') {
+        steps {
+          script {
+            try {
+            sh 'docker rmi agora:server'
+            sh 'docker rmi agora:client'
+            } catch (e) {
+            echo 'no images exist'
             }
           }
         }
