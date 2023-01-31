@@ -15,6 +15,10 @@ const StyledAllSearchContent = styled.div`
   align-items: center;
 
   position: relative;
+
+  padding-bottom: 32px;
+
+  box-shadow: 0px 4px 4px -4px #DCDCDC;  // 박스 그림자 설정
 `;
 
 const Thumbnail = styled.img`
