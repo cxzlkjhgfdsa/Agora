@@ -64,7 +64,7 @@ function CategoryItem() {
     {id: 9, url: study, title: '공부'},
     {id: 10, url: music, title: '음악'},
   ];
-
+ 
   // 최종 데이터
   const nameData = useRecoilValue(nameDataState)
   const nicknameData = useRecoilValue(nicknameDataState)
