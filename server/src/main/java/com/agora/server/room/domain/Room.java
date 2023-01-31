@@ -24,9 +24,6 @@ public class Room {
     @Column(length = 100)
     private String room_creater_name;
 
-//    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-//    private List<RoomUser> room_users = new ArrayList<>();
-
     @Column
     @Enumerated(EnumType.STRING)
     private DebateType room_debate_type;
@@ -40,13 +37,9 @@ public class Room {
     @Column(length = 200)
     private String room_hashtags;
 
-//    시청자수 -> rdbms & redis 둘다 관리하고 10초마다 업데이트
+    // 시청자수 -> rdbms & redis 둘다 관리하고 10초마다 업데이트
     @Column
     private Integer room_watch_cnt;
-
-//    토론 페이즈 -> redis
-//    @Column
-//    private Integer room_phase;
 
     // 방 시작 시간 -> 최신순용, 토론 페이즈 시작시간은 -> redis
     @Column
@@ -87,15 +80,9 @@ public class Room {
         room.room_thumbnail_url = room_thumbnail_url;
         room.room_category = room_category;
         room.room_watch_cnt = room_watch_cnt;
-//        room.room_phase = room_phase;
         room.room_start_time = LocalDateTime.now();
         return room;
     }
-
-//    public void addRoomUser(RoomUser roomUser){
-//        room_users.add(roomUser);
-//        roomUser.setRoom(this);
-//    }
 
     public void roomStart(){
         room_state = true;

@@ -95,11 +95,6 @@ public class InitRooms {
                 roomService.enterRoom(joinUser.getUser_id(),roomId,i%2);
 
                 roomService.roomPhaseStart(roomId,(i%3)+1);
-//                RoomUser roomUser = RoomUser.createRoomUser(joinUser);
-//                String userside = i % 2 == 0 ? "LEFT" : "RIGHT";
-//                roomUser.setRoom_user_side(userside);
-//                em.persist(roomUser);
-//                dummyRoom.addRoomUser(roomUser);
             }
 
             } catch (Exception e){

@@ -3,19 +3,12 @@ package com.agora.server.room.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.room.controller.dto.RequestRoomCreateDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
-import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
-import com.agora.server.room.controller.dto.RoomSearchCondition;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
