@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 import People from "assets/icons/People.png";
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import RoomInfo from "./RoomInfo";
+import { debounce, set } from "lodash";
 
 // a 태그 그림에 딱 맞게
 const StyledLink = styled(Link)`
@@ -17,7 +18,7 @@ const Wrapper = styled.div`
     : "width: 400px; height: 225px;"}
   position: relative;
 `;
-const FakeDiv = styled.div`
+const ThumbnailInfoWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: #FFFFFF;
@@ -25,6 +26,18 @@ const FakeDiv = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+
+  ${({ isHovered }) => isHovered
+    ? "z-index: 1;"
+    : ""}
+
+  &:hover {
+    width: 800px;
+    height: 450px;
+    transition: 0.5s;
+    transition-delay: 500ms;
+  }
+  transition: 0.5s;
 `;
 const StyledThumbnail = styled.div`
   // 크기 설정
@@ -36,16 +49,6 @@ const StyledThumbnail = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-
-  &:hover {
-    top: -75px;
-    width: 800px;
-    height: 450px;
-    z-index: 1;
-    transition: 0.5s;
-    transition-delay: 500ms;
-  }
-  transition: 0.5s;
 `;
 
 const StyledBackgroundImage = styled.img`
@@ -208,6 +211,40 @@ function Thumbnail({ type, content }) {
 
   const to_02d = (value) => value < 10 ? "0" + value : value;
 
+  // 호버 체크
+  const [isMouseEnter, setIsMouseEnter] = useState(false);
+  const [isMouseLeave, setIsMouseLeave] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const expand = () => {
+    setIsMouseEnter(true);
+    setIsMouseLeave(false);
+  };
+  const reduce = () => {
+    setIsMouseLeave(true);
+    setIsMouseEnter(false);
+  }
+  const expandOrReduce = useCallback(
+    debounce(() => {
+      // 0.5초 후에도 계속 호버되어 있다면 확장
+      if (isMouseEnter) {
+        setIsHovered(true);
+        setIsMouseEnter(false);
+      }
+      // 0.5초 후에도 마우스가 나와있다면 축소
+      else if (isMouseLeave) {
+        setIsHovered(false);
+        setIsMouseLeave(false);
+      }
+    }, 500)
+    , [isMouseEnter, isMouseLeave]
+  );
+
+  // 호버 상태가 바뀔 때마다 썸네일 확장 또는 축소
+  useEffect(() => {
+    // 마우스가 진입하거나 나갈 경우 실행
+    expandOrReduce();
+  }, [isMouseEnter, isMouseLeave]);
+
   // 타이머
   const interval = useRef(null);
   const [secondsState, setSecondsState] = useState(seconds);
@@ -227,49 +264,56 @@ function Thumbnail({ type, content }) {
   return (
     <Wrapper type={type}>
       <StyledLink to={`/debate/room/${roomId}`}>
-        <StyledThumbnail>
-          {/* 배경 이미지 및 반투명 검은 배경 */}
-          <FakeDiv />
-          <StyledBackgroundImage src={imageUrl} />
-          <HalfClearBlack />
+        <ThumbnailInfoWrapper
+          isHovered={isHovered}
+          onMouseEnter={expand}
+          onMouseLeave={reduce}
+        >
+          <StyledThumbnail>
+            {/* 배경 이미지 및 반투명 검은 배경 */}
+            <StyledBackgroundImage src={imageUrl} />
+            <HalfClearBlack />
         
-          {/* 방제 */}
-          <Title type={type} title={title}>
-            {title}
-          </Title>
+            {/* 방제 */}
+            <Title type={type} title={title}>
+              {title}
+            </Title>
 
-          {/* 중앙부 대립 의견 */}
-          <Center type={type}>
-            {/* 왼쪽 의견 */}
-            <Opinion type={type} title={leftOpinion}>{leftOpinion}</Opinion>
+            {/* 중앙부 대립 의견 */}
+            <Center type={type}>
+              {/* 왼쪽 의견 */}
+              <Opinion type={type} title={leftOpinion}>{leftOpinion}</Opinion>
 
-            {/* VS */}
-            <Versus type={type}>VS</Versus>
+              {/* VS */}
+              <Versus type={type}>VS</Versus>
 
-            {/* 오른쪽 의견 */}
-            <Opinion type={type} title={rightOpinion}>{rightOpinion}</Opinion>
-          </Center>
+              {/* 오른쪽 의견 */}
+              <Opinion type={type} title={rightOpinion}>{rightOpinion}</Opinion>
+            </Center>
       
-          {/* 하단부 시청자 및 페이즈 정보 */}
-          <Footer>
-            {/* 시청자 */}
-            <FooterInfo>
-              <ViewersIcon type={type} src={People} />
-              <StyledFont type={type}>{viewers}</StyledFont>
-              <StyledFont type={type}>명</StyledFont>
-            </FooterInfo>
+            {/* 하단부 시청자 및 페이즈 정보 */}
+            <Footer>
+              {/* 시청자 */}
+              <FooterInfo>
+                <ViewersIcon type={type} src={People} />
+                <StyledFont type={type}>{viewers}</StyledFont>
+                <StyledFont type={type}>명</StyledFont>
+              </FooterInfo>
 
-            {/* 페이즈 */}
-            <FooterInfo>
-              <StyledFont type={type}>{phases}</StyledFont>
-              <StyledFont type={type}>&nbsp;페이즈&nbsp;</StyledFont>
-              <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
-              <StyledFont type={type}>&nbsp;:&nbsp;</StyledFont>
-              <StyledFont type={type}>{to_02d(secondsState)}</StyledFont>
-            </FooterInfo>
-          </Footer>
-        </StyledThumbnail>
-        <RoomInfo content={content} />
+              {/* 페이즈 */}
+              <FooterInfo>
+                <StyledFont type={type}>{phases}</StyledFont>
+                <StyledFont type={type}>&nbsp;페이즈&nbsp;</StyledFont>
+                <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
+                <StyledFont type={type}>&nbsp;:&nbsp;</StyledFont>
+                <StyledFont type={type}>{to_02d(secondsState)}</StyledFont>
+              </FooterInfo>
+            </Footer>
+          </StyledThumbnail>
+          {isHovered
+            ? <RoomInfo content={content} />
+            : null}
+        </ThumbnailInfoWrapper>
       </StyledLink>
     </Wrapper>
   );

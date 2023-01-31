@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
 const RoomInfoWrapper = styled.div`
-  z-index: 2;
-  
   // 크기 설정
   width: 100%;
   height: 75%;
