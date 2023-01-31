@@ -68,6 +68,9 @@ const EtcInfo = styled.span`
   font-size: 1rem;
   line-height: 1rem;
   margin-right: 8px;
+
+  // 제목 이외 정보는 회색빛이 도는 색으로 표시
+  color: #4C4556;
 `;
 
 function AllSearchContent({ content }) {
