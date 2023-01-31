@@ -68,7 +68,7 @@ public class InitRooms {
             for(int i = 0; i < 100; i++){
                 DebateType debateType = i % 2 == 0 ? DebateType.FORMAL : DebateType.SHORT;
                 String category = (i%10)+"번";
-                Room dummyRoom = Room.createDummyRoom(i + "번", i + "작성자", debateType, "leftopinon", "rightopinion", "#" + (i%10) + ",#" + ((i + 200)%200+20), "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg", category);
+                Room dummyRoom = Room.createDummyRoom(i + "번", i + "작성자", debateType, "leftopinon", "rightopinion", "#" + (i%10) + ",#" + ((i + 200)%200+20), "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg", category, i);
                 if(i%3==0){
                     dummyRoom.roomStart();
                 }
@@ -93,6 +93,8 @@ public class InitRooms {
                 valueOperations.set(watchcntt, watchcnt);
 
                 roomService.enterRoom(joinUser.getUser_id(),roomId,i%2);
+
+                roomService.roomPhaseStart(roomId,(i%3)+1);
 //                RoomUser roomUser = RoomUser.createRoomUser(joinUser);
 //                String userside = i % 2 == 0 ? "LEFT" : "RIGHT";
 //                roomUser.setRoom_user_side(userside);

@@ -31,6 +31,9 @@ public class ResponseRoomInfoDto {
 
     private Integer room_phase;
 
+    private Integer room_phase_current_time_minute;
+    private Integer room_phase_current_time_second;
+
     private LocalDateTime room_start_time;
 
     private String room_thumbnail_url;

@@ -8,6 +8,7 @@ import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -119,6 +120,27 @@ public class RoomService {
         return false;
     }
 
+
+    public Long roomPhaseStart(Long roomId, Integer phase){
+
+        // Redis에 "rooms:토론방id:column명" 을 key로 필요한 정보들 저장
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        // 토론 방 페이즈
+        String phasekey = "rooms:"+ roomId +":phase";
+
+        // 토론 방 페이즈 시작시간
+        String phasestarttimekey = "rooms:"+roomId+":phasetime";
+
+        Long serverTime = System.currentTimeMillis()/1000L;
+
+        // 저장
+        valueOperations.set(phasekey, phase);
+        valueOperations.set(phasestarttimekey,serverTime);
+
+        return roomId;
+    }
+
     public List<ResponseRoomInfoDto> searchHot5() {
 
         List<ResponseRoomInfoDto> byWatchCntTop5 = roomQueryRepository.findByWatchCntTop5();
@@ -207,13 +229,24 @@ public class RoomService {
     }
 
     private void setPhaseAndTime(ResponseRoomInfoDto responseRoomInfoDto, Long roomId) {
-        // 토론 방 페이즈 방 생성시는 0
-        String phase = "rooms:"+ roomId +":phase";
-        // 토론 방 페이즈의 시작 시간 방 생성시는 0
-        String phasestarttime = "rooms:"+ roomId +":phasetime";
-        Integer resphase = (Integer) redisTemplate.opsForValue().get(phase);
+        // 토론 방 페이즈
+        String phasekey = "rooms:"+ roomId +":phase";
+        // 토론 방 페이즈의 시작 시간
+        String phasestarttimekey = "rooms:"+ roomId +":phasetime";
+        Integer resphase = (Integer) redisTemplate.opsForValue().get(phasekey);
+        Long phaseStarttime = ((Integer) redisTemplate.opsForValue().get(phasestarttimekey)).longValue();
+        System.out.println(redisTemplate.opsForValue().get(phasestarttimekey));
+        System.out.println("phaseStarttime"+phaseStarttime);
+        Long currentTime = System.currentTimeMillis() / 1000L;
+        Long timeDifference = currentTime - phaseStarttime;
+        Integer minutes = (int) ((timeDifference / 60) % 60);
+        Integer seconds = (int) (timeDifference % 60);
+
+        String currentPhaseTime = minutes+":"+seconds;
+
         responseRoomInfoDto.setRoom_phase(resphase);
-//            responseRoomInfoDto.setRoom_phase_time();
+        responseRoomInfoDto.setRoom_phase_current_time_minute(minutes);
+        responseRoomInfoDto.setRoom_phase_current_time_second(seconds);
     }
 
 //    private void setWatchCnt(ResponseRoomInfoDto responseRoomInfoDto, Long roomId) {
