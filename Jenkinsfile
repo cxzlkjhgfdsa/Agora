@@ -1,28 +1,43 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
     stages {
-        stage('client exist') {
-      when {
-        expression { sh 'docker inspect client &> /dev/null' }
-      }
-      steps {
-        echo 'client containser exist...'
-        sh 'docker stop client'
-        sh 'docker rm -f client'
-        sh 'docker rmi agora:client'
-      }
+      stage('stop web service') {
+        steps {
+          script {
+            try {
+              echo 'stop web service container'
+              sh 'docker stop server'
+              sh 'docker stop client'
+            }catch {
+              echo 'no container running'
+            }
+          }
         }
-        stage('server exist') {
-      when {
-        expression { sh 'docker inspect server &> /dev/null' }
       }
-      steps {
-        echo 'server container exist...'
-        sh 'docker stop server'
-        sh 'docker rm server'
-        sh 'docker rmi agora:server'
-      }
+      stage('prune container'){
+        steps{
+          script {
+            try {
+              sh 'docker container prune'
+            } catch {
+              echo 'no container stopped'
+            }
+          }
         }
+      }
+      stage('remove images'){
+        steps {
+          script {
+            try {
+              sh 'docker rmi agora:server'
+              sh 'docker rmi agora:client'
+            } catch {
+              echo 'no images exist'
+            }
+          }
+        }
+      }
         stage('client build') {
       steps {
         echo 'client dockerfile build......'
