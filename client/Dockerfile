@@ -1,6 +1,6 @@
 FROM node:14-alpine as builder
 
-ENV REACT_APP_SERVER_BASE_URL http://i8a705.p.ssafy.io:9999/
+ENV REACT_APP_SERVER_BASE_URL i8a705.p.ssafy.io:9999/api/
 
 WORKDIR /app
 
@@ -12,12 +12,8 @@ COPY client/. .
 
 RUN npm run build
 
-FROM nginx:1.19-alpine
-
 COPY --from=builder /app/build /usr/share/nginx/html
 
-COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
+EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
