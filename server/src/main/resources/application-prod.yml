@@ -5,6 +5,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  redis:
+    host: 127.0.0.1 #redis host를 집어넣으면 됩니다
+    port: 6379
   datasource:
     url: jdbc:mariadb://${database.hostname}:3306/${database.schema}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
     username: ${database.username}
