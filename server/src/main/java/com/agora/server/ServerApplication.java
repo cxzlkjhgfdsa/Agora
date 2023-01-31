@@ -12,9 +12,6 @@ import javax.persistence.EntityManager;
 
 
 @SpringBootApplication
-@PropertySource(value = {
-        "classpath:env/env.yml"
-}, factory = EnvConfig.class)
 @EnableAspectJAutoProxy
 public class ServerApplication {
 
