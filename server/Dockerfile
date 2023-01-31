@@ -11,6 +11,7 @@ COPY server/build.gradle .
 COPY server/settings.gradle .
 COPY server/src src
 RUN chmod +x ./gradlew
+RUN ./gradlew compileQuerydsl
 RUN ./gradlew bootJar
 
 FROM adoptopenjdk:11-hotspot
