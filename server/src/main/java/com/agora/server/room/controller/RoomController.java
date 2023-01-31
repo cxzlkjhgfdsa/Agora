@@ -29,7 +29,7 @@ public class RoomController {
      * @param rcDto
      * @return roomId와 방이 정상적으로 생성되었다는 메세지 리턴
      */
-    @PostMapping("roo/create")
+    @PostMapping("room/create")
     public ResponseEntity<ResponseDTO> roomCreate(@RequestBody RequestRoomCreateDto rcDto){
         Room createdRoom = Room.createRoom(rcDto.getRoom_name(),rcDto.getRoom_creater_name(),rcDto.getRoom_debate_type(),
                 rcDto.getRoom_opinion_left(),rcDto.getRoom_opinion_right(),
@@ -45,7 +45,7 @@ public class RoomController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("roo/enter/debater")
+    @PutMapping("room/enter/debater")
     public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterDto requestRoomEnterDto){
 
         boolean isEntered = roomService.enterRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());

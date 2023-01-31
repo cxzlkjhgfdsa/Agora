@@ -42,7 +42,7 @@ public class Room {
 
 //    시청자수 -> rdbms & redis 둘다 관리하고 10초마다 업데이트
     @Column
-    private Long room_watch_cnt;
+    private Integer room_watch_cnt;
 
 //    토론 페이즈 -> redis
 //    @Column

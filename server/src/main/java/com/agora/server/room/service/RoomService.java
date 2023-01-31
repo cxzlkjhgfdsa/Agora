@@ -120,8 +120,20 @@ public class RoomService {
     }
 
     public List<ResponseRoomInfoDto> searchHot5() {
-        return roomQueryRepository.findByWatchCntTop5();
+
+        List<ResponseRoomInfoDto> byWatchCntTop5 = roomQueryRepository.findByWatchCntTop5();
+
+        for (ResponseRoomInfoDto responseRoomInfoDto : byWatchCntTop5) {
+            Long roomId = responseRoomInfoDto.getRoom_id();
+            setUserLists(responseRoomInfoDto, roomId);
+            setPhaseAndTime(responseRoomInfoDto, roomId);
+//            setWatchCnt(responseRoomInfoDto, roomId);
+        }
+        return byWatchCntTop5;
     }
+
+
+
 
     public Map<String, List<ResponseRoomInfoDto>> searchDropdown(RoomSearchCondition roomSearchCondition){
         Map<String, List<ResponseRoomInfoDto>> searchMap = new HashMap<>();
@@ -167,4 +179,50 @@ public class RoomService {
     public Page<ResponseRoomInfoDto> modalRoomSearch(ModalRoomSearchCondition modalRoomSearchCondition, Pageable pageable) {
         return roomQueryRepository.findAllByModalConditionPages(modalRoomSearchCondition, pageable);
     }
+
+    private void setUserLists(ResponseRoomInfoDto responseRoomInfoDto, Long roomId) {
+        String leftuserlist = "rooms:"+ roomId +":leftuserlist";
+        ArrayList<String> leftuserls = new ArrayList<>();
+        if(redisTemplate.type("rooms:"+ roomId +":leftuserlist")!=null){
+            List<Object> range = redisTemplate.opsForList().range("rooms:"+ roomId +":leftuserlist", 0, -1);
+            for (Object o : range) {
+                leftuserls.add((String) o);
+            }
+            responseRoomInfoDto.setLeft_user_list(leftuserls);
+        } else{
+            responseRoomInfoDto.setLeft_user_list(leftuserls);
+        }
+
+        String rightuserlist = "rooms:"+ roomId +":rightuserlist";
+        ArrayList<String> rightuserls = new ArrayList<>();
+        if(redisTemplate.type("rooms:"+ roomId +":rightuserlist")!=null){
+            List<Object> range = redisTemplate.opsForList().range("rooms:"+ roomId +":rightuserlist", 0, -1);
+            for (Object o : range) {
+                rightuserls.add((String) o);
+            }
+            responseRoomInfoDto.setRight_user_list(rightuserls);
+        } else{
+            responseRoomInfoDto.setRight_user_list(rightuserls);
+        }
+    }
+
+    private void setPhaseAndTime(ResponseRoomInfoDto responseRoomInfoDto, Long roomId) {
+        // 토론 방 페이즈 방 생성시는 0
+        String phase = "rooms:"+ roomId +":phase";
+        // 토론 방 페이즈의 시작 시간 방 생성시는 0
+        String phasestarttime = "rooms:"+ roomId +":phasetime";
+        Integer resphase = (Integer) redisTemplate.opsForValue().get(phase);
+        responseRoomInfoDto.setRoom_phase(resphase);
+//            responseRoomInfoDto.setRoom_phase_time();
+    }
+
+//    private void setWatchCnt(ResponseRoomInfoDto responseRoomInfoDto, Long roomId) {
+//        // 토론 방 페이즈의 시청자 수 방 생성시는 0
+//        String watchcnt = "rooms:"+ roomId +":watchcnt";
+//        Integer reswatchcnt = (Integer) redisTemplate.opsForValue().get(watchcnt);
+//
+//        responseRoomInfoDto.setRoom_watch_cnt(reswatchcnt);
+//    }
+
+
 }
