@@ -8,7 +8,7 @@ COPY client/package.json .
 
 RUN npm install
 
-COPY . .
+COPY client/. .
 
 RUN npm run build
 

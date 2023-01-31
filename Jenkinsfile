@@ -25,9 +25,7 @@ pipeline {
         }
         stage('client build') {
       steps {
-        echo 'client dockerfile build......'
         sh 'docker build -f client/Dockerfile -t agora:client .'
-        echo 'client build success ........'
       }
       post {
         success {
