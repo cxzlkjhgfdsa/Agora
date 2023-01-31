@@ -1,33 +1,45 @@
-import { Suspense, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { debateRoomsAtomFamily } from "stores/debateRoomStates";
+import { Suspense, useEffect, memo } from "react";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { debateRoomsAtomFamily, debateRoomsSelectorFamily } from "stores/debateRoomStates";
 import Spinner from "../../common/Spinner"
 
-/* 
-props: 
-      roomId: params.room_id,
-      roomName: params.room_name,
-      roomCreaterName: params.room_creater_name,
-      roomDebateType: params.room_debate_type,
-      roomOpinionLeft: params.room_opinion_left,
-      roomOpinionRight: params.room_opinion_right,
-      roomHashtags: params.room_hashtags,
-      roomWatchCnt: params.room_watch_cnt,
-      roomPhase: params.room_phase,
-      roomStartTime: params.room_start_time,
-      roomThumbnailUrl: params.room_thumbnail_url,
-      roomCategory: params.room_category,
-*/
+function Debate({ roomInfo }) {
+    const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsAtomFamily(roomInfo.room_id));
+    const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.user_id));
 
-function Debate(props) {
-    
-    const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsAtomFamily(props.room_id));
+    useEffect(() => {
+        const newRoomInfo = {
+            leftUserList: roomInfo.left_user_list,
+            rightUserList: roomInfo.right_user_list,
+            roomCategory: roomInfo.room_category,
+            roomCreaterName: roomInfo.room_creater_name,
+            roomDebateType: roomInfo.room_debate_type,
+            roomHashtags: roomInfo.room_hashtags,
+            roomId: roomInfo.room_id,
+            roomName: roomInfo.room_name,
+            roomOpinionLeft: roomInfo.room_opinion_left,
+            roomOpinionRight: roomInfo.room_opinion_right,
+            roomPhase: roomInfo.room_phase,
+            roomPhaseCurrentTimeMinute: roomInfo.room_phase_current_time_minute,
+            roomPhaseCurrentTimeSecond: roomInfo.room_phase_current_time_second,
+            roomStartTime: roomInfo.room_start_time,
+            roomState: roomInfo.room_state,
+            roomThumbnailUrl: roomInfo.room_thumbnail_url,
+            roomWatchCnt: roomInfo.room_watch_cnt,
+        }
+        setDebateRoom(newRoomInfo)
+
+        return (() => {
+            resetDebateRoom();
+        })
+    }, [setDebateRoom, resetDebateRoom])
 
     return (
         <>
-            <h1>{props.room_id}</h1>
+            <h1>debateId: {roomInfo.room_id}</h1>
+            <h2>debateId: {debateRoom.roomId}</h2>
         </>
     )
 }
 
-export default Debate;
+export default memo(Debate);
