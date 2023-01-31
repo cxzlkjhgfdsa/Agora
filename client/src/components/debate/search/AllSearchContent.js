@@ -15,6 +15,10 @@ const StyledAllSearchContent = styled.div`
   align-items: center;
 
   position: relative;
+
+  padding-bottom: 32px;
+
+  box-shadow: 0px 4px 4px -4px #DCDCDC;  // 박스 그림자 설정
 `;
 
 const Thumbnail = styled.img`
@@ -68,10 +72,13 @@ const EtcInfo = styled.span`
   font-size: 1rem;
   line-height: 1rem;
   margin-right: 8px;
+
+  // 제목 이외 정보는 회색빛이 도는 색으로 표시
+  color: #4C4556;
 `;
 
 function AllSearchContent({ content }) {
-  const roomUrl = content.room_id ? "/debate/room" + content.room_id : "/no-page";
+  const roomUrl = content.room_id ? "/debate/room/" + content.room_id : "/no-page";
   const title = content.room_name ? content.room_name : "토론방 정보 로딩 실패";
   const creator = content.room_creater_name;
   const viewers = content.room_watch_cnt;

@@ -1,5 +1,8 @@
+import HashTag from "components/common/HashTag";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
+import NoImageAvailable from "assets/icons/No_Image_Available.png";
 
 const StyledSearchContent = styled.div`
   width: 26rem;
@@ -20,6 +23,8 @@ const Thumbnail = styled.img`
   position: absolute;
   top: 0;
   left: 0;
+
+  object-fit: scale-down;
 `;
 
 const InfoWrapper = styled.div`
@@ -54,15 +59,15 @@ const EtcInfo = styled.span`
 `;
 
 function SearchContent({ content }) {
-  const roomId = content.room_id;
-  const title = content.room_name;
+  const roomUrl = content.room_id ? "/debate/room/" + content.room_id : "/no-page";
+  const title = content.room_name ? content.room_name : "토론방 정보 로딩 실패";
   const creator = content.room_creater_name;
   const viewers = content.room_watch_cnt;
-  const hashTags = content.room_hashtags.split(",");
-  const imageUrl = content.room_thumbnail_url;
+  const hashTags = content.room_hashtags ? content.room_hashtags.split(",") : [];
+  const imageUrl = content.room_thumbnail_url ? content.room_thumbnail_url : NoImageAvailable;
 
   return (
-    <Link to={"/debate/room/" + roomId}>
+    <Link to={roomUrl}>
       <StyledSearchContent>
         <Thumbnail src={imageUrl} />
         <InfoWrapper>
@@ -78,8 +83,8 @@ function SearchContent({ content }) {
           
           {/* 해시태그 */}
           <EtcInfoWrapper>
-            {hashTags.map((item) => (
-              <EtcInfo key={item}>{ item }</EtcInfo>
+            {hashTags.map((item, index) => (
+              <HashTag key={item + index} tag={item} color={"#CFCFCF"} />
             ))}
           </EtcInfoWrapper>
         </InfoWrapper>
