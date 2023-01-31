@@ -3,12 +3,31 @@ pipeline {
     stages {
         stage('client exist') {
       when {
-        expression { sh 'docker inspect --format "{{.Name}}" client &>/dev/null && sh exec/rm-client.sh || echo "Not exists"' }
+        expression { sh 'docker inspect client &> /dev/null' }
+      }
+      steps {
+        echo 'client containser exist...'
+        sh 'docker stop client'
+        sh 'docker rm -f client'
+        sh 'docker rmi agora:client'
+      }
+        }
+        stage('server exist') {
+      when {
+        expression { sh 'docker inspect server &> /dev/null' }
+      }
+      steps {
+        echo 'server container exist...'
+        sh 'docker stop server'
+        sh 'docker rm server'
+        sh 'docker rmi agora:server'
       }
         }
         stage('client build') {
       steps {
+        echo 'client dockerfile build......'
         sh 'docker build -f client/Dockerfile -t agora:client .'
+        echo 'client build success ........'
       }
       post {
         success {
@@ -19,24 +38,6 @@ pipeline {
         }
       }
         }
-    stage('client run') {
-      steps {
-        sh 'docker run --name client -d -p 3000:3000  agora:client'
-      }
-      post {
-        success {
-          echo 'client run success'
-        }
-        failure {
-          echo 'client run failed'
-        }
-      }
-    }
-    stage('server exist') {
-      when {
-        expression { sh 'docker inspect --format "{{.Name}}" server &>/dev/null && sh exec/rm-server.sh || echo "Not exists"' }
-      }
-    }
     stage('server build') {
       steps {
         sh 'docker build -f server/Dockerfile -t agora:server .'
@@ -60,6 +61,19 @@ pipeline {
         }
         failure {
           echo 'server run failed'
+        }
+      }
+    }
+    stage('client run') {
+      steps {
+        sh 'docker run --name client -d -p 3000:3000  agora:client'
+      }
+      post {
+        success {
+          echo 'client run success'
+        }
+        failure {
+          echo 'client run failed'
         }
       }
     }
