@@ -50,7 +50,8 @@ function SearchRoom() {
         hashTags: hashTags,
         page: page,
         size: 10
-      }
+      },
+      withCredentials: false,
     }).then(({ data }) => {
       // 데이터 분해
       const body = data.body;
