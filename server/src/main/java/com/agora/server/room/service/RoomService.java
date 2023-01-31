@@ -81,7 +81,6 @@ public class RoomService {
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
 
         try {
-
             // side 0 == LEFT SIDE로 가정
             if (side == 0) {
                 String leftuserlist = "rooms:" + roomId + ":leftuserlist";
