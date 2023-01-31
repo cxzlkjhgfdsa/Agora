@@ -4,7 +4,7 @@ ENV REACT_APP_SERVER_BASE_URL http://i8a705.p.ssafy.io:9999/
 
 WORKDIR /app
 
-COPY package.json .
+COPY client/package.json .
 
 RUN npm install
 
