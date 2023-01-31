@@ -6,7 +6,7 @@ import MyPageIcon from "assets/icons/Mypage_White.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { userInfoState } from "stores/atoms";
+import { userInfoState } from "stores/userInfoState";
 import { useMediaQuery } from "react-responsive";
 
 const Wrapper = styled.div`

@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { showToggleMenuState } from "stores/atoms";
+import { showToggleMenuState } from "stores/ToggleMenuStates";
 
 export default function ScrollToTop() {
   const { pathname } = useLocation();
