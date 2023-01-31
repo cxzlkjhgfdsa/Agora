@@ -2,19 +2,57 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import FormHelperText from '@mui/material/FormHelperText';
+import { useState, useEffect } from 'react';
 
 // recoil import
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+// recoil : 데이터 유효성 검사용
 import { birthValidState } from 'stores/SignUpStates';
+// recoil : 데이터 최종 저장용
+import { birthDataState } from 'stores/SignUpStates';
 
 function BirthInput({color}) {
 
+  // 유효성 검사용 데이터
   const [birthValid, setBirthValid] = useRecoilState(birthValidState);
-  
-  // birthValid 초기화 함수
-  const resetBrithValid = () => {
+  // 데이터 저장용 
+  const [year, setYear] = useState("")
+  const [month, setMonth] = useState("")
+  const [day, setDay] = useState("")
+  const setBirthData = useSetRecoilState(birthDataState)
+
+  // 입력 데이터 관리
+  const handleData = (e) => {
+    const value = e.target.value
+    const id = e.target.id
+
+    if (id === "year") {
+      setYear(value)
+    }
+    else if (id === "month") {
+      if (value.length === 2) {
+        setMonth(value)
+      }
+      else {
+        setMonth("0" + value)
+      }
+    }
+    else {
+      if (value.length === 2) {
+        setDay(value)
+      }
+      else {
+        setDay("0" + value)
+      }
+    }
+
+    // 유효성 검사 초기화
     setBirthValid("notChecked")
   }
+
+  useEffect(() => {
+    setBirthData(year + month + day)
+  },[year, month, day])
 
   return(
     <Grid container item xs={12} spacing={1}>
@@ -28,7 +66,7 @@ function BirthInput({color}) {
           autoComplete="year"
           color={color}
           error={birthValid==="notValid" ? true : false}
-          onChange={resetBrithValid}
+          onChange={handleData}
         />
       </Grid>
       <Grid item xs={4}>
@@ -41,7 +79,7 @@ function BirthInput({color}) {
           autoComplete="month"
           color={color}
           error={birthValid==="notValid" ? true : false}
-          onChange={resetBrithValid}
+          onChange={handleData}
         />
       </Grid>
       <Grid item xs={4}>
@@ -54,7 +92,7 @@ function BirthInput({color}) {
           autoComplete="date"
           color={color}
           error={birthValid==="notValid" ? true : false}
-          onChange={resetBrithValid}
+          onChange={handleData}
         />
       </Grid>
       <FormHelperText error sx={{marginLeft: 3}}>

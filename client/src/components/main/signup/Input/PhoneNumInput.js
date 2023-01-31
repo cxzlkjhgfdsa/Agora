@@ -5,13 +5,10 @@ import Grid from '@mui/material/Grid';
 import axios from 'axios';
 
 // recoil import
-import { useRecoilState } from 'recoil';
-import { phoneCheckState } from 'stores/SignUpStates';
-import { phoneValidState } from 'stores/SignUpStates';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { phoneCheckState, phoneValidState, phoneDataState } from 'stores/SignUpStates';
 
 function PhoneNumInput({color}) {
-  
-
 
   // state 선언
   const [phoneNum, setPhoneNum] = useState("")
@@ -23,6 +20,8 @@ function PhoneNumInput({color}) {
   const [authNum, setAuthNum] = useState(null)
   // 인증 번호 입력 변수
   const [authInputNum, setAuthInputNum] = useState(null)
+  // 최종 전화번호 저장 변수
+  const setPhoneData = useSetRecoilState(phoneDataState)
 
   // 전화번호 데이터 저장
   const handlePhoneNum = (e) => {
@@ -56,9 +55,12 @@ function PhoneNumInput({color}) {
     })
     .then(() => {
       if (authNum === authInputNum) {
+        // 전화번호 인증 확인
         setIsValid("valid")
+        // 유효성 검사 요청
         setPhoneValid("notChecked")
-        console.log("yes")
+        // 최종 데이터 저장
+        setPhoneData(phoneNum)
       }
       else {
         setIsValid("notValid")
