@@ -20,11 +20,9 @@ public class Room {
     @Column(length = 100)
     private String room_name;
 
+    // 방장 이름
     @Column(length = 100)
     private String room_creater_name;
-
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<RoomUser> room_users = new ArrayList<>();
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -39,12 +37,11 @@ public class Room {
     @Column(length = 200)
     private String room_hashtags;
 
+    // 시청자수 -> rdbms & redis 둘다 관리하고 10초마다 업데이트
     @Column
-    private Long room_watch_cnt;
+    private Integer room_watch_cnt;
 
-    @Column
-    private Integer room_phase;
-
+    // 방 시작 시간 -> 최신순용, 토론 페이즈 시작시간은 -> redis
     @Column
     private LocalDateTime room_start_time;
 
@@ -54,6 +51,7 @@ public class Room {
     @Column
     private String room_category;
 
+    // 토론 시작 했는지 안했는지 확인
     @Column
     private boolean room_state;
 
@@ -71,7 +69,7 @@ public class Room {
     }
 
     // 더미 생성용 메서드 후에 삭제
-    public static Room createDummyRoom(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category,Long room_watch_cnt,Integer room_phase) {
+    public static Room createDummyRoom(String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, String room_thumbnail_url, String room_category, Integer room_watch_cnt) {
         Room room = new Room();
         room.room_name = room_name;
         room.room_creater_name = room_creater_name;
@@ -82,19 +80,14 @@ public class Room {
         room.room_thumbnail_url = room_thumbnail_url;
         room.room_category = room_category;
         room.room_watch_cnt = room_watch_cnt;
-        room.room_phase = room_phase;
         room.room_start_time = LocalDateTime.now();
         return room;
-    }
-
-    public void addRoomUser(RoomUser roomUser){
-        room_users.add(roomUser);
-        roomUser.setRoom(this);
     }
 
     public void roomStart(){
         room_state = true;
     }
 
+    public void roomWatchCntUpdate(Integer watch_cnt){ room_watch_cnt = watch_cnt;}
 }
 

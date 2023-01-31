@@ -1,16 +1,13 @@
 package com.agora.server.room.controller;
 
-import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.room.controller.dto.ModalRoomSearchCondition;
 import com.agora.server.room.controller.dto.RequestRoomCategoryDto;
 import com.agora.server.room.controller.dto.ResponseRoomInfoDto;
 import com.agora.server.room.controller.dto.RoomSearchCondition;
-import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.RoomService;
 import com.agora.server.user.domain.User;
-import com.agora.server.user.dto.LoginDTO;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
