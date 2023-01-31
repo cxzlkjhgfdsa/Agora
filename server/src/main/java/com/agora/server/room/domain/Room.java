@@ -101,5 +101,6 @@ public class Room {
         room_state = true;
     }
 
+    public void roomWatchCntUpdate(Integer watch_cnt){ room_watch_cnt = watch_cnt;}
 }
 

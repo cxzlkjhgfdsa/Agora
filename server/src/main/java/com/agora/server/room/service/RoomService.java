@@ -16,12 +16,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class RoomService {
 
     private final RoomRepository roomRepository;
@@ -235,8 +239,7 @@ public class RoomService {
         String phasestarttimekey = "rooms:"+ roomId +":phasetime";
         Integer resphase = (Integer) redisTemplate.opsForValue().get(phasekey);
         Long phaseStarttime = ((Integer) redisTemplate.opsForValue().get(phasestarttimekey)).longValue();
-        System.out.println(redisTemplate.opsForValue().get(phasestarttimekey));
-        System.out.println("phaseStarttime"+phaseStarttime);
+        
         Long currentTime = System.currentTimeMillis() / 1000L;
         Long timeDifference = currentTime - phaseStarttime;
         Integer minutes = (int) ((timeDifference / 60) % 60);
@@ -256,6 +259,20 @@ public class RoomService {
 //
 //        responseRoomInfoDto.setRoom_watch_cnt(reswatchcnt);
 //    }
+
+    @Scheduled(cron = "0/10 * * * * *")
+    @Transactional
+    public void updateViewCount() {
+        List<Room> all = roomRepository.findAll();
+        for (Room room : all) {
+            Long roomId = room.getRoom_id();
+            String watchcntKey = "rooms:"+roomId+":watchcnt";
+            Integer watchcnt = (Integer) redisTemplate.opsForValue().get(watchcntKey);
+            // 테스트용 업데이트
+//            redisTemplate.opsForValue().set(watchcntKey,watchcnt+10);
+            room.roomWatchCntUpdate(watchcnt);
+        }
+    }
 
 
 }
