@@ -19,7 +19,7 @@ pipeline {
         steps {
           script {
             try {
-            sh 'docker container prune'
+            sh 'docker container prune -y'
             } catch (e) {
             echo 'no container stopped'
             }
