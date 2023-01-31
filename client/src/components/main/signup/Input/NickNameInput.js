@@ -5,17 +5,19 @@ import Grid from '@mui/material/Grid';
 import axios from 'axios';
 
 // recoil import
-import { useRecoilState } from 'recoil';
-import { nicknameCheckState } from 'stores/SignUpStates';
-import { nicknameValidState } from 'stores/SignUpStates';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { nicknameCheckState, nicknameValidState, nicknameDataState } from 'stores/SignUpStates';
 
-function NickNameInput({color}) {
+function NickNameInput({ color, defaultNickname }) {
 
   // useState 선언
-  const [nickName, setNickName] = useState("");
+  const [nickName, setNickName] = useState((defaultNickname ? defaultNickname : ""));
   // 닉네임 인증 확인용 변수
   const [isValid, setIsValid] = useRecoilState(nicknameCheckState)
   const [nicknameValid, setNicknameValid] = useRecoilState(nicknameValidState)
+  // 닉네임 저장용 변수 선언
+  const setNicknameData = useSetRecoilState(nicknameDataState)
+  
   
   // 닉네임 데이터 저장
   const handleNickName = (e) => {
@@ -39,21 +41,25 @@ function NickNameInput({color}) {
     })
     .then((response) => {
       if (response.data.state === "TRUE") {
+        // 유효 처리
         setIsValid("valid");
-        setNicknameValid("notChecked")
+        // 최종 확인 요청
+        setNicknameValid("notChecked");
+        // 최종 nickname 데이터 저장
+        setNicknameData(nickName)
       }
       else {
-        setIsValid("notValid")
+        setIsValid("notValid");
+        setNicknameData(null)
       }
     })
     .catch((error) => {
       console.log(error)
     });
-    
-
-  }
+  };
 
   return(
+    
     <Grid item xs={12} container spacing={2}>
       <Grid item xs={9}>
         <TextField
@@ -66,6 +72,7 @@ function NickNameInput({color}) {
           color={color}
           onChange={handleNickName}
           error={isValid === 'notValid' | nicknameValid === 'notValid' ? true : false}
+          defaultValue={defaultNickname}
           helperText={isValid === "notValid" 
             ? "이미 사용 중인 닉네임입니다" 
             : (isValid === "valid" 

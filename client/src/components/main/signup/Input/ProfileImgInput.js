@@ -2,8 +2,12 @@ import styled from '@emotion/styled';
 import ProfileImage from '../../../../assets/signup/ProfileImage.png'
 import Button from '@mui/material/Button';
 import { Grid } from '@mui/material';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { SubText } from '../content/ContentBox';
+
+// recoil import
+import { useSetRecoilState } from 'recoil';
+import { profileDataState } from 'stores/SignUpStates';
 
 const PreviewImage = styled.img`
   height: 180px;
@@ -11,10 +15,13 @@ const PreviewImage = styled.img`
 `;
 
 
-function ImageInput({color}) {
+function ImageInput({ color, defaultProfile }) {
 
-  //이미지 주소를 업로드하는 상태
-  const [imgFile, setImgFile] = useState("");
+  // 이미지 주소를 업로드하는 state
+  const [imgFile, setImgFile] = useState(defaultProfile);
+  // 최종 프로필 이미지 저장 state
+  const setProfileData = useSetRecoilState(profileDataState)
+  // 참조 위치
   const imgRef = useRef();
 
   // 이미지 업로드 input의 onChange
@@ -32,6 +39,13 @@ function ImageInput({color}) {
     imgRef.current.value = "";
     setImgFile("");
   }
+
+  // 컴포넌트가 unmount 될 때, 최종 데이터 저장
+  useEffect(() => {
+    return (
+      setProfileData(imgFile)
+    )
+  })
 
   return(
     <Grid container item xs={12} spacing={2} sx={{marginTop: 5}}>
