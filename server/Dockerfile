@@ -1,10 +1,10 @@
-#FROM openjdk:11-jdk
-#COPY build/libs/*.jar app.jar
-#ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
 FROM adoptopenjdk:11-hotspot AS builder
 ENV USE_PROFILE dev
+ENV HOST_NAME localhost
+ENV SCHEMA localagora
+ENV USERNAME root
+ENV PASSWORD 1234
+ENV JWT_SECRET slfjlskdfjslkf
 COPY server/gradlew .
 COPY server/gradle gradle
 COPY server/build.gradle .
@@ -17,4 +17,4 @@ FROM adoptopenjdk:11-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
 EXPOSE 8888
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}","/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "/app.jar"]
