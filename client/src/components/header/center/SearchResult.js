@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
+import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/SearchRoomStates";
 import styled from "styled-components";
 import SearchResultSet from "./SearchResultSet";
 

@@ -7,8 +7,8 @@ import SearchIcon from "assets/icons/Search_Gray.png";
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import SearchResult from "./SearchResult";
-import { useSetRecoilState } from "recoil";
-import { creatorSearchResultState, hashTagsSearchResultState, titleSearchResultState } from "stores/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { creatorSearchResultState, hashTagsSearchResultState, searchStringHashTagsState, searchKeywordState, titleSearchResultState } from "stores/SearchRoomStates";
 import API from "api/axios";
 
 // 검색바 전체
@@ -70,29 +70,33 @@ function SearchBar() {
   // 검색결과 존재 여부 State, 검색결과 창 띄우기
   const [isSearched, setIsSearched] = useState(false);
 
+  // 검색 키워드 문자열 및 해시태그 문자열
+  const [keyword, setKeyword] = useRecoilState(searchKeywordState);
+  const [stringHashTags, setStringHashTags] = useRecoilState(searchStringHashTagsState);
+
   // 키워드, 해시태그 토큰화
   const tokenize = (inputString) => {
     let tokens = inputString.split(" ");  // 공백 기준 토큰화
 
-    let keyword = "";  // 키워드
-    let hashTags = [];  // 해시태그 리스트
+    let localKeyword = "";  // 키워드
+    let localHashTags = [];  // 해시태그 리스트
 
     // 소문자로 변환하여 해시태그 통일
     tokens.forEach(element => {
       if (element !== "") {  // 빈칸 건너뛰기
         if (element.startsWith("#")) {  // 해시태그 처리
           element = element.toLowerCase();  // 소문자로 변환하여 해시태그 통일
-          hashTags.push(element.toLowerCase());  // 해시태그 리스트에 추가
+          localHashTags.push(element);  // 해시태그 리스트에 추가
         } else {  // 키워드 처리
-          if (keyword.length !== 0) {  // 앞에 단어가 있을 경우 띄어쓰기 부착
-            keyword += " ";
+          if (localKeyword.length !== 0) {  // 앞에 단어가 있을 경우 띄어쓰기 부착
+            localKeyword += " ";
           }
-          keyword += element;  // 키워드 연장
+          localKeyword += element;  // 키워드 연장
         }
       }
     });
-    
-    return [keyword, hashTags];
+
+    return [localKeyword, localHashTags];
   };
 
   // Change Event Listener
@@ -127,13 +131,13 @@ function SearchBar() {
       }
       
       // 키워드와 해시태그 토큰화, 키워드는 String, 해시태그는 String Array
-      const [keyword, hashTags] = tokenize(inputString);
+      const [localKeyword, localHashTags] = tokenize(inputString);
       
       // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색      
       API.get("/room/search", {
         params: {
-          searchWord: keyword,
-          hashTags: hashTags.join(",")
+          searchWord: localKeyword,
+          hashTags: localHashTags.join(",")
         }
       }).then(({ data }) => {
         // 사용자 및 방제 검색
@@ -143,25 +147,11 @@ function SearchBar() {
 
         // 검색결과 창 표시
         setIsSearched(true);
-      });
 
-      // 프론트 더미 데이터
-      // if (keyword !== "") {
-      //   setTitleContents([
-      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-      //     { title: "감자전 vs 김치전 어느 쪽이 더 존맛?", creator: "막걸리러버", viewers: 22, hashTags: ["감자전", "김치전", "전", "막걸리"] },
-      //   ]);
-      //   setCreatorContents([
-      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-      //   ]);
-      // }
-      // // 해시태그 검색
-      // else {
-      //   setHashTagsContents([
-      //     { title: "감자 vs 고구마 존심 대결", creator: "감자", viewers: 100, hashTags: ["감자", "고구마", "구황작물"] },
-      //     { title: "감튀 vs 고구마튀김 어느 쪽이 주류?", creator: "콜레스테롤수집가", viewers: 80, hashTags: ["감자", "고구마", "튀김", "솔직히감튀임난"] },      
-      //   ]);
-      // }
+        // 모두보기 컴포넌트에서 사용하기 위해, 키워드와 해시태그를 전역 상태로 등록
+        setKeyword(localKeyword);
+        setStringHashTags(localHashTags.join(","));
+      });
     }, 500)
     , []
   );
@@ -169,8 +159,8 @@ function SearchBar() {
   // Enter Event
   const pressEnter = (event) => {
     if (event.key === "Enter") {
-      // event.target.value 대신 Recoil Atom 만들어서 관리하기
-      alert("엔터를 눌렀으며 검색어는 `" + event.target.value + "` 입니다.");
+      const [localKeyword, localHashTags] = tokenize(event.target.value);
+      alert("엔터를 눌렀으며 검색어는 `" + localKeyword + "`, 해시태그는 `" + localHashTags.join(",") + "` 입니다.");
     }
   };
 
@@ -184,7 +174,9 @@ function SearchBar() {
         onChange={changeEvent}
         onKeyDown={pressEnter}
       />
-      {isSearched && <SearchResult />}
+      {isSearched
+        ? <SearchResult />
+        : null}
     </StyledSearchBar>
   );
 }
