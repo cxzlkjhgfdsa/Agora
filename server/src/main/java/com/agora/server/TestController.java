@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class TestController {
-    @GetMapping("hello")
+    @GetMapping("/")
     public String hello() {
         log.info("this is back server");
         return "hello";
