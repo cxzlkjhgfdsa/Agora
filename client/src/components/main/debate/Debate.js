@@ -1,7 +1,8 @@
 import { Suspense, useEffect, memo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { debateRoomsAtomFamily, debateRoomsSelectorFamily } from "stores/debateRoomStates";
-import Spinner from "../../common/Spinner"
+
+import styled from "styled-components" 
 
 function Debate({ roomInfo }) {
     const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsAtomFamily(roomInfo.room_id));
@@ -35,11 +36,19 @@ function Debate({ roomInfo }) {
     }, [setDebateRoom, resetDebateRoom])
 
     return (
-        <>
+        <StyledDebate>
             <h1>debateId: {roomInfo.room_id}</h1>
             <h2>debateId: {debateRoom.roomId}</h2>
-        </>
+        </StyledDebate>
     )
 }
 
 export default memo(Debate);
+
+const StyledDebate = styled.div`
+width: 50px;
+height: 100%;
+border: 1px solid black;
+flex: none;
+margin: 0px 10px;
+`

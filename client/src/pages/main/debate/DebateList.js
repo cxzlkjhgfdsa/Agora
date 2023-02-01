@@ -9,10 +9,9 @@ import Spinner from "../../../components/common/Spinner"
 import DebateContainerHot from "../../../components/main/debate/DebateContainerHot";
  
 function DebateList() {
-  // let debateList_hot = useRef([]);
-  // let debateList_inProgress = useRef([]);
-  // let debateList_waiting = useRef([]);
   let [debateListHot, setDebateListHot] = useState([]);
+  let [debateListInProgress, setDebateListInProgress] = useState([]);
+  let [debateListWaiting, setDebateListWaiting] = useState([]);
 
   const axios = customAxios();
 
@@ -178,15 +177,20 @@ function DebateList() {
   return (
     <MainWrapper>
       <Header></Header>
-      <h1>메인 페이지</h1>
         { debateListHot.length === 0
           ? <Spinner />
           : <DebateContainerHot debateList={debateListHot}/>
         }
 
-      {/* <DebateContainerInProgress debateList={debateList_inProgress.current}/> */}
-      
-      {/* <DebateContainerWaiting debateList={debateList_waiting.current}/> */}
+        {/* { debateListHot.length === 0
+          ? <Spinner />
+          : <DebateContainerInProgress debateList={debateListInProgress}/>
+        } 
+        
+        { debateListHot.length === 0
+          ? <Spinner />
+          : <DebateContainerWaiting debateList={debateListWaiting}/>
+        } */}
   
     </MainWrapper>
   )
