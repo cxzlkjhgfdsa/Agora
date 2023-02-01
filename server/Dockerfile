@@ -17,5 +17,5 @@ RUN ./gradlew clean bootJar
 FROM adoptopenjdk:11-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
-EXPOSE 8888
+EXPOSE 9999
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "/app.jar"]
