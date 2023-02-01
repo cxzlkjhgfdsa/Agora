@@ -7,33 +7,10 @@ pipeline {
           script {
             try {
             echo 'stop web service container'
-            sh 'docker stop server'
-            sh 'docker stop client'
+            sh 'docker stop server || true && docker rm server || true'
+            sh 'docker stop client || true && docker rm client || true'
             }catch (e) {
             echo 'no container running'
-            }
-          }
-        }
-      }
-      stage('prune container') {
-        steps {
-          script {
-            try {
-            sh 'docker container prune -y'
-            } catch (e) {
-            echo 'no container stopped'
-            }
-          }
-        }
-      }
-      stage('remove images') {
-        steps {
-          script {
-            try {
-            sh 'docker rmi agora:server'
-            sh 'docker rmi agora:client'
-            } catch (e) {
-            echo 'no images exist'
             }
           }
         }
@@ -90,6 +67,11 @@ pipeline {
         failure {
           echo 'client run failed'
         }
+      }
+    }
+    state('finish') {
+      steps {
+        sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
       }
     }
     }
