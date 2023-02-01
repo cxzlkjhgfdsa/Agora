@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1")
 public class RoomController {
 
     private final RoomService roomService;
@@ -51,11 +51,10 @@ public class RoomController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("room/enter/{type}")
-    public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterDto requestRoomEnterDto, @PathVariable String type) throws OpenViduJavaClientException, OpenViduHttpException {
+    @PostMapping("room/enter")
+    public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
+        String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getType());
 
-
-        String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), type);
         boolean isEntered = roomService.enterRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
 
         ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
