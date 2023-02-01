@@ -16,4 +16,6 @@ public class RequestRoomEnterDto {
 
     private Integer userSide;
 
+    private String type;
+
 }
