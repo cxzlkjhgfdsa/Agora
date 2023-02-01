@@ -23,7 +23,7 @@
 # CMD ["nginx", "-g", "daemon off;"]
 
 FROM node:14-alpine AS builder
-ENV REACT_APP_SERVER_BASE_URL http://localhost:9999/api
+ENV REACT_APP_SERVER_BASE_URL http://127.0.0.1:9999/api
 WORKDIR /app
 # package.json 워킹 디렉토리에 복사 (.은 설정한 워킹 디렉토리를 뜻함)
 COPY client/package.json .
