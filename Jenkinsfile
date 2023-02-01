@@ -69,7 +69,7 @@ pipeline {
         }
       }
     }
-    state('finish') {
+    stage('finish') {
       steps {
         sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
       }
