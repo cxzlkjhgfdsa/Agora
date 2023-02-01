@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponseRoomEnterDto {
-    boolean isEnter;
-    String token;
+    private boolean isEnter;
+    private String token;
 }

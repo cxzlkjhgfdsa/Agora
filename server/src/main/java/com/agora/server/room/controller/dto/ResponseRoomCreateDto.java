@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class ResponseRoomCreateDto {
-    Long roomId;
-    String token;
+    private Long roomId;
+    private String token;
 }
