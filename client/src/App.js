@@ -21,6 +21,7 @@ import MyPage from "pages/main/MyPage";
 import ScrollToTop from "components/common/ScrollToTop";
 import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 import SearchRoom from "pages/main/debate/SearchRoom";
+import TestPage from "pages/TestPage";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/debate/list" element={<DebateList />} />
             <Route path="/debate/room/:roomId" element={<DebateRoom />} />
             <Route path="/debate/search" element={<SearchRoom />} />
+            <Route path="/test-page" element={<TestPage />} />
           </Routes>
         </main>
       </BrowserRouter>
