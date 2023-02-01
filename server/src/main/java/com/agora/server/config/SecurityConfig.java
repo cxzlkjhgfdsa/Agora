@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/room/**").authenticated()
+                .antMatchers("room/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
