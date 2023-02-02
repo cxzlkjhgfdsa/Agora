@@ -2,20 +2,40 @@ import Debate from "./Debate"
 
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
 function DebateContainerHot(props) {
   const [debateList, setDebateList] = useState([]);
-  const [currX, setCurrX] = useState(0);
+  const [currIdx, setCurrIdx] = useState(0);
+  const [visibleCounts, setVisibleCounts] = useState(3);
+
+  const isBigScreen = useMediaQuery({ query: '(min-width: 1000px)'})
+  
+  useEffect(() => {
+    isBigScreen ? setVisibleCounts(3) : setVisibleCounts(2);
+    console.log("isBigScreen >> ", isBigScreen)
+  }, [isBigScreen])
+
+  const prevSlide = () => {
+    console.log("prev btn clicked");
+    if (currIdx > 0) setCurrIdx(currIdx - 1);
+    console.log("currIdx >> ", currIdx)
+  }
+
+  const nextSlide = () => {
+    console.log("next btn clicked");
+    if (currIdx + visibleCounts < 5) setCurrIdx(currIdx + 1);
+    console.log("currIdx >> ", currIdx)
+  }
+
 
   // const axios = customAxios();
-
     // axios.get("/api/v1/search/main/hot5")
     //   .then(res => {
     //     console.log(res.data.body)
     //     setDebateListHot(res.data.body)
     //   })
     //   .catch(err => console.warn(err));
-
 
   useEffect(() => {
     setTimeout(() => {
@@ -165,31 +185,23 @@ function DebateContainerHot(props) {
     }, 1000)
   }, [])
 
-  const prevSlide = () => {
-    console.log("prev btn clicked")
-  }
-
-  const nextSlide = () => {
-    console.log("next btn clicked")
-  }
 
   return (
-      <OuterDebateWrapper>
-        <Button direction="left" onClick={prevSlide}>&#60;</Button>
-        <Button direction="right" onClick={nextSlide}>&#62;</Button>
-        <DebateWrapper>
+      <Container>
+        <Button direction="left" onClick={prevSlide}><Text>&#8249;</Text></Button>
+        <DebateWrapper currIdx={currIdx} visibleCounts={visibleCounts}>
           {debateList.map(debate => {
-            console.log("in map func >> ", debate)
-            return <Debate key={debate.room_id} roomInfo={debate} />
+            return <Debate key={debate.room_id} roomInfo={debate} visibleCounts={visibleCounts} />
           })}
         </DebateWrapper>
-      </OuterDebateWrapper>
+        <Button direction="right" onClick={nextSlide}><Text>&#8250;</Text></Button>
+      </Container>
   )
 } 
 
 export default DebateContainerHot;
 
-const OuterDebateWrapper = styled.div`
+const Container = styled.div`
   width: 100%;
   position: relative;
   background-color: tomato;
@@ -198,29 +210,48 @@ const OuterDebateWrapper = styled.div`
   justify-content: center;
 `
 
-
 const DebateWrapper = styled.div`
-  width: 90%;
-  display: flex;
+  --current-index: ${props => props.currIdx};
+  --visible-counts: ${props => props.visibleCounts};
+  transform: translateX(calc(-100% / var(--visible-counts) * var(--current-index)));
+  transition: transform 250ms ease-in-out;
 
+  
+  display: flex;
+  flex-grow: 1;
+  margin: 0 .25rem;
   background-color: #CCEEFF;
 
-  transform: translateX(-00%);
+`
+
+const Text = styled.div`
+  transition: transform 150ms ease-in-out;
 `
 
 const Button = styled.button`
-  position: absolute;
+  flex-grow: 0;
   width: 5%;
-  height: 100%;
-  ${props => props.direction === "left" ? "left: 0px;" : "right: 0px;"}
-  top:50%; transform: translateY(-50%);
+  margin: .25rem 0;
+  border-radius: 1rem;
+  ${props => props.direction === "left" 
+  ? "border-top-left-radius: 0; border-bottom-left-radius: 0;" 
+  : "border-top-right-radius: 0; border-bottom-right-radius: 0;"}
   opacity: 0.5;
+  transition: background-color 150ms ease-in-out;
   &:hover {
-    opacity: 0.8;
+    background-color: rgba(0, 0, 0, .5);
+    ${Text} {
+      transform: scale(2);
+    }
   }
   cursor: pointer;
-  z-index: 1; 
+  z-index: 10; 
 
-  font-size: 200%;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-size: 3rem;
+  line-height: 0;
 `
+

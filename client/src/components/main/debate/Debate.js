@@ -4,7 +4,7 @@ import { debateRoomsAtomFamily, debateRoomsSelectorFamily } from "stores/debateR
 
 import styled from "styled-components" 
 
-function Debate({ roomInfo }) {
+function Debate({ visibleCounts, roomInfo }) {
     const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsAtomFamily(roomInfo.room_id));
     const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.user_id));
 
@@ -36,9 +36,9 @@ function Debate({ roomInfo }) {
     }, [setDebateRoom, resetDebateRoom])
 
     return (
-        <StyledDebate>
+        <StyledDebate visibleCounts={visibleCounts}>
             <span>debateId: {roomInfo.room_id}</span><br></br>
-            <span>debateId: {debateRoom.roomId}</span>
+            <span>debateId: {debateRoom.roomId} asfasafasfasdfadfs</span>
         </StyledDebate>
     )
 }
@@ -46,9 +46,12 @@ function Debate({ roomInfo }) {
 export default memo(Debate);
 
 const StyledDebate = styled.div`
-  flex: 0 0 25%;
-  max-width: 25%;
+  flex: 0 0 ${props => 100 / props.visibleCounts}%;
+  max-width: ${props => 100 / props.visibleCounts}%;
   aspect-ratio: 16 / 9;
-  border: .1px solid black;
   padding: .25rem;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border:radius: .1rem;
+  overflow: hidden;
 `
