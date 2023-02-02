@@ -1,10 +1,12 @@
 FROM adoptopenjdk:11-hotspot AS builder
+# env 
 ENV USE_PROFILE dev
 ENV HOST_NAME localhost
 ENV SCHEMA localagora
 ENV USERNAME root
 ENV PASSWORD 1234
 ENV JWT_SECRET slfjlskdfjslkf
+# env finish
 COPY server/gradlew .
 COPY server/gradle gradle
 COPY server/build.gradle .
