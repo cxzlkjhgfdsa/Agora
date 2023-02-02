@@ -26,8 +26,8 @@ spring:
       client:
         registration:
           google: # /oauth2/authorization/google 이 주소를 동작하게 한다.
-            client-id: 1069869778654-r8v70k96o08io3t2ir7qf8jdlaavdlka.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 344895362990-l0ap8aav03aj2tjh5q51d3flbh7bku8a.apps.googleusercontent.com
+            client-secret: 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
             scope:
               - email
               - profile
