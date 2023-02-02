@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -84,7 +82,7 @@ public class Room {
         return room;
     }
 
-    public void roomStart(){
+    public void roomStartDebate(){
         room_state = true;
     }
 

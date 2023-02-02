@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Profile("local")
 @Component
@@ -161,9 +160,9 @@ public class InitRooms {
 //                openViduService.createSession(roomId);
 
                 ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-                String phaset = "rooms:"+roomId+":phase";
-                String phasestarttime = "rooms:"+roomId+":phasetime";
-                String watchcntt = "rooms:"+roomId+":watchcnt";
+                String phaset = "room:"+roomId+":phase";
+                String phasestarttime = "room:"+roomId+":phasetime";
+                String watchcntt = "room:"+roomId+":watchcnt";
 
                 Integer phase = idx%3+1;
                 // 저장
@@ -171,12 +170,12 @@ public class InitRooms {
                 valueOperations.set(phasestarttime, 0);
                 valueOperations.set(watchcntt, customDummy.getRoom_watch_cnt());
 
-                roomService.enterRoom(dummyUser1.getUser_id(),roomId,idx%2);
-                roomService.enterRoom(dummyUser2.getUser_id(),roomId,(idx+1)%2);
-                roomService.enterRoom(dummyUser3.getUser_id(),roomId,(idx+2)%2);
-                roomService.enterRoom(dummyUser4.getUser_id(),roomId,(idx+3)%2);
-                roomService.enterRoom(dummyUser5.getUser_id(),roomId,(idx+4)%2);
-                roomService.enterRoom(dummyUser6.getUser_id(),roomId,(idx+5)%2);
+                roomService.enterRoomAsDebater(dummyUser1.getUser_id(),roomId,idx%2);
+                roomService.enterRoomAsDebater(dummyUser2.getUser_id(),roomId,(idx+1)%2);
+                roomService.enterRoomAsDebater(dummyUser3.getUser_id(),roomId,(idx+2)%2);
+                roomService.enterRoomAsDebater(dummyUser4.getUser_id(),roomId,(idx+3)%2);
+                roomService.enterRoomAsDebater(dummyUser5.getUser_id(),roomId,(idx+4)%2);
+                roomService.enterRoomAsDebater(dummyUser6.getUser_id(),roomId,(idx+5)%2);
 
                 roomService.roomPhaseStart(roomId,phase);
             }
