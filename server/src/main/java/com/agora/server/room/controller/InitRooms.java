@@ -3,6 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.encrypt.domain.Encrypt;
+import com.agora.server.openvidu.service.OpenViduService;
 import com.agora.server.room.domain.DebateType;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.RoomService;
@@ -35,9 +36,11 @@ public class InitRooms {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+    private final OpenViduService openViduService;
+
     @PostConstruct
     public void init(){
-        initRoomService.init(redisTemplate, roomService);
+        initRoomService.init(redisTemplate, roomService, openViduService);
 
     }
 
@@ -48,7 +51,7 @@ public class InitRooms {
 
 
         @Transactional
-        public void init(RedisTemplate<String, Object> redisTemplate, RoomService roomService){
+        public void init(RedisTemplate<String, Object> redisTemplate, RoomService roomService, OpenViduService openViduService){
             try{
 
             User joinUser = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "123"
@@ -75,7 +78,7 @@ public class InitRooms {
                 }
                 em.persist(dummyRoom);
                 Long roomId = dummyRoom.getRoom_id();
-
+//                openViduService.createSession(roomId);
 
                 // Redis에 "rooms:토론방id:column명" 을 key로 필요한 정보들 저장
                 ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
@@ -155,6 +158,7 @@ public class InitRooms {
             for (Room customDummy : customDummies) {
                 idx++;
                 Long roomId = customDummy.getRoom_id();
+//                openViduService.createSession(roomId);
 
                 ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
                 String phaset = "rooms:"+roomId+":phase";

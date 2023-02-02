@@ -7,6 +7,7 @@ import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.ResponseRoomCreateDto;
 import com.agora.server.room.controller.dto.ResponseRoomEnterDto;
 import com.agora.server.room.domain.Room;
+import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -17,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("api/v2")
 public class RoomController {
 
     private final RoomService roomService;
     private final OpenViduService openViduService;
+    private final DebateService debateService;
 
     /**
      * 방을 생성
@@ -61,9 +63,46 @@ public class RoomController {
         responseRoomEnterDto.setEnter(isEntered);
         responseRoomEnterDto.setToken(token);
 
+        // Redis Pub/Sub에서 입장 메시지 송신하는 부분
+        // type의 토론자 -> pub와 관전자 -> sub로 구분
+        switch (requestRoomEnterDto.getType()){
+            case "pub" :
+                debateService.debaterEnter(requestRoomEnterDto);
+                break;
+            case "sub" :
+//                debateService.watcherEnter(requestRoomEnterDto);
+                break;
+        }
+
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(responseRoomEnterDto);
         responseDTO.setMessage("정상적으로 입장하였습니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * 방 나가기 api
+     * Redis Pub/Sub 테스트용으로 틀만 만들어놨습니다.
+     * 자유롭게 수정하세요
+     */
+    @PostMapping("room/leave")
+    public ResponseEntity<ResponseDTO> roomLeave (@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
+        // type의 토론자 -> pub와 관전자 -> sub로 구분
+        switch (requestRoomEnterDto.getType()){
+            case "pub" :
+                debateService.debaterLeave(requestRoomEnterDto);
+                break;
+            case "sub" :
+                break;
+        }
+
+        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setBody(responseRoomEnterDto);
+        responseDTO.setMessage("정상적으로 퇴장하였습니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
