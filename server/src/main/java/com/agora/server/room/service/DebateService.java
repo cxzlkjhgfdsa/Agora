@@ -1,12 +1,16 @@
 package com.agora.server.room.service;
 
+import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
+import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -204,9 +208,39 @@ public class DebateService {
      * 서버에서 Redis에 보낼 명령어
      * PUBLISH room:roomId [START] start debate
      */
-    public void startDebate(Long roomId) {
+    public void startDebate(RequestDebateStartDto requestDebateStartDto) throws NotReadyException {
+
+        Long roomId = requestDebateStartDto.getRoomId();
+        List<String> leftUserList = requestDebateStartDto.getLeft_user_list();
+        List<String> rightUserList = requestDebateStartDto.getRight_user_list();
+        List<Boolean> leftUserIsReady = requestDebateStartDto.getLeft_user_isReady();
+        List<Boolean> rightUserIsReady = requestDebateStartDto.getRight_user_isReady();
+
+        for (Boolean aBoolean : leftUserIsReady) {
+            if(aBoolean==false){
+                throw new NotReadyException("아직 준비가 안 된 유저가 있습니다.");
+            }
+        }
+        for (Boolean aBoolean : rightUserIsReady) {
+            if(aBoolean==false){
+                throw new NotReadyException("아직 준비가 안 된 유저가 있습니다.");
+            }
+        }
+
+
         String channelName = "room:" + roomId;
         redisPublisher.publishMessage(channelName, START_TAG + " start debate");
+
+        for (String userNickname : leftUserList) {
+            String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+            redisTemplate.delete(userisReady);
+        }
+
+        for (String userNickname : rightUserList) {
+            String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+            redisTemplate.delete(userisReady);
+        }
+
     }
 
     // 여기까지가 토론 준비방에서 일어나는 상태변화입니다

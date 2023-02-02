@@ -59,7 +59,12 @@ public class RoomController {
 
         ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
 
-        boolean isEntered = roomService.enterRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+        boolean isEntered = false;
+        if(requestRoomEnterDto.getType().equals("pub")){
+            roomService.enterRoomAsDebater(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+        } else if(requestRoomEnterDto.getType().equals("sub")){
+            roomService.enterRoomAsWatcher(requestRoomEnterDto.getRoomId());
+        }
 
         roomService.setRoomCurrentStatus(requestRoomEnterDto, responseRoomEnterDto);
 
@@ -89,7 +94,11 @@ public class RoomController {
     @PostMapping("room/leave")
     public ResponseEntity<ResponseDTO> roomLeave (@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        roomService.leaveRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+        if(requestRoomEnterDto.getType().equals("pub")){
+            roomService.leaveRoomAsDebater(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+        } else if(requestRoomEnterDto.getType().equals("sub")){
+            roomService.leaveRoomAsWatcher(requestRoomEnterDto.getRoomId());
+        }
 
         // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
         // type의 토론자 -> pub와 관전자 -> sub로 구분

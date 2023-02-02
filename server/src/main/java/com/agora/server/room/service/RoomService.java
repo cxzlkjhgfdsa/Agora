@@ -51,7 +51,7 @@ public class RoomService {
         String phase = "room:" + roomId + ":phase";
         // 토론 방 페이즈의 시작 시간 방 생성시는 0
         String phasestarttime = "room:" + roomId + ":phasetime";
-        // 토론 방 페이즈의 시청자 수 방 생성시는 0
+        // 토론 방의 시청자 수 방 생성시는 0
         String watchcnt = "room:" + roomId + ":watchcnt";
 
         // 저장
@@ -77,12 +77,13 @@ public class RoomService {
      * @param side
      * @return
      */
-    public boolean enterRoom(UUID userId, Long roomId, Integer side) {
+    public boolean enterRoomAsDebater(UUID userId, Long roomId, Integer side) {
         User user = userRepository.findById(userId).get();
 
         String userNickname = user.getUser_nickname();
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
+
 
         try {
             String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
@@ -92,19 +93,38 @@ public class RoomService {
                 String leftuserlist = "room:" + roomId + ":leftuserlist";
                 stringObjectListOperations.rightPush(leftuserlist, userNickname);
                 stringObjectValueOperations.set(userisReady,"FALSE");
+
+                String watchcnt = "room:" + roomId + ":watchcnt";
+                stringObjectValueOperations.increment(watchcnt);
                 return true;
             // side 1 == RIGHT SIDE로 가정
             } else if (side == 1) {
                 String rightuserlist = "room:" + roomId + ":rightuserlist";
                 stringObjectListOperations.rightPush(rightuserlist, userNickname);
                 stringObjectValueOperations.set(userisReady,"FALSE");
+
+                String watchcnt = "room:" + roomId + ":watchcnt";
+                stringObjectValueOperations.increment(watchcnt);
                 return true;
             }
         } catch (Exception e) {
             return false;
         }
+
         return false;
     }
+
+    public boolean enterRoomAsWatcher(Long roomId) {
+
+        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
+
+        String watchcnt = "room:" + roomId + ":watchcnt";
+
+        stringObjectValueOperations.increment(watchcnt);
+
+        return false;
+    }
+
 
     /**
      * 토론자 토론방 퇴장
@@ -119,7 +139,7 @@ public class RoomService {
      * @param side
      * @return
      */
-    public boolean leaveRoom(UUID userId, Long roomId, Integer side) {
+    public boolean leaveRoomAsDebater(UUID userId, Long roomId, Integer side) {
         User user = userRepository.findById(userId).get();
 
         String userNickname = user.getUser_nickname();
@@ -134,12 +154,18 @@ public class RoomService {
                 String leftuserlist = "room:" + roomId + ":leftuserlist";
                 stringObjectListOperations.remove(leftuserlist, 0 , userNickname);
                 redisTemplate.delete(userisReady);
+
+                String watchcnt = "room:" + roomId + ":watchcnt";
+                stringObjectValueOperations.decrement(watchcnt);
                 return true;
                 // side 1 == RIGHT SIDE로 가정
             } else if (side == 1) {
                 String rightuserlist = "room:" + roomId + ":rightuserlist";
                 stringObjectListOperations.remove(rightuserlist, 0,userNickname);
                 redisTemplate.delete(userisReady);
+
+                String watchcnt = "room:" + roomId + ":watchcnt";
+                stringObjectValueOperations.decrement(watchcnt);
                 return true;
             }
         } catch (Exception e) {
@@ -148,6 +174,16 @@ public class RoomService {
         return false;
     }
 
+    public boolean leaveRoomAsWatcher(Long roomId) {
+
+        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
+
+        String watchcnt = "room:" + roomId + ":watchcnt";
+
+        stringObjectValueOperations.decrement(watchcnt);
+
+        return false;
+    }
 
 
     /**
@@ -461,4 +497,11 @@ public class RoomService {
         }
 
     }
+
+    @Transactional
+    public void roomStart(Long roomId) {
+        Room room = roomRepository.findById(roomId).get();
+        room.roomStartDebate();
+    }
 }
+
