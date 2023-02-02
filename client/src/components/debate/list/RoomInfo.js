@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import styled from "styled-components";
 
 const RoomInfoWrapper = styled.div`
@@ -17,13 +16,13 @@ const RoomInfoWrapper = styled.div`
 const RoomInfoTitle = styled.p`
   // 크기 및 마진 설정
   width: calc( 100% - 6% );
-  height: calc( 20% - 16px );
   margin: 8px 3%;
 
   // 글꼴 설정
   color: #FFFFFF;
-  font-size: 2.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
+  vertical-align: middle;
 
   // 글자 초과 처리
   white-space: nowrap;
@@ -42,7 +41,7 @@ const IndentedInfoWrapper = styled.div`
 `;
 const ColorBarDiv = styled.div`
   // 크기 및 마진 설정
-  width: 2%;
+  width: 1%;
   height: calc( 100% - 8px );
   margin: 4px 0 4px 3%;
 
@@ -60,7 +59,7 @@ const Opinion = styled.p`
 
   // 글꼴 설정
   color: ${({ color }) => color};
-  font-size: 2.5rem;
+  font-size: 1.6rem;
   letter-spacing: -0.05rem;
 
   // 글자 초과 처리
@@ -73,7 +72,7 @@ const Word = styled.span`
 
   // 글꼴 설정
   color: ${({ color }) => color};
-  font-size: 2.5rem;
+  font-size: 1.6rem;
   letter-spacing: -0.05rem;
 `;
 
@@ -97,24 +96,17 @@ const HashTags = styled.div`
 const HashTag = styled.span`
   // 글꼴 설정
   color: #FFFFFF;
-  font-size: 2rem;
+  font-size: 1.2rem;
 
   // 마진 설정
   margin-right: 8px;
 `;
 
 function RoomInfo({ content }) {
-  const roomId = content.room_id;
-
   const title = content.room_name;
 
   const leftOpinion = content.room_opinion_left;
   const rightOpinion = content.room_opinion_right;
-
-  const viewers = content.room_watch_cnt;
-  const phases = content.room_phase;
-  const minutes = content.room_phase_current_time_minute;
-  const seconds = content.room_phase_current_time_second;
 
   const category = content.room_category;
 
@@ -127,9 +119,11 @@ function RoomInfo({ content }) {
   
   return (
     <RoomInfoWrapper>
-      <RoomInfoTitle title={title}>
-        {title}
-      </RoomInfoTitle>
+      <div style={{width: "100%", height: "20%", display: "flex", alignItems: "center"}}>
+        <RoomInfoTitle title={title}>
+          {title}
+        </RoomInfoTitle>
+      </div>
       <IndentedInfoWrapper>
         <ColorBarDiv color="#EF404A" />
         <Opinion color="#EF404A" title={leftOpinion}>{leftOpinion}</Opinion>
