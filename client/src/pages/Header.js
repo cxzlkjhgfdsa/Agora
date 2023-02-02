@@ -90,6 +90,7 @@ function Header() {
   const debounceScroll = debounce(stopScroll, 300);
   useLayoutEffect(() => {
     window.addEventListener("scroll", debounceScroll);
+    return () => window.removeEventListener("scroll", debounceScroll);
   }, [prevY]);
 
   if (!isHeaderShow) {
@@ -109,7 +110,7 @@ function Header() {
       </HeaderContents>
       
       {/* 토글 메뉴 */}
-      {isTablet && <ToggleMenu />}
+      {isTablet ? <ToggleMenu /> : null}
     </StyledHeader>
   );
 }

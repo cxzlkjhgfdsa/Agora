@@ -146,10 +146,10 @@ function UserProfileIcon({ nickname }) {
     <Wrapper className="bg-dark border-dark" expanded={isExpanded}>
       <Round className="bg-main border-main" />
       <IDLabel isExpanded={!isDesktop}>{nickname}</IDLabel>
-      {isDesktop &&
+      {isDesktop ?
         <>
           <Icon src={isExpanded ? ArrowUpIcon : ArrowDownIcon} onClick={expandProfile} />
-          {isExpanded &&
+          {isExpanded ?
             <ExpandedProfile>
               <Link to={"/user/mypage"}>
                 <ExpandedWhiteElement>
@@ -162,9 +162,9 @@ function UserProfileIcon({ nickname }) {
                 Logout
               </ExpandedRedElement>
             </ExpandedProfile>
-          }
+            : null}
         </>
-      }
+        : null}
     </Wrapper>
   );
 }

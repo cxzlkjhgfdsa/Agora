@@ -73,8 +73,8 @@ function LeftComponents() {
 
   return (
     <Wrapper>
-      {isDesktop && DesktopComponents}
-      {isTablet && TabletComponents}
+      {isDesktop ? DesktopComponents : null}
+      {isTablet ? TabletComponents : null}
     </Wrapper>
   );
 }
