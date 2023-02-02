@@ -66,14 +66,15 @@ function RightComponents() {
   else {
     return (
       <Wrapper>
-        {isDesktop && <>
+        {isDesktop ? <>
           <Link to={"/debate/list"}>
             <StyledLightButton>둘러보기</StyledLightButton>
           </Link>
           <Link to={"/user/signup/SNS"}>
             <StyledLightButton>회원가입</StyledLightButton>
           </Link>
-        </>}
+        </>
+        : null}
         <Link to={"/user/login"}>
           <StyledDarkButton>로그인</StyledDarkButton>
         </Link>

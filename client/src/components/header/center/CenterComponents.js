@@ -36,8 +36,8 @@ function CenterComponents() {
   // 이외의 페이지는 미표시
   return (
     <Wrapper>
-      {isDesktop && DesktopComponents}
-      {isTablet && TabletComponents}
+      {isDesktop ? DesktopComponents : null}
+      {isTablet ? TabletComponents : null}
     </Wrapper>
   );
 }

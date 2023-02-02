@@ -22,14 +22,15 @@ function ToggleMenuItem({ to, content, onClick, color }) {
   return (
     <StyledLi onClick={onClick} color={color}>
       {/* 이동할 경로가 있는 경우 Link 씌우기 */}
-      {to &&
-        <Link to={to} style={{display: "block"}}>
+      {to ?
+        <Link to={to} style={{ display: "block" }}>
           {content}
         </Link>
+        : null
       }
 
       {/* 이동할 경로가 없는 경우 Link도 없음 */}
-      {!to && content}
+      {!to ? content : null}
     </StyledLi>
   );
 }
