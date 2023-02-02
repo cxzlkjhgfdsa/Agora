@@ -17,6 +17,7 @@ const Wrapper = styled.div`
     ? "width: 576px; height: 324px;"
     : "width: 400px; height: 225px;"}
   position: relative;
+  display: inline-block;
 `;
 const ThumbnailInfoWrapper = styled.div`
   width: 100%;
@@ -30,100 +31,6 @@ const ThumbnailInfoWrapper = styled.div`
   ${({ zIndex }) => zIndex
     ? "z-index: 1;"
     : ""}
-
-  // // 좌측 상단 컴포넌트
-  // &.hot-left-top:hover, &.left-top:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  // }
-
-  // // 상단 컴포넌트
-  // &.hot-center-top:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   left: -112px;
-  // }
-  // &.center-top:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   left: -200px;
-  // }
-
-  // // 우측 상단 컴포넌트
-  // &.hot-right-top:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   left: -224px;
-  // }
-  // &.right-top:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   left: -400px;
-  // }
-
-  // // 좌측 컴포넌트
-  // &.hot-left-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -63px;
-  // }
-  // &.left-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -112.5px;
-  // }
-
-  // // 중앙 컴포넌트
-  // &.hot-center-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -63px;
-  //   left: -112px;
-  // }
-  // &.center-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -112.5px;
-  //   left: -200px;
-  // }
-
-  // // 우측 컴포넌트
-  // &.hot-right-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -63px;
-  //   left: -224px;
-  // }
-  // &.right-middle:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -112.5px;
-  //   left: -400px;
-  // }
-
-  // // 좌측 하단 컴포넌트
-  // &.hot-left-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -126px;
-  // }
-  // &.left-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -225px;
-  // }
-
-  // // 중앙 하단 컴포넌트
-  // &.hot-center-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -126px;
-  //   left: -112px;
-  // }
-  // &.center-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -225px;
-  //   left: -200px;
-  // }
-
-  // // 우측 하단 컴포넌트
-  // &.hot-right-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -126px;
-  //   left: -224px;
-  // }
-  // &.right-bottom:hover {
-  //   width: 800px; height: 450px; transition: 0.5s;
-  //   top: -225px;
-  //   left: -400px;
-  // }
-
   transition: 0.5s;
 `;
 const StyledThumbnail = styled.div`
@@ -278,7 +185,7 @@ const StyledFont = styled.span`
     : "font-size: 0.75rem;"}
 `;
 
-function Thumbnail({ type, content, className }) {
+function Thumbnail({ type, content }) {
   const roomId = content.room_id;
 
   const title = content.room_name;
@@ -307,11 +214,11 @@ function Thumbnail({ type, content, className }) {
     setIsHovered(true);
   };
   const reduce = () => {
-    if (type === "hot-thumbnail") {  // 화제의 토픽 썸네일
-      setStyle({ width: "576px", height: "324px", top: "0", left: "0" });
-    } else {  // 일반 썸네일
-      setStyle({ width: "400px", height: "225px", top: "0", left: "0" });
-    }
+    setStyle({
+      width: locRef.current.offsetWidth + "px",
+      height: locRef.current.offsetHeight + "px",
+      top: "0", left: "0"
+    });
     detachZIndex();
     setIsHovered(false);
   };
@@ -344,6 +251,7 @@ function Thumbnail({ type, content, className }) {
   // 절대좌표를 구해 호버 방향 정하기
   const locRef = useRef();
   const hoverRef = useRef();
+  const roomInfoRef = useRef();
 
   // CSS 설정
   const setStyle = useCallback((style) => {
@@ -379,64 +287,77 @@ function Thumbnail({ type, content, className }) {
     ];
     
     // 공통 hover 스타일
-    const commonStyle = { width: "800px", height: "450px", transition: "0.5s" };
-    console.log(top, bottom, left, right);
-    console.log(minWidth, maxWidth);
-    console.log(minHeight, maxHeight);
-    // 화제의 토픽
-    if (type === "hot-thumbnail") {
-      // 중앙에서 확장 가능 여부 판단
-      if (top - 63 >= minHeight && left - 112 >= minWidth && right + 112 <= maxWidth) {
-        return { ...commonStyle, top: "-63px", left: "-112px" };
-      } else if (left - 112 < minWidth) {
-        return { ...commonStyle, top: "-63px" };
-      } else if (right + 112 > maxWidth) {
-        return { ...commonStyle, top: "-63px", left: "-224px" };
-      }
+    const EXPANDED_WIDTH = 600, EXPANDED_HEIGHT = 360;  // 확장 컴포넌트 크기
+    const commonStyle = { width: EXPANDED_WIDTH + "px", height: EXPANDED_HEIGHT + "px", transition: "0.5s" };
+
+    // 썸네일 기본 크기
+    const ORIGIN_WIDTH = hoverRef.current.offsetWidth;
+    const ORIGIN_HEIGHT = hoverRef.current.offsetHeight;
+    
+    // 최대 확장 (상하, 좌우 등 양방향이 아닌 단방향으로 확장되는 경우)
+    const FULL_EXPAND_WIDTH = EXPANDED_WIDTH - ORIGIN_WIDTH;
+    const FULL_EXPAND_HEIGHT = EXPANDED_HEIGHT - ORIGIN_HEIGHT;
+    // 절반 확장 (상하, 좌우 등 양방향으로 확장되는 경우)
+    const HALF_EXPAND_WIDTH = FULL_EXPAND_WIDTH / 2;
+    const HALF_EXPAND_HEIGHT = FULL_EXPAND_HEIGHT / 2;
+
+    // 확장 방향 관련 플래그
+    const CAN_HALF_EXPAND_TO_UP = top - HALF_EXPAND_HEIGHT >= minHeight;
+    const CAN_HALF_EXPAND_TO_DOWN = bottom + HALF_EXPAND_HEIGHT <= maxHeight;
+    const CAN_HALF_EXPAND_TO_LEFT = left - HALF_EXPAND_WIDTH >= minWidth;
+    const CAN_HALF_EXPAND_TO_RIGHT = right + HALF_EXPAND_WIDTH <= maxWidth;
+    
+    const CAN_FULL_EXPAND_TO_UP = top - FULL_EXPAND_HEIGHT >= minHeight;
+    const CAN_FULL_EXPAND_TO_DOWN = bottom + FULL_EXPAND_HEIGHT <= maxHeight;
+    const CAN_FULL_EXPAND_TO_LEFT = left - FULL_EXPAND_WIDTH >= minWidth;
+    const CAN_FULL_EXPAND_TO_RIGHT = right + FULL_EXPAND_WIDTH <= maxWidth;
+
+    const ROOM_INFO_HEIGHT = EXPANDED_HEIGHT * 0.75;
+    
+    // 중앙 확장 (사방으로 절반 확장이 가능한 경우)
+    if (CAN_HALF_EXPAND_TO_UP && CAN_HALF_EXPAND_TO_DOWN
+      && CAN_HALF_EXPAND_TO_LEFT && CAN_HALF_EXPAND_TO_RIGHT) {
+      return { ...commonStyle, top: -HALF_EXPAND_HEIGHT + "px", left: -HALF_EXPAND_WIDTH + "px" };
     }
-    // 일반 주제
-    else {
-      // 중앙 확장
-      if (top - 112.5 >= minHeight && bottom + 112.5 <= maxHeight
-        && left - 200 >= minWidth && right + 200 <= maxWidth) {
-        return { ...commonStyle, top: "-112.5px", left: "-200px" };
-      }
-      // 좌측 상단 확장
-      else if (right + 200 <= maxWidth && bottom + 112.5 <= maxHeight
-        && left - 200 < minWidth && top - 112.5 < minHeight) {
-        return commonStyle;
-      }
-      // 좌측 하단 확장
-      else if (right + 200 <= maxWidth && top - 112.5 >= minHeight
-        && left - 200 < minWidth && bottom + 112.5 > maxHeight) {
-        return { ...commonStyle, top: "-225px" };
-      }
-      // 우측 상단 확장
-      else if (left - 200 >= minWidth && bottom + 112.5 <= maxHeight
-        && right + 200 > maxWidth && top - 112.5 < minHeight) {
-        return { ...commonStyle, left: "-400px" };
-      }
-      // 우측 하단 확장
-      else if (left - 200 >= minWidth && top - 112.5 >= minHeight
-        && right + 200 > maxWidth && bottom + 112.5 > maxHeight) {
-        return { ...commonStyle, top: "-225px", left: "-400px" };
-      }
-      // 좌측 확장
-      else if (right + 200 <= maxWidth && left - 200 < minWidth) {
-        return { ...commonStyle, top: "-112.5px" };
-      }
-      // 상단 확장
-      else if (bottom + 112.5 <= maxHeight && top - 112.5 < minHeight) {
-        return { ...commonStyle, left: "-200px" };
-      }
-      // 우측 확장
-      else if (left - 200 >= minWidth && right + 200 > maxWidth) {
-        return { ...commonStyle, top: "-112.5px", left: "-400px" };
-      }
-      // 하단 확장
-      else if (top - 112.5 >= minWidth && bottom + 112.5 > maxHeight) {
-        return { ...commonStyle, top: "-225px", left: "-200px" };
-      }
+    // 좌측 상단 확장 (상, 좌로 확장이 불가하고 하, 우로 최대 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_DOWN && CAN_FULL_EXPAND_TO_RIGHT
+      && !CAN_HALF_EXPAND_TO_UP && !CAN_HALF_EXPAND_TO_LEFT) {
+      return commonStyle;
+    }
+    // 좌측 하단 확장 (좌, 하로 확장이 불가하고 상, 우로 최대 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_UP && CAN_FULL_EXPAND_TO_RIGHT
+      && !CAN_HALF_EXPAND_TO_LEFT && !CAN_HALF_EXPAND_TO_DOWN) {
+      return { ...commonStyle, top: -FULL_EXPAND_HEIGHT - ROOM_INFO_HEIGHT + "px" };
+    }
+    // 우측 상단 확장 (상, 우로 확장이 불가하고 좌, 하로 최대 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_LEFT && CAN_FULL_EXPAND_TO_DOWN
+      && !CAN_HALF_EXPAND_TO_UP && !CAN_HALF_EXPAND_TO_RIGHT) {
+      return { ...commonStyle, left: -FULL_EXPAND_WIDTH + "px" };
+    }
+    // 우측 하단 확장 (하, 우로 확장이 불가하고 상, 좌로 최대 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_UP && CAN_FULL_EXPAND_TO_LEFT
+      && !CAN_HALF_EXPAND_TO_DOWN && !CAN_HALF_EXPAND_TO_RIGHT) {
+      return { ...commonStyle, top: -FULL_EXPAND_HEIGHT - ROOM_INFO_HEIGHT + "px", left: -FULL_EXPAND_WIDTH + "px" };
+    }
+    // 좌측 확장 (좌로 확장이 불가하고 우로 최대 확장, 상하로 절반 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_RIGHT && CAN_HALF_EXPAND_TO_UP && CAN_HALF_EXPAND_TO_DOWN
+      && !CAN_HALF_EXPAND_TO_LEFT) {
+      return { ...commonStyle, top: -HALF_EXPAND_HEIGHT + "px" };
+    }
+    // 상단 확장 (상으로 확장이 불가하고 하로 최대 확장, 좌우로 절반 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_DOWN && CAN_HALF_EXPAND_TO_LEFT && CAN_HALF_EXPAND_TO_RIGHT
+      && !CAN_HALF_EXPAND_TO_UP) {
+      return { ...commonStyle, left: -HALF_EXPAND_WIDTH + "px" };
+    }
+    // 우측 확장 (우로 확장이 불가하고 좌로 최대 확장, 상하로 절반 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_LEFT && CAN_HALF_EXPAND_TO_UP && CAN_HALF_EXPAND_TO_DOWN
+      && !CAN_HALF_EXPAND_TO_RIGHT) {
+      return { ...commonStyle, top: -HALF_EXPAND_HEIGHT + "px", left: -FULL_EXPAND_WIDTH + "px" };
+    }
+    // 하단 확장 (하로 확장이 불가하고 상으로 최대 확장, 좌우로 절반 확장이 가능한 경우)
+    else if (CAN_FULL_EXPAND_TO_UP && CAN_HALF_EXPAND_TO_LEFT && CAN_HALF_EXPAND_TO_RIGHT
+      && !CAN_HALF_EXPAND_TO_DOWN) {
+      return { ...commonStyle, top: -FULL_EXPAND_HEIGHT - ROOM_INFO_HEIGHT + "px", left: -HALF_EXPAND_WIDTH + "px" };
     }
 
     return {};
@@ -494,7 +415,7 @@ function Thumbnail({ type, content, className }) {
             </Footer>
           </StyledThumbnail>
           {isHovered
-            ? <RoomInfo content={content} isHovered={isHovered} />
+            ? <RoomInfo content={content} isHovered={isHovered} ref={roomInfoRef} />
             : null}
         </ThumbnailInfoWrapper>
       </StyledLink>

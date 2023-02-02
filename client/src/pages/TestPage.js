@@ -25,28 +25,72 @@ function TestPage() {
           "테스트닉"
       ]
     },
-    // {
-    //   "room_id": 113,
-    //   "room_name": "98번",
-    //   "room_creater_name": "98작성자",
-    //   "room_debate_type": "FORMAL",
-    //   "room_opinion_left": "leftopinon",
-    //   "room_opinion_right": "rightopinion",
-    //   "room_hashtags": "#8,#118",
-    //   "room_watch_cnt": 108,
-    //   "room_phase": 3,
-    //   "room_phase_current_time_minute": 0,
-    //   "room_phase_current_time_second": 41,
-    //   "room_start_time": "2023-01-31T14:30:47.508474",
-    //   "room_thumbnail_url": "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",
-    //   "room_category": "8번",
-    //   "room_state": false,
-    //   "left_user_list": [
-    //       "테스트닉",
-    //       "테스트닉"
-    //   ],
-    //   "right_user_list": []
-    // }
+    {
+      "room_id": 113,
+      "room_name": "98번",
+      "room_creater_name": "98작성자",
+      "room_debate_type": "FORMAL",
+      "room_opinion_left": "leftopinon",
+      "room_opinion_right": "rightopinion",
+      "room_hashtags": "#8,#118",
+      "room_watch_cnt": 108,
+      "room_phase": 3,
+      "room_phase_current_time_minute": 0,
+      "room_phase_current_time_second": 41,
+      "room_start_time": "2023-01-31T14:30:47.508474",
+      "room_thumbnail_url": "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",
+      "room_category": "8번",
+      "room_state": false,
+      "left_user_list": [
+          "테스트닉",
+          "테스트닉"
+      ],
+      "right_user_list": []
+    },
+    {
+      "room_id": 113,
+      "room_name": "98번",
+      "room_creater_name": "98작성자",
+      "room_debate_type": "FORMAL",
+      "room_opinion_left": "leftopinon",
+      "room_opinion_right": "rightopinion",
+      "room_hashtags": "#8,#118",
+      "room_watch_cnt": 108,
+      "room_phase": 3,
+      "room_phase_current_time_minute": 0,
+      "room_phase_current_time_second": 41,
+      "room_start_time": "2023-01-31T14:30:47.508474",
+      "room_thumbnail_url": "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",
+      "room_category": "8번",
+      "room_state": false,
+      "left_user_list": [
+          "테스트닉",
+          "테스트닉"
+      ],
+      "right_user_list": []
+    },
+    {
+      "room_id": 113,
+      "room_name": "98번",
+      "room_creater_name": "98작성자",
+      "room_debate_type": "FORMAL",
+      "room_opinion_left": "leftopinon",
+      "room_opinion_right": "rightopinion",
+      "room_hashtags": "#8,#118",
+      "room_watch_cnt": 108,
+      "room_phase": 3,
+      "room_phase_current_time_minute": 0,
+      "room_phase_current_time_second": 41,
+      "room_start_time": "2023-01-31T14:30:47.508474",
+      "room_thumbnail_url": "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg",
+      "room_category": "8번",
+      "room_state": false,
+      "left_user_list": [
+          "테스트닉",
+          "테스트닉"
+      ],
+      "right_user_list": []
+    }
   ];
   const normalContents = [
     {
@@ -116,51 +160,61 @@ function TestPage() {
     //   ]
     // }
   ];
-  const cName = "right-bottom";
 
   return (
-
-    <div style={{ position: "relative", top: "0", left: "0" }}>
-      <div style={{ position: "absolute", top: "0", left: "0" }}>
-        <Thumbnail key={"0"} content={normalContents[0]} />
+    <>
+      <div style={{width: "calc( 100% - 24px )", justifyContent: "space-between", display: "flex", margin: "12px"}}>
+        {hotContents.map((item, index) => (
+          index < 3 ? <Thumbnail key={item + index} content={item} type="hot-thumbnail" /> : null
+        ))}
       </div>
-      <div style={{ position: "absolute", top: "0", left: "750px" }}>
-        <Thumbnail key={"1"} content={normalContents[0]} />
+      <div style={{width: "calc( 100% - 24px )", justifyContent: "space-between", display: "flex", margin: "12px"}}>
+        {hotContents.map((item, index) => (
+          <Thumbnail key={item + index} content={item} />
+        ))}
       </div>
-      <div style={{ position: "absolute", top: "0", right: "0" }}>
-        <Thumbnail key={"2"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "450px", left: "0" }}>
-        <Thumbnail key={"3"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "450px", left: "750px" }}>
-        <Thumbnail key={"4"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "450px", right: "0" }}>
-        <Thumbnail key={"5"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "900px", left: "0" }}>
-        <Thumbnail key={"6"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "900px", left: "750px" }}>
-        <Thumbnail key={"7"} content={normalContents[0]} />
-      </div>
-      <div style={{ position: "absolute", top: "900px", right: "0" }}>
-        <Thumbnail key={"8"} content={normalContents[0]} />
-      </div>
-      {/* {hotContents.map((item, index) => (
-        <Fragment key={item + index}>
-          <Thumbnail type="hot-thumbnail" content={item} className={"hot-" + cName} />
-          <br />
-        </Fragment>
-      ))}
-      {normalContents.map((item, index) => (
-        <Fragment key={item + index}>
-          <Thumbnail content={item} className={cName} />
-          <br />
-        </Fragment>
-      ))} */}
-    </div>
+    </>
+    // <div style={{ position: "relative", top: "0", left: "0" }}>
+    //   <div style={{ position: "absolute", top: "0", left: "0" }}>
+    //     <Thumbnail key={"0"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "0", left: "750px" }}>
+    //     <Thumbnail key={"1"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "0", right: "0" }}>
+    //     <Thumbnail key={"2"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "450px", left: "0" }}>
+    //     <Thumbnail key={"3"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "450px", left: "750px" }}>
+    //     <Thumbnail key={"4"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "450px", right: "0" }}>
+    //     <Thumbnail key={"5"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "900px", left: "0" }}>
+    //     <Thumbnail key={"6"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "900px", left: "750px" }}>
+    //     <Thumbnail key={"7"} content={normalContents[0]} />
+    //   </div>
+    //   <div style={{ position: "absolute", top: "900px", right: "0" }}>
+    //     <Thumbnail key={"8"} content={normalContents[0]} />
+    //   </div>
+    //   {/* {hotContents.map((item, index) => (
+    //     <Fragment key={item + index}>
+    //       <Thumbnail type="hot-thumbnail" content={item} className={"hot-" + cName} />
+    //       <br />
+    //     </Fragment>
+    //   ))}
+    //   {normalContents.map((item, index) => (
+    //     <Fragment key={item + index}>
+    //       <Thumbnail content={item} className={cName} />
+    //       <br />
+    //     </Fragment>
+    //   ))} */}
+    // </div>
   );
 }
 
