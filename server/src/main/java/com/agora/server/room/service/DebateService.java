@@ -4,6 +4,7 @@ import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,17 @@ public class DebateService {
     private final RedisPublisher redisPublisher;
 
     private final UserRepository userRepository;
+
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private final String START_TAG = "[START]";
+    private final String ENTER_TAG = "[ENTER]";
+    private final String LEAVE_TAG = "[LEAVE]";
+    private final String READY_TAG = "[READY]";
+    private final String UNREADY_TAG = "[UNREADY]";
+    private final String LEFT_SIDE_TAG = "[LEFT]";
+    private final String RIGHT_SIDE_TAG = "[RIGHT]";
+    private final String NO_SIDE_TAG = "[NOUSERSIDE]";
 
 
     /**
@@ -58,6 +70,17 @@ public class DebateService {
      * 클라이언트에서는 현재 토론자 왼쪽, 오른쪽 팀 리스트(닉네임)으로 가지고 있으므로
      * 이 메시지를 받으면 파싱해서 토론자 닉네임을 토론자 리스트에 추가 시키면 됩니다.
      */
+    public void debaterEnter(RequestRoomEnterDto requestRoomEnterDto){
+        User user = userRepository.findById(requestRoomEnterDto.getUserId()).get();
+        Long roomId = requestRoomEnterDto.getRoomId();
+        String userNickname = user.getUser_nickname();
+        Integer userSide = requestRoomEnterDto.getUserSide();
+
+        String channelName = "room:" + roomId;
+        String sideTag = getSideTag(userSide);
+
+        redisPublisher.publishMessage(channelName, ENTER_TAG + sideTag + " " + userNickname);
+    }
 
     /**
      * 토론자 퇴장 Redis Pub/Sub
@@ -75,6 +98,17 @@ public class DebateService {
      * 클라이언트에서는 현재 토론자 왼쪽, 오른쪽 팀 리스트(닉네임)으로 가지고 있으므로
      * 이 메시지를 받으면 파싱해서 토론자 닉네임을 토론자 리스트에서 제거 시키면 됩니다.
      */
+    public void debaterLeave(RequestRoomEnterDto requestRoomEnterDto){
+        User user = userRepository.findById(requestRoomEnterDto.getUserId()).get();
+        Long roomId = requestRoomEnterDto.getRoomId();
+        String userNickname = user.getUser_nickname();
+        Integer userSide = requestRoomEnterDto.getUserSide();
+
+        String channelName = "room:" + roomId;
+        String sideTag = getSideTag(userSide);
+
+        redisPublisher.publishMessage(channelName, LEAVE_TAG + sideTag + " " + userNickname);
+    }
 
     /**
      * 토론자 레디 Redis Pub/Sub
@@ -91,26 +125,20 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 READY로 바꿉니다
      */
-
-    public void ready(RequestRoomEnterDto requestRoomEnterDto){
-
+    public void ready(RequestRoomEnterDto requestRoomEnterDto) {
         User user = userRepository.findById(requestRoomEnterDto.getUserId()).get();
-
         Long roomId = requestRoomEnterDto.getRoomId();
         String userNickname = user.getUser_nickname();
-        Integer userside = requestRoomEnterDto.getUserSide();
+        Integer userSide = requestRoomEnterDto.getUserSide();
 
-        String channelName = "room:"+roomId;
+        String channelName = "room:" + roomId;
+        String sideTag = getSideTag(userSide);
 
-        String side = "[NOUSERSIDE]";
+        redisPublisher.publishMessage(channelName, READY_TAG + sideTag + " " + userNickname);
 
-        if(userside==0){
-            side = "[LEFT]";
-        } else if(userside==1){
-            side = "[RIGHT]";
-        }
-
-        redisPublisher.publishMessage(channelName,"[READY]"+side+" "+userNickname);
+        // Redis에서 레디상태 TRUE로 변경
+        String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+        redisTemplate.opsForValue().set(userisReady,"TRUE");
     }
 
     /**
@@ -128,26 +156,20 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 UNREADY로 바꿉니다
      */
-    public void unready(RequestRoomEnterDto requestRoomEnterDto){
-
+    public void unready(RequestRoomEnterDto requestRoomEnterDto) {
         User user = userRepository.findById(requestRoomEnterDto.getUserId()).get();
-
         Long roomId = requestRoomEnterDto.getRoomId();
         String userNickname = user.getUser_nickname();
-        Integer userside = requestRoomEnterDto.getUserSide();
+        Integer userSide = requestRoomEnterDto.getUserSide();
 
+        String channelName = "room:" + roomId;
+        String sideTag = getSideTag(userSide);
 
-        String channelName = "room:"+roomId;
+        redisPublisher.publishMessage(channelName, UNREADY_TAG + sideTag + " " + userNickname);
 
-        String side = "[NOUSERSIDE]";
-
-        if(userside==0){
-            side = "[LEFT]";
-        } else if(userside==1){
-            side = "[RIGHT]";
-        }
-
-        redisPublisher.publishMessage(channelName,"[UNREADY]"+side+" "+userNickname);
+        // Redis에서 레디상태 FALSE로 변경
+        String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+        redisTemplate.opsForValue().set(userisReady,"FALSE");
     }
 
     /**
@@ -169,7 +191,9 @@ public class DebateService {
      *
      * 서버에서 Redis에 보낼 명령어
      * 없습니다
+     * 방 내에서 실시간 시청자 수 보여주는 기능을 만들게 되면 그 때는 관전자 입장 메시지를 보냅니다
      */
+    
 
     /**
      * 토론 시작 Redis Pub/Sub
@@ -180,8 +204,28 @@ public class DebateService {
      * 서버에서 Redis에 보낼 명령어
      * PUBLISH room:roomId [START] start debate
      */
+    public void startDebate(Long roomId) {
+        String channelName = "room:" + roomId;
+        redisPublisher.publishMessage(channelName, START_TAG + " start debate");
+    }
 
     // 여기까지가 토론 준비방에서 일어나는 상태변화입니다
 
+
+    /**
+     * 편의용 메서드
+     * 팀 태그
+     * @param userSide
+     * @return
+     */
+    private String getSideTag(Integer userSide) {
+        if (userSide == 0) {
+            return LEFT_SIDE_TAG;
+        } else if (userSide == 1) {
+            return RIGHT_SIDE_TAG;
+        } else {
+            return NO_SIDE_TAG;
+        }
+    }
 
 }
