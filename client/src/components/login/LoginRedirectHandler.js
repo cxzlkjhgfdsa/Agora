@@ -39,7 +39,7 @@ function LoginRedirectHandler() {
             try {
                 console.log("userId >> ", userId)
                 const { data } = await axios.post(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/v1/user/login`, 
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/v1/user/login`, 
                     { user_id : userId },
                 ); 
                 // response.data를 data라는 이름으로 저장
