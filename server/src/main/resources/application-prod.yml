@@ -70,4 +70,4 @@ spring:
             user-name-attribute: id
 
 server:
-  port: 9999
+  port: 8888
