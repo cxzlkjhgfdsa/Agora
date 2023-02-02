@@ -2,20 +2,22 @@ spring:
   config:
     activate:
       on-profile: prod
+  redis:
+    host: 127.0.0.1
+    port: 6379
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   datasource:
-    url: jdbc:mariadb://${database.hostname}:3306/${database.schema}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://${database.hostname}:3306/${database.schema}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
     username: ${database.username}
     password: ${database.password}
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
   security:
@@ -23,8 +25,8 @@ spring:
       client:
         registration:
           google: # /oauth2/authorization/google 이 주소를 동작하게 한다.
-            client-id: 1069869778654-r8v70k96o08io3t2ir7qf8jdlaavdlka.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 344895362990-l0ap8aav03aj2tjh5q51d3flbh7bku8a.apps.googleusercontent.com
+            client-secret: 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
             scope:
               - email
               - profile
@@ -40,11 +42,11 @@ spring:
               - profile_image
             client-name: Naver # 클라이언트 네임은 구글 페이스북도 대문자로 시작하더라.
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+            redirect-uri: http://localhost:8888/login/oauth2/code/naver
 
           kakao:
             client-id: 9b71df2737d70ddadb6b15f8710ccda4
-            redirect-uri: http://localhost:8080/oauth2/code/kakao
+            redirect-uri: http://localhost:8888/oauth2/code/kakao
             client-authentication-method: POST
             client-secret: 0my6LOAwzhYnTxQosa0zjC76fZSFvUtA
             authorization-grant-type: authorization_code
