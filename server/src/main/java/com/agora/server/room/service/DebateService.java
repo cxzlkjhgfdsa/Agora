@@ -4,6 +4,7 @@ import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class DebateService {
     private final RedisPublisher redisPublisher;
 
     private final UserRepository userRepository;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     private final String START_TAG = "[START]";
     private final String ENTER_TAG = "[ENTER]";
@@ -132,6 +135,10 @@ public class DebateService {
         String sideTag = getSideTag(userSide);
 
         redisPublisher.publishMessage(channelName, READY_TAG + sideTag + " " + userNickname);
+
+        // Redis에서 레디상태 TRUE로 변경
+        String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+        redisTemplate.opsForValue().set(userisReady,"TRUE");
     }
 
     /**
@@ -159,6 +166,10 @@ public class DebateService {
         String sideTag = getSideTag(userSide);
 
         redisPublisher.publishMessage(channelName, UNREADY_TAG + sideTag + " " + userNickname);
+
+        // Redis에서 레디상태 FALSE로 변경
+        String userisReady = "room:" + roomId + ":"+ userNickname +":isReady";
+        redisTemplate.opsForValue().set(userisReady,"FALSE");
     }
 
     /**

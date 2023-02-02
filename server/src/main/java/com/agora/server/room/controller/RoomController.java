@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v2")
+@RequestMapping("api/v1")
 public class RoomController {
 
     private final RoomService roomService;
@@ -54,24 +54,23 @@ public class RoomController {
     }
 
     @PostMapping("room/enter")
-    public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<ResponseDTO> roomEnter(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
         String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getType());
+
+        ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
 
         boolean isEntered = roomService.enterRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
 
-        ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
+        roomService.setRoomCurrentStatus(requestRoomEnterDto, responseRoomEnterDto);
+
         responseRoomEnterDto.setEnter(isEntered);
         responseRoomEnterDto.setToken(token);
 
         // Redis Pub/Sub에서 입장 메시지 송신하는 부분
         // type의 토론자 -> pub와 관전자 -> sub로 구분
-        switch (requestRoomEnterDto.getType()){
-            case "pub" :
-                debateService.debaterEnter(requestRoomEnterDto);
-                break;
-            case "sub" :
-//                debateService.watcherEnter(requestRoomEnterDto);
-                break;
+        // pub의 경우에만 메시지 송신
+        if(requestRoomEnterDto.getType().equals("pub")){
+            debateService.debaterEnter(requestRoomEnterDto);
         }
 
         ResponseDTO responseDTO = new ResponseDTO();
@@ -89,6 +88,8 @@ public class RoomController {
      */
     @PostMapping("room/leave")
     public ResponseEntity<ResponseDTO> roomLeave (@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        roomService.leaveRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
 
         // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
         // type의 토론자 -> pub와 관전자 -> sub로 구분
