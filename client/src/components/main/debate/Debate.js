@@ -37,8 +37,8 @@ function Debate({ roomInfo }) {
 
     return (
         <StyledDebate>
-            <h1>debateId: {roomInfo.room_id}</h1>
-            <h2>debateId: {debateRoom.roomId}</h2>
+            <span>debateId: {roomInfo.room_id}</span><br></br>
+            <span>debateId: {debateRoom.roomId}</span>
         </StyledDebate>
     )
 }
@@ -46,9 +46,9 @@ function Debate({ roomInfo }) {
 export default memo(Debate);
 
 const StyledDebate = styled.div`
-width: 50px;
-height: 100%;
-border: 1px solid black;
-flex: none;
-margin: 0px 10px;
+  flex: 0 0 25%;
+  max-width: 25%;
+  aspect-ratio: 16 / 9;
+  border: .1px solid black;
+  padding: .25rem;
 `
