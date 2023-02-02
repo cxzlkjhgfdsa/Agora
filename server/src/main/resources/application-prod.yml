@@ -43,11 +43,11 @@ spring:
               - profile_image
             client-name: Naver # 클라이언트 네임은 구글 페이스북도 대문자로 시작하더라.
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:9999/login/oauth2/code/naver
+            redirect-uri: http://localhost:8888/login/oauth2/code/naver
 
           kakao:
             client-id: 9b71df2737d70ddadb6b15f8710ccda4
-            redirect-uri: http://localhost:9999/oauth2/code/kakao
+            redirect-uri: http://localhost:8888/oauth2/code/kakao
             client-authentication-method: POST
             client-secret: 0my6LOAwzhYnTxQosa0zjC76fZSFvUtA
             authorization-grant-type: authorization_code
