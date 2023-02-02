@@ -159,3 +159,4 @@ public class SearchController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 }
+    
