@@ -2,6 +2,7 @@ package com.agora.server.config;
 
 import com.agora.server.auth.filter.JwtAuthenticationFilter;
 import com.agora.server.auth.provider.JwtTokenProvider;
+import com.agora.server.auth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.agora.server.config.filter.CorsFilterConfig;
 import com.agora.server.config.filter.MyFilter;
 import com.agora.server.user.oauth.OAuth2AuthenticationFailureHandler;
@@ -32,6 +33,8 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler successHandler;
     private final OAuth2AuthenticationFailureHandler failureHandler;
 
+    private final HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository;
+
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -54,6 +57,7 @@ public class SecurityConfig {
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization")
+                .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/login/oauth2/code/*")
