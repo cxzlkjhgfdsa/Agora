@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,5 +35,11 @@ public class FileService {
             }
         }
         return responseFiles;
+    }
+
+    public void deleteFile(List<String> fileNames) throws IOException {
+        for(String filename : fileNames){
+            dataBucketUtil.DeleteFile(filename);
+        }
     }
 }
