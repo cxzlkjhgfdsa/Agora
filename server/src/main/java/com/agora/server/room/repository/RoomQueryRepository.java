@@ -385,7 +385,7 @@ public class RoomQueryRepository {
     }
 
     private BooleanExpression roomCategoryeq(String category) {
-        return category.equals("all") ? null : room.room_category.eq(category);
+        return category.equals("전체") ? null : room.room_category.eq(category);
     }
 
 }
