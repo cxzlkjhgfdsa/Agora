@@ -8,21 +8,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestRoomCreateDto {
 
-    private String room_name;
+    private String roomName;
 
-    private String room_creater_name;
+    private String roomCreaterName;
 
-    private DebateType room_debate_type;
+    private DebateType roomDebateType;
 
-    private String room_opinion_left;
+    private String roomOpinionLeft;
 
-    private String room_opinion_right;
+    private String roomOpinionRight;
 
-    private String room_hashtags;
+    private String roomHashtags;
 
-    private String room_thumbnail_url;
+    private String roomThumbnailUrl;
 
-    private String room_category;
+    private String roomCategory;
 
 
 }

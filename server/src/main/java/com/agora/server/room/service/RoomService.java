@@ -361,9 +361,9 @@ public class RoomService {
             for (Object o : range) {
                 leftuserls.add((String) o);
             }
-            responseRoomInfoDto.setLeft_user_list(leftuserls);
+            responseRoomInfoDto.setLeftUserList(leftuserls);
         } else {
-            responseRoomInfoDto.setLeft_user_list(leftuserls);
+            responseRoomInfoDto.setLeftUserList(leftuserls);
         }
 
         String rightuserlist = "room:" + roomId + ":rightuserlist";
@@ -373,9 +373,9 @@ public class RoomService {
             for (Object o : range) {
                 rightuserls.add((String) o);
             }
-            responseRoomInfoDto.setRight_user_list(rightuserls);
+            responseRoomInfoDto.setRightUserList(rightuserls);
         } else {
-            responseRoomInfoDto.setRight_user_list(rightuserls);
+            responseRoomInfoDto.setRightUserList(rightuserls);
         }
     }
 
@@ -399,9 +399,9 @@ public class RoomService {
         Integer minutes = (int) ((timeDifference / 60) % 60);
         Integer seconds = (int) (timeDifference % 60);
 
-        responseRoomInfoDto.setRoom_phase(resphase);
-        responseRoomInfoDto.setRoom_phase_current_time_minute(minutes);
-        responseRoomInfoDto.setRoom_phase_current_time_second(seconds);
+        responseRoomInfoDto.setRoomPhase(resphase);
+        responseRoomInfoDto.setRoomPhaseCurrentTimeMinute(minutes);
+        responseRoomInfoDto.setRoomPhaseCurrentTimeSecond(seconds);
     }
 
 
@@ -427,7 +427,7 @@ public class RoomService {
      */
     private void setRedisDataList(List<ResponseRoomInfoDto> dtoList) {
         for (ResponseRoomInfoDto responseRoomInfoDto : dtoList) {
-            Long roomId = responseRoomInfoDto.getRoom_id();
+            Long roomId = responseRoomInfoDto.getRoomId();
             setUserLists(responseRoomInfoDto, roomId);
             setPhaseAndTime(responseRoomInfoDto, roomId);
         }
@@ -439,7 +439,7 @@ public class RoomService {
      */
     private void setRedisDataPage(Page<ResponseRoomInfoDto> allByHashTagsPages) {
         for (ResponseRoomInfoDto allByHashTagsPage : allByHashTagsPages) {
-            Long roomId = allByHashTagsPage.getRoom_id();
+            Long roomId = allByHashTagsPage.getRoomId();
             setUserLists(allByHashTagsPage, roomId);
             setPhaseAndTime(allByHashTagsPage, roomId);
         }
