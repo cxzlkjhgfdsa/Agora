@@ -2,6 +2,9 @@ package com.agora.server.aop;
 
 import com.agora.server.auth.exception.TokenValidFailedException;
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.file.exception.FileTypeException;
+import com.agora.server.file.exception.FileWriteException;
+import com.agora.server.file.exception.GCSFileException;
 import com.agora.server.openvidu.exception.AgoraOpenViduException;
 import com.agora.server.user.exception.AlreadyExistUserException;
 import com.agora.server.user.exception.DuplicateNickNameException;
@@ -82,6 +85,33 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     public ResponseEntity<ResponseDTO> AgoraOpenViduException(AgoraOpenViduException ov) {
         ResponseDTO res = new ResponseDTO();
         res.setMessage(ov.getMessage());
+        res.setState(false);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+
+    }
+
+    @ExceptionHandler(FileTypeException.class)
+    public ResponseEntity<ResponseDTO> AgoraOpenViduException(FileTypeException e) {
+        ResponseDTO res = new ResponseDTO();
+        res.setMessage(e.getMessage());
+        res.setState(false);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+
+    }
+
+    @ExceptionHandler(FileWriteException.class)
+    public ResponseEntity<ResponseDTO> FileWriteException(FileTypeException e) {
+        ResponseDTO res = new ResponseDTO();
+        res.setMessage(e.getMessage());
+        res.setState(false);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+
+    }
+
+    @ExceptionHandler(GCSFileException.class)
+    public ResponseEntity<ResponseDTO> FileWriteException(GCSFileException e) {
+        ResponseDTO res = new ResponseDTO();
+        res.setMessage(e.getMessage());
         res.setState(false);
         return new ResponseEntity<>(res, HttpStatus.OK);
 
