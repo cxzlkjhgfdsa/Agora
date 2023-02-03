@@ -18,4 +18,6 @@ public class RequestRoomEnterDto {
 
     private String type;
 
+    private Boolean roomState;
+
 }
