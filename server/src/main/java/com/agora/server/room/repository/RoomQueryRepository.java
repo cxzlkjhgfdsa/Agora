@@ -324,7 +324,7 @@ public class RoomQueryRepository {
                                 room.room_state))
                 .from(room)
                 .where(
-                        room.room_state.eq(modalRoomSearchCondition.getRoomstate()),
+                        room.room_state.eq(modalRoomSearchCondition.getRoomState()),
                         roomCategoryeq(modalRoomSearchCondition.getCategory())
                 )
                 .orderBy(
@@ -338,7 +338,7 @@ public class RoomQueryRepository {
                 .select(room.count())
                 .from(room)
                 .where(
-                        room.room_state.eq(modalRoomSearchCondition.getRoomstate()),
+                        room.room_state.eq(modalRoomSearchCondition.getRoomState()),
                         roomCategoryeq(modalRoomSearchCondition.getCategory())
                 );
 
