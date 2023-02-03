@@ -116,14 +116,14 @@ AGORA 서비스를 통해 사용자들은 쉽게 토론을 접근할 수 있어,
 
 ## Member
 
-|  이름  |  포지션  | 역할                                                       |
-| :----: | :------: | ---------------------------------------------------------- |
-| 김용현 | Frontend | **Frontend Leader**                                        |
-| 오윤식 | Backend  | **서비스 기획**                                            |
-| 윤재휘 | Frontend | **UI/UX 담당**                                             |
-| 이상원 | Backend  | **PM, DevOps**<br>Jenkins CI/CD<br>Nginx SSL<br>Auth Token |
-| 이승헌 | Backend  | **Backend Leader**                                         |
-| 전인덕 | Frontend | **UI/UX 담당**                                             |
+|  이름  |  포지션  | 역할                |
+| :----: | :------: | ------------------- |
+| 김용현 | Frontend | **Frontend Leader** |
+| 오윤식 | Backend  | **서비스 기획**     |
+| 윤재휘 | Frontend | **UI/UX 담당**      |
+| 이상원 | Backend  | **PM, DevOps**      |
+| 이승헌 | Backend  | **Backend Leader**  |
+| 전인덕 | Frontend | **UI/UX 담당**      |
 
 ## 명세서
 
@@ -187,13 +187,3 @@ Branch 전략은 `git flow`를 사용한다.
 | release     | 배포 준비 브랜치           | release/1.0          |
 | hotfix      | 출시 버전 버그 수정 브랜치 | hotfix-1.1.0         |
 | document    | 문서 작업 브랜치           | docs/readme          |
-
-### branch 구성
-
--   master
-    -   dev
-        -   back/dev
-            -   feat-login-back
-        -   front/dev
-            -   feat-login-front
-    -   docs/readme
