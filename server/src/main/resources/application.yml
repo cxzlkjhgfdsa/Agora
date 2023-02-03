@@ -80,3 +80,5 @@ logging.level:
 server:
     port: 8080
 
+jwt:
+  secret: ksjhdkj

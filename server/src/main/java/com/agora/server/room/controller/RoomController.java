@@ -6,6 +6,7 @@ import com.agora.server.room.controller.dto.RequestRoomCreateDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.ResponseRoomCreateDto;
 import com.agora.server.room.controller.dto.ResponseRoomEnterDto;
+import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
@@ -117,5 +118,7 @@ public class RoomController {
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
+
+
 
 }
