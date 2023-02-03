@@ -5,12 +5,13 @@ import ModalOrderBy from "./ModalOrderBy";
 import ModalTitle from "./ModalTitle";
 
 import Close from "assets/icons/Close.png";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import customAxios from "utils/customAxios";
 
 // Title
 import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
+import { useInView } from "react-intersection-observer";
 
 const StyledDebateListModal = styled.div`
   // 크기 설정
@@ -84,192 +85,63 @@ function DebateListModal({ closeModalEvent, debateState }) {
       roomState = false;
       updateBeginIdx = 200;
     }
-
-    setContents([
-      {
-        "roomId": 24,
-        "roomName": "시빌워 최애는?",
-        "roomCreaterName": "로버트다우니주니어",
-        "roomDebateType": "FORMAL",
-        "roomOpinionLeft": "아이언맨",
-        "roomOpinionRight": "캡틴아메리카",
-        "roomHashtags": "#영화,#아이언맨,#마블,#캡아",
-        "roomWatchCnt": 161,
-        "roomPhase": 3,
-        "roomPhaseCurrentTimeMinute": 1,
-        "roomPhaseCurrentTimeSecond": 5,
-        "roomStartTime": "2023-02-03T15:01:44.000227",
-        "roomThumbnailUrl": "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F53miU%2FbtrXHNPZeR8%2FwgceDIMlSnydGK83o2LAk0%2Fimg.png",
-        "roomCategory": "영화/드라마",
-        "roomState": false,
-        "leftUserList": [
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아",
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아"
-        ],
-        "rightUserList": [
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨",
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨"
-        ]
-      },
-      {
-        "roomId": 26,
-        "roomName": "라면에 하나만 넣는다면?",
-        "roomCreaterName": "라면조아",
-        "roomDebateType": "FORMAL",
-        "roomOpinionLeft": "김치",
-        "roomOpinionRight": "계란",
-        "roomHashtags": "#라면,#김치,#계란,#뭐든좋아",
-        "roomWatchCnt": 350,
-        "roomPhase": 2,
-        "roomPhaseCurrentTimeMinute": 1,
-        "roomPhaseCurrentTimeSecond": 5,
-        "roomStartTime": "2023-02-03T15:01:44.000227",
-        "roomThumbnailUrl": "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOd05v%2FbtrXHT3JqkJ%2Fl0Qhf5QygUqOIskZwYEqWK%2Fimg.png",
-        "roomCategory": "음식",
-        "roomState": false,
-        "leftUserList": [
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아",
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아"
-        ],
-        "rightUserList": [
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨",
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨"
-        ]
-      },
-      {
-        "roomId": 25,
-        "roomName": "침펄 토론 따라하기",
-        "roomCreaterName": "안침착맨",
-        "roomDebateType": "FORMAL",
-        "roomOpinionLeft": "딱딱한 복숭아",
-        "roomOpinionRight": "말랑 복숭아",
-        "roomHashtags": "#침펄토론,#복숭아,#딱복,#말복",
-        "roomWatchCnt": 138,
-        "roomPhase": 1,
-        "roomPhaseCurrentTimeMinute": 1,
-        "roomPhaseCurrentTimeSecond": 5,
-        "roomStartTime": "2023-02-03T15:01:44.000227",
-        "roomThumbnailUrl": "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FccvJcN%2FbtrXHXrhjy7%2F8wtFTqBPT7Xr9hbl5PRCEk%2Fimg.png",
-        "roomCategory": "음식",
-        "roomState": false,
-        "leftUserList": [
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨",
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨"
-        ],
-        "rightUserList": [
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아",
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아"
-        ]
-      },
-      {
-        "roomId": 23,
-        "roomName": "프로그래머 진로 상담",
-        "roomCreaterName": "김영한",
-        "roomDebateType": "FORMAL",
-        "roomOpinionLeft": "백엔드",
-        "roomOpinionRight": "프론트엔드",
-        "roomHashtags": "#프로그래머,#백엔드,#프론트엔드,#뭐가좋아요",
-        "roomWatchCnt": 182,
-        "roomPhase": 2,
-        "roomPhaseCurrentTimeMinute": 1,
-        "roomPhaseCurrentTimeSecond": 5,
-        "roomStartTime": "2023-02-03T15:01:44.000227",
-        "roomThumbnailUrl": "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fbuahof%2FbtrXGT4aryB%2FMp7YUmbKQd9gh7WKz4Tmd0%2Fimg.png",
-        "roomCategory": "공부",
-        "roomState": false,
-        "leftUserList": [
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨",
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨"
-        ],
-        "rightUserList": [
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아",
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아"
-        ]
-      },
-      {
-        "roomId": 21,
-        "roomName": "배트맨 최고 감독은?",
-        "roomCreaterName": "영화좋아하는사람",
-        "roomDebateType": "FORMAL",
-        "roomOpinionLeft": "크리스토퍼 놀란",
-        "roomOpinionRight": "맷 리브스",
-        "roomHashtags": "#영화,#크리스토퍼놀란,#맷리브스",
-        "roomWatchCnt": 209,
-        "roomPhase": 3,
-        "roomPhaseCurrentTimeMinute": 1,
-        "roomPhaseCurrentTimeSecond": 5,
-        "roomStartTime": "2023-02-03T15:01:44.000227",
-        "roomThumbnailUrl": "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FRkqyn%2FbtrXIohMRVP%2FrXCZVNDLEEKPwNfjBCmjvK%2Fimg.png",
-        "roomCategory": "영화/드라마",
-        "roomState": false,
-        "leftUserList": [
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨",
-          "영화좋아하는사람",
-          "김영한",
-          "안침착맨"
-        ],
-        "rightUserList": [
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아",
-          "이동진",
-          "로버트다우니주니어",
-          "라면조아"
-        ]
-      }]);
     
     // 1. 서버에서 데이터 받아오기 (최신순, 전체)
-    axios.get("/api/v1/search/main/modal", {
+    
+  }, [orderBy, category]);                                                                                                                                                                                      
+
+  // 페이지가 변경되면 데이터를 가져오는 함수
+  const getContents = useCallback(async () => {
+    // 로딩 상태 설정
+    setLoading(true);
+
+    await axios.get("/api/v1/search/main/modal", {
       params: {
         roomState: roomState,
         order: orderBy,
-        category: category
+        category: category,
+        page: page,
+        size: 10
       },
       withCredentials: false
     }).then(({ data }) => {
       // 데이터 저장
-      setContents(data.body.content);
+      setContents(current => [...current, ...data.body.content]);
 
-      // 2. 아톰 패밀리 업데이트
+      // 마지막 페이지 여부 설정
+      setIsEnd(data.body.last);
 
+      // 맨 첫 API 호출의 경우 아톰 패밀리 업데이트 (상위 10개)
+      if (page === 0) {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 아톰 패밀리 업데이트 해야 합니다!");
+      }
+      // 페이지 
     }).catch(error => {
       alert(error);
     });
-  }, [orderBy, category]);
+
+    // 로딩 상태 해제
+    setLoading(false);
+  }, [page]);
+
+  // 페이지가 바뀌면 함수 실행
+  useEffect(() => {
+    getContents();
+  }, [getContents]);
+
+  // 마지막 요소 도달 시 요청할 페이지 갱신
+  useEffect(() => {
+    // 마지막 요소가 view에 들어온데다 데이터 대기중도 아니고 마지막 페이지가 아닐 경우 페이지 갱신
+    if (inView && !loading && !isEnd) {
+      setPage(current => current + 1);
+    }
+  }, [inView, loading]);
+  
+  // 무한스크롤을 위해 감지할 변수 생성
+  const [page, setPage] = useState(0);  // 페이지
+  const [loading, setLoading] = useState(false);  // 로딩 여부
+  const [isEnd, setIsEnd] = useState(true);  // 마지막 페이지 여부
+  const { ref, inView } = useInView();  // 감시할 컴포넌트, 뷰포트에 들어왔는지
 
   return (
     <StyledDebateListModal>
@@ -277,7 +149,7 @@ function DebateListModal({ closeModalEvent, debateState }) {
       <CloseButton src={Close} onClick={closeModalEvent} />
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />
-      <ModalContents contents={contents} />
+      <ModalContents contents={contents} ref={ref} loading={loading} isEnd={isEnd} />
     </StyledDebateListModal>
   );
 }
