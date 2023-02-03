@@ -29,7 +29,7 @@ function SearchRoom() {
 
   const [contents, setContents] = useState([]);  // 검색결과
   const [page, setPage] = useState(0);  // 검색할 페이지
-  const [isEnd, setIsEnd] = useState(false);
+  const [isEnd, setIsEnd] = useState(true);
   const [loading, setLoading] = useState(false);  // 데이터 요청 후 대기중 여부
 
   const [ref, inView] = useInView();  // 감시할 컴포넌트
@@ -38,8 +38,6 @@ function SearchRoom() {
   const axios = customAxios();
 
   const getContents = useCallback(async () => {
-    console.log("Get", page);
-
     // 로딩 상태 설정
     setLoading(true);
 
@@ -94,7 +92,7 @@ function SearchRoom() {
           : null}
       </StyledSearchRoom>
       {/* 스크롤 마지막임을 알리는 컴포넌트 */}
-      {loading ? null : <span ref={ref} />}
+      {loading || isEnd ? null : <span ref={ref} />}
     </>
   );
 }
