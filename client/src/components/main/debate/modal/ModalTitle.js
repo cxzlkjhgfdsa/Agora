@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import LightBulb from "assets/icons/Light_Bulb.png";
 
 const StyledModalTitle = styled.div`
   // 크기 설정
@@ -17,6 +16,8 @@ const TitleIcon = styled.img`
   width: 50px;
   height: 70px;
   margin-right: 16px;
+
+  object-fit: contain;
 `;
 const Title = styled.span`
   // 글꼴 설정
@@ -27,11 +28,11 @@ const Title = styled.span`
   letter-spacing: -0.05rem;
 `;
 
-function ModalTitle() {
+function ModalTitle({ image, text }) {
   return (
     <StyledModalTitle>
-      <TitleIcon src={LightBulb} />
-      <Title>열띤 토론중</Title>
+      <TitleIcon src={image} />
+      <Title>{text}</Title>
     </StyledModalTitle>
   );
 }

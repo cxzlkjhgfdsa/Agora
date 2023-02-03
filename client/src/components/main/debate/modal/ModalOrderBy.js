@@ -17,14 +17,13 @@ const StyledModalOrderBy = styled.ul`
   list-style: none;
 `;
 
-function ModalOrderBy() {
+function ModalOrderBy({ setOrderBy }) {
   const sortTypes = ["최신순", "오래된 순", "인기순"];
 
   // 첫 번째 원소를 기본 선택자로 설정
-  let selectedId = "orderBy0";
   useEffect(() => {
     document
-      .getElementById(selectedId)
+      .getElementById("orderBy0")
       .classList
       .toggle("selected");
   }, []);
@@ -33,16 +32,24 @@ function ModalOrderBy() {
   const selectChoice = (e) => {
     // 기존 선택자 해제
     document
-      .getElementById(selectedId)
+      .querySelector("#orderBy > .selected")
       .classList
       .toggle("selected");
     // 새로운 선택자 설정 및 기존 선택자 정보 갱신
     e.target.classList.toggle("selected");
-    selectedId = e.target.id;
+
+    // 검색조건 설정
+    if (e.target.innerHTML === "최신순") {
+      setOrderBy("createnew");
+    } else if (e.target.innerHTML === "오래된 순") {
+      setOrderBy("createold");
+    } else if (e.target.innerHTML === "인기순") {
+      setOrderBy("watchcnt");
+    }
   };
 
   return (
-    <StyledModalOrderBy>
+    <StyledModalOrderBy id="orderBy">
       <ModalColorBar />
       {sortTypes.map((item, index) => (
         <Choice

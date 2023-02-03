@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ModalColorBar from "./ModalColorBar";
 import SelectedWord from "./Choice";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 const StyledModalCategory = styled.ul`
   // 크기 설정
@@ -17,31 +17,34 @@ const StyledModalCategory = styled.ul`
   list-style: none;
 `;
 
-function ModalCategory() {
+function ModalCategory({ setCategory }) {
   const categories = ["전체", "일상", "음식", "영화/드라마", "연애",
     "게임", "IT/전자제품", "스포츠", "패션", "공부", "음악"];
 
   // 첫 번째 원소를 기본 선택자로 설정
-  let selectedId = "category0";
   useEffect(() => {
     document
-      .getElementById(selectedId)
+      .getElementById("category0")
       .classList
       .toggle("selected");
   }, []);
 
+  // 원소 선택 이벤트
   const selectChoice = (e) => {
+    // 기존 선택자 해제
     document
-      .getElementById(selectedId)
+      .querySelector("#category > .selected")
       .classList
       .toggle("selected");
+    // 새로운 선택자 설정 및 기존 선택자 정보 갱신
     e.target.classList.toggle("selected");
-    console.log(e.target.id);
-    selectedId = e.target.id;
+
+    // 검색조건 변경
+    setCategory(e.target.innerHTML);
   };
   
   return (
-    <StyledModalCategory>
+    <StyledModalCategory id="category">
       <ModalColorBar />
       {categories.map((item, index) => (
         <SelectedWord
