@@ -1,13 +1,3 @@
-# FROM nginx:stable-alpine
-# ENV REACT_APP_SERVER_BASE_URL https://i8a705.p.ssafy.io/api
-# WORKDIR /app
-# RUN mkdir ./build
-# ADD client/build ./build
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY client/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-# EXPOSE 3000
-# CMD ["nginx", "-g", "daemon off;"]
-
 # Use a node image as the base image
 FROM node:14
 ENV REACT_APP_SERVER_BASE_URL https://i8a705.p.ssafy.io/api
@@ -21,6 +11,7 @@ RUN npm install
 COPY client/. .
 # Build the React app
 RUN npm run build
+
 FROM nginx:alpine
 COPY --from=0 /app/build /usr/share/nginx/html
 # Copy the Nginx configuration file to the appropriate location
