@@ -4,15 +4,13 @@ import com.agora.server.file.dto.FileDto;
 import com.agora.server.file.exception.FileTypeException;
 import com.agora.server.file.exception.GCSFileException;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -56,6 +54,16 @@ public class DataBucketUtil {
            throw new GCSFileException(e.getMessage());
         }
         throw new GCSFileException("구글 스토리지에 파일 업로드중 문제가 발생하였씁니다");
+    }
+
+    public void DeleteFile(String fileName) throws IOException {
+        InputStream inputStream = new ClassPathResource(gcpConfigFile).getInputStream();
+
+        StorageOptions options = StorageOptions.newBuilder().setProjectId(gcpProjectId)
+                .setCredentials(GoogleCredentials.fromStream(inputStream)).build();
+
+        Storage storage = options.getService();
+        storage.delete(BlobId.of(gcpBucketId, fileName));
     }
 
 

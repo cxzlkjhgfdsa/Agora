@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("api/v2/file")
@@ -41,6 +41,16 @@ public class FileController {
             responseDTO.setMessage("파일 업로드 실패");
         }
 
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deleteFile(@RequestBody Map<String, List<String>> items) throws IOException {
+        fileService.deleteFile(items.get("files"));
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setState(true);
+        responseDTO.setStatusCode(200);
+        responseDTO.setMessage("정상 삭제 완료");
         return ResponseEntity.ok(responseDTO);
     }
 }
