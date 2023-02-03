@@ -219,10 +219,10 @@ public class DebateService {
     public void startDebate(RequestDebateStartDto requestDebateStartDto) throws NotReadyException {
 
         Long roomId = requestDebateStartDto.getRoomId();
-        List<String> leftUserList = requestDebateStartDto.getLeft_user_list();
-        List<String> rightUserList = requestDebateStartDto.getRight_user_list();
-        List<Boolean> leftUserIsReady = requestDebateStartDto.getLeft_user_isReady();
-        List<Boolean> rightUserIsReady = requestDebateStartDto.getRight_user_isReady();
+        List<String> leftUserList = requestDebateStartDto.getLeftUserList();
+        List<String> rightUserList = requestDebateStartDto.getRightUserList();
+        List<Boolean> leftUserIsReady = requestDebateStartDto.getLeftUserIsReady();
+        List<Boolean> rightUserIsReady = requestDebateStartDto.getRightUserIsReady();
 
         for (Boolean aBoolean : leftUserIsReady) {
             if(aBoolean==false){
@@ -289,6 +289,8 @@ public class DebateService {
         String phaseKey = "room:" + roomId + ":phase";
         String turnKey = "room:" + roomId + ":turn";
         String phasestarttimeKey = "room:" + roomId + ":phasetime";
+        String currentSpeakingUserKey = "room:" + roomId + ":currentSpeakingUser";
+        String currentSpeakingTeamKey = "room:" + roomId + ":currentSpeakingTeam";
 
         Integer turn = (Integer) redisTemplate.opsForValue().get(turnKey);
 
@@ -298,6 +300,8 @@ public class DebateService {
         redisTemplate.opsForValue().set(phaseKey,phase);
         Long serverTime = System.currentTimeMillis() / 1000L;
         redisTemplate.opsForValue().set(phasestarttimeKey,serverTime);
+        redisTemplate.opsForValue().set(currentSpeakingUserKey,userNickname);
+        redisTemplate.opsForValue().set(currentSpeakingTeamKey,team);
 
 
         redisPublisher.publishMessage("room:"+roomId,"[PHASESTART] "+ phase);
@@ -314,6 +318,9 @@ public class DebateService {
                 redisPublisher.publishMessage("room:"+roomId,"[PHASEEND] "+ phase);
                 redisPublisher.publishMessage("room:"+roomId,"[TURN] "+ finalTurn);
                 redisPublisher.publishMessage("room:"+roomId,"[TEAM] "+ team);
+
+                redisTemplate.delete(currentSpeakingTeamKey);
+                redisTemplate.delete(currentSpeakingUserKey);
             }
         }, 10, TimeUnit.SECONDS);
         scheduledFutures.put(roomId+"_phase", future);
@@ -325,8 +332,11 @@ public class DebateService {
         String team = requestSkipDto.getTeam();
         Integer phase = requestSkipDto.getPhase();
 
+        String currentSpeakingTeamKey = "room:" + roomId + ":currentSpeakingTeam";
+        String currentSpeakingUserKey = "room:" + roomId + ":currentSpeakingUser";
         String turnKey = "room:" + roomId + ":turn";
         Integer turn = (Integer) redisTemplate.opsForValue().get(turnKey);
+
 
         ScheduledFuture<?> future = scheduledFutures.get(roomId+"_phase");
         if (future != null) {
@@ -334,7 +344,12 @@ public class DebateService {
             redisPublisher.publishMessage("room:"+roomId,"[PHASESKIP] "+ phase);
             redisPublisher.publishMessage("room:"+roomId,"[TURN] "+ turn);
             redisPublisher.publishMessage("room:"+roomId,"[TEAM] "+ team);
+            redisPublisher.publishMessage("room:"+roomId,"[CURRENT DEBATER] "+ userNickname);
+
+            redisTemplate.delete(currentSpeakingTeamKey);
+            redisTemplate.delete(currentSpeakingUserKey);
         }
+
     }
 
     // 투표 진행
