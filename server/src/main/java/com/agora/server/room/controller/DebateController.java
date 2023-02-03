@@ -5,6 +5,7 @@ import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
+import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
 import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +72,17 @@ public class DebateController {
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
+
+    @PutMapping("debate/votestart")
+    public ResponseEntity<ResponseDTO> phaseStart (@RequestBody RequestVoteStartDto requestVoteStartDto){
+        debateService.startVote(requestVoteStartDto);
+        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setBody(responseRoomEnterDto);
+        responseDTO.setMessage(requestVoteStartDto.getVotePhase()+"페이즈 투표 시작합니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
 
 }

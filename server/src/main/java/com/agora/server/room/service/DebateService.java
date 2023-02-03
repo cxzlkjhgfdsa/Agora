@@ -4,6 +4,7 @@ import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
+import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
@@ -26,7 +27,7 @@ public class DebateService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final Map<Long, ScheduledFuture<?>> scheduledFutures;
+    private final Map<String, ScheduledFuture<?>> scheduledFutures;
 
 
     private final String START_TAG = "[START]";
@@ -315,7 +316,7 @@ public class DebateService {
                 redisPublisher.publishMessage("room:"+roomId,"[TEAM] "+ team);
             }
         }, 10, TimeUnit.SECONDS);
-        scheduledFutures.put(roomId, future);
+        scheduledFutures.put(roomId+"_phase", future);
     }
 
     public void skipPhase(RequestSkipDto requestSkipDto) {
@@ -334,6 +335,34 @@ public class DebateService {
             redisPublisher.publishMessage("room:"+roomId,"[TURN] "+ turn);
             redisPublisher.publishMessage("room:"+roomId,"[TEAM] "+ team);
         }
+    }
+
+    // 투표 진행
+    public void startVote(RequestVoteStartDto requestVoteStartDto){
+
+        Long roomId = requestVoteStartDto.getRoomId();
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+
+        Integer votePhase = requestVoteStartDto.getVotePhase();
+
+        String voteLeftKey = "room:" + roomId +":votephase"+votePhase+":left";
+        String voteRightKey = "room:" + roomId +":votephase"+votePhase+":right";
+
+        redisTemplate.opsForValue().set(voteLeftKey,0);
+        redisTemplate.opsForValue().set(voteRightKey,0);
+
+        redisPublisher.publishMessage("room:"+roomId,"[VOTESTART] "+ votePhase);
+        ScheduledFuture<?> future = executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                redisPublisher.publishMessage("room:"+roomId,"[VOTEEND] "+ votePhase);
+                Integer voteResultLeft = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
+                Integer voteResultRight = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+                redisPublisher.publishMessage("room:"+roomId,"[VOTERESULT] "+ voteResultLeft+":"+voteResultRight);
+            }
+        }, 30, TimeUnit.SECONDS);
+        scheduledFutures.put(roomId+"_vote", future);
     }
 
 
