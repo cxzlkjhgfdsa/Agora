@@ -27,7 +27,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         UUID userId = principal.getUser().getUser_id();
         Map<String, Object> item = principal.getAttributes();
         if(userId == null){
-            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/signup/input")
+            response.sendRedirect(UriComponentsBuilder.fromUriString("/user/signup/input")
                     .queryParam("userId", item.get("id"))
                     .queryParam("type", item.get("type"))
                     .queryParam("nickname", item.get("nickname"))
@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             );
         }else {
             log.info("회원가입 진행 불필요");
-            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/login/redirect-handler")
+            response.sendRedirect(UriComponentsBuilder.fromUriString("/user/login/redirect-handler")
                             .queryParam("userId", userId)
                     .build()
                     .encode(StandardCharsets.UTF_8)
