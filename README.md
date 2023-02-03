@@ -2,14 +2,14 @@
 
 ## Member
 
-|  이름  |  포지션  | 역할            |
-| :----: | :------: | --------------- |
-| 김용현 | Frontend | Frontend Leader |
-| 오윤식 | Backend  | 서비스 기획     |
-| 윤재휘 | Frontend | UI/UX 담당      |
-| 이상원 | Backend  | PM, DevOps      |
-| 이승헌 | Backend  | Backend Leader  |
-| 전인덕 | Frontend | UI/UX 담당      |
+|  이름  |  포지션  | 역할                                                       |
+| :----: | :------: | ---------------------------------------------------------- |
+| 김용현 | Frontend | **Frontend Leader**                                        |
+| 오윤식 | Backend  | **서비스 기획**                                            |
+| 윤재휘 | Frontend | **UI/UX 담당**                                             |
+| 이상원 | Backend  | **PM, DevOps**<br>Jenkins CI/CD<br>Nginx SSL<br>Auth Token |
+| 이승헌 | Backend  | **Backend Leader**                                         |
+| 전인덕 | Frontend | **UI/UX 담당**                                             |
 
 ## Commit Message Convention
 
@@ -71,9 +71,3 @@ Branch 전략은 `git flow`를 사용한다.
         -   front/dev
             -   feat-login-front
     -   docs/readme
-
-## Project Structure
-
-![full_structure](https://user-images.githubusercontent.com/55802893/212011394-0a91a910-2779-41d6-a45b-a766b4798103.png)
-
--   jenkins와 nginx를 이용한 무중단 배포 (Blue, Green 전략)
