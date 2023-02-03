@@ -13,8 +13,6 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,9 +30,9 @@ public class RoomController {
      */
     @PostMapping("room/create")
     public ResponseEntity<ResponseDTO> roomCreate(@RequestBody RequestRoomCreateDto rcDto) throws OpenViduJavaClientException, OpenViduHttpException {
-        Room createdRoom = Room.createRoom(rcDto.getRoom_name(),rcDto.getRoom_creater_name(),rcDto.getRoom_debate_type(),
-                rcDto.getRoom_opinion_left(),rcDto.getRoom_opinion_right(),
-                rcDto.getRoom_hashtags(),rcDto.getRoom_thumbnail_url(),rcDto.getRoom_category());
+        Room createdRoom = Room.createRoom(rcDto.getRoomName(),rcDto.getRoomCreaterName(),rcDto.getRoomDebateType(),
+                rcDto.getRoomOpinionLeft(),rcDto.getRoomOpinionRight(),
+                rcDto.getRoomHashtags(),rcDto.getRoomThumbnailUrl(),rcDto.getRoomCategory());
 
         Long roomId;
         roomId = roomService.createRoom(createdRoom);

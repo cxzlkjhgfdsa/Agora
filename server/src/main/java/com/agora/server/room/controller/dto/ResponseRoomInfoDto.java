@@ -2,7 +2,6 @@ package com.agora.server.room.controller.dto;
 
 import com.agora.server.room.domain.DebateType;
 import com.querydsl.core.annotations.QueryProjection;
-import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,52 +12,52 @@ import java.util.List;
 @NoArgsConstructor
 public class ResponseRoomInfoDto {
 
-    private Long room_id;
+    private Long roomId;
 
-    private String room_name;
+    private String roomName;
 
-    private String room_creater_name;
+    private String roomCreaterName;
 
-    private DebateType room_debate_type;
+    private DebateType roomDebateType;
 
-    private String room_opinion_left;
+    private String roomOpinionLeft;
 
-    private String room_opinion_right;
+    private String roomOpinionRight;
 
-    private String room_hashtags;
+    private String roomHashtags;
 
-    private Integer room_watch_cnt;
+    private Integer roomWatchCnt;
 
-    private Integer room_phase;
+    private Integer roomPhase;
 
-    private Integer room_phase_current_time_minute;
-    private Integer room_phase_current_time_second;
+    private Integer roomPhaseCurrentTimeMinute;
+    private Integer roomPhaseCurrentTimeSecond;
 
-    private LocalDateTime room_start_time;
+    private LocalDateTime roomStartTime;
 
-    private String room_thumbnail_url;
+    private String roomThumbnailUrl;
 
-    private String room_category;
+    private String roomCategory;
 
-    private boolean room_state;
+    private Boolean roomState;
 
-    private List<String> left_user_list;
-    private List<String> right_user_list;
+    private List<String> leftUserList;
+    private List<String> rightUserList;
+
 
     @QueryProjection
-    public ResponseRoomInfoDto(Long room_id, String room_name, String room_creater_name, DebateType room_debate_type, String room_opinion_left, String room_opinion_right, String room_hashtags, Integer room_watch_cnt, LocalDateTime room_start_time, String room_thumbnail_url, String room_category, Boolean room_state) {
-        this.room_id = room_id;
-        this.room_name = room_name;
-        this.room_creater_name = room_creater_name;
-        this.room_debate_type = room_debate_type;
-        this.room_opinion_left = room_opinion_left;
-        this.room_opinion_right = room_opinion_right;
-        this.room_hashtags = room_hashtags;
-        this.room_watch_cnt = room_watch_cnt;
-//        this.room_phase = room_phase;
-        this.room_start_time = room_start_time;
-        this.room_thumbnail_url = room_thumbnail_url;
-        this.room_category = room_category;
-        this.room_state = room_state;
+    public ResponseRoomInfoDto(Long roomId, String roomName, String roomCreaterName, DebateType roomDebateType, String roomOpinionLeft, String roomOpinionRight, String roomHashtags, Integer roomWatchCnt, LocalDateTime roomStartTime, String roomThumbnailUrl, String roomCategory, Boolean roomState) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.roomCreaterName = roomCreaterName;
+        this.roomDebateType = roomDebateType;
+        this.roomOpinionLeft = roomOpinionLeft;
+        this.roomOpinionRight = roomOpinionRight;
+        this.roomHashtags = roomHashtags;
+        this.roomWatchCnt = roomWatchCnt;
+        this.roomStartTime = roomStartTime;
+        this.roomThumbnailUrl = roomThumbnailUrl;
+        this.roomCategory = roomCategory;
+        this.roomState = roomState;
     }
 }
