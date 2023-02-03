@@ -191,7 +191,7 @@ function DebateContainerHot(props) {
         <Button direction="left" onClick={prevSlide}><Text>&#8249;</Text></Button>
         <DebateWrapper currIdx={currIdx} visibleCounts={visibleCounts}>
           {debateList.map(debate => {
-            return <Debate key={debate.room_id} roomInfo={debate} visibleCounts={visibleCounts} />
+            return <Debate key={debate.room_id} type="hot-thumbnail" roomInfo={debate} visibleCounts={visibleCounts} />
           })}
         </DebateWrapper>
         <Button direction="right" onClick={nextSlide}><Text>&#8250;</Text></Button>

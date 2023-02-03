@@ -50,7 +50,7 @@ const MainWrapper = styled.div`
 const DebateContainerWrapper = styled.div`
   width: 100%;
   height: 35%;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: grey;
 
 `
