@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class RequestSkipDto {
 
-    Long roomId;
-    String userNickname;
+    private Long roomId;
+    private String userNickname;
 
-    Integer phase;
+    private Integer phase;
 
     // 왼쪽진영 LEFT, 오른쪽 진영 RIGHT
-    String team;
+    private String team;
 
 }

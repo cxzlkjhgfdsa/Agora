@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 public class DebateScheduleConfig {
 
     @Bean
-    public Map<Long, ScheduledFuture<?>> scheduledFutures(){
+    public Map<String, ScheduledFuture<?>> scheduledFutures(){
         return new ConcurrentHashMap<>();
     }
 
