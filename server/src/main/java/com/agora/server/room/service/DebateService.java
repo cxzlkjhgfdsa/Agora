@@ -328,7 +328,7 @@ public class DebateService {
         String turnKey = "room:" + roomId + ":turn";
         Integer turn = (Integer) redisTemplate.opsForValue().get(turnKey);
 
-        ScheduledFuture<?> future = scheduledFutures.get(roomId);
+        ScheduledFuture<?> future = scheduledFutures.get(roomId+"_phase");
         if (future != null) {
             future.cancel(false);
             redisPublisher.publishMessage("room:"+roomId,"[PHASESKIP] "+ phase);
