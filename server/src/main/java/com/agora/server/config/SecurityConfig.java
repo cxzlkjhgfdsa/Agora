@@ -60,13 +60,8 @@ public class SecurityConfig {
                 .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
+                .baseUri("https://i8a705.p.ssafy.io/")
                 .and()
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("https://i8a705.p.ssafy.io/login/oauth2/code/*");
-                })
-//                .redirectionEndpoint()
-//                .baseUri("https://i8a705.p.ssafy.io/login/oauth2/code/*")
-//                .and()
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService)
                 .and()
