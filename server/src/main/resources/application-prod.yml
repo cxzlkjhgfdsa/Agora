@@ -27,8 +27,7 @@ spring:
           google: # /oauth2/authorization/google 이 주소를 동작하게 한다.
             client-id: 344895362990-l0ap8aav03aj2tjh5q51d3flbh7bku8a.apps.googleusercontent.com
             client-secret: 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
-            redirect-uri: "https://i8a705.p.ssafy.io/api/login/oauth2/code/google"
-            authorization-grant-type: authorization_code
+            redirect-uri: "https://i8a705.p.ssafy.io/api/callback/google"
             scope:
               - email
               - profile
