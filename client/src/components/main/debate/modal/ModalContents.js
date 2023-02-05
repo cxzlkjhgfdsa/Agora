@@ -3,6 +3,8 @@ import NoContents from "./NoContents";
 
 import { useMediaQuery } from "react-responsive";
 import ModalThumbnail from "./ModalThumbnail";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 const StyledModalContents = styled.div`
   // 크기 설정
@@ -20,11 +22,11 @@ const StyledModalContents = styled.div`
   }
   &::-webkit-scrollbar-thumb {
     width: 4px;
-    background: #333333;
+    background: #666666;
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background: #666666;
+    background: #333333;
     border-radius: 10px;
   }
 `;
@@ -35,7 +37,7 @@ const StyledDebateWrapper = styled.div`
   margin: 0px; padding: 8px;
 `;
 
-function ModalContents({ contents, ref, loading, isEnd }) {
+function ModalContents({ contents, setInView, loading, isEnd }) {
   // 한 행에 보여줄 토론방의 개수 설정
   let countInRow = 1;
   countInRow += useMediaQuery({
@@ -44,6 +46,11 @@ function ModalContents({ contents, ref, loading, isEnd }) {
   countInRow += useMediaQuery({
     query: "(min-width: 1024px)"
   });
+
+  const [ref, inView] = useInView();
+  useEffect(() => {
+    setInView(inView);
+  }, [inView]);
   
   return (
     <>
@@ -54,9 +61,9 @@ function ModalContents({ contents, ref, loading, isEnd }) {
           </StyledDebateWrapper>
         ))}
         {contents.length === 0 ? <NoContents /> : null}
+        {/* 스크롤 마지막임을 알리는 컴포넌트 */}
+        {loading || isEnd ? null : <div ref={ref} style={{width: "100%", height: "1px"}} />}
       </StyledModalContents>
-      {/* 스크롤 마지막임을 알리는 컴포넌트 */}
-      {loading || isEnd ? null : <span ref={ref} />}
     </>
   );
 }

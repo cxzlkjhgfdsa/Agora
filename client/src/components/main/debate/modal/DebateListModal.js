@@ -11,13 +11,12 @@ import customAxios from "utils/customAxios";
 // Title
 import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
-import { useInView } from "react-intersection-observer";
 
 const StyledDebateListModal = styled.div`
   // 크기 설정
   min-width: 900px;
   width: calc( 90% - 160px );
-  height: calc( 900px - 80px );
+  height: calc( 90% - 80px );
   margin: 0;
   padding: 40px 80px;
 
@@ -54,47 +53,51 @@ const CloseButton = styled.img`
 function DebateListModal({ closeModalEvent, debateState }) {
   const axios = customAxios();
 
-  // 제목 설정
-  let titleIcon = null;
-  let titleText = "";
-  if (debateState === "debating") {
-    titleIcon = LightBulb;
-    titleText = "열띤 토론중";
-  } else if (debateState === "waiting") {
-    titleIcon = Clock;
-    titleText = "토론 대기중";
-  }
+  // 제목 관련 이미지 및 글자
+  const [titleIcon, setTitleIcon] = useState();
+  const [titleText, setTitleText] = useState("");
+  
+  // 무한스크롤을 위해 감지할 변수 생성
+  const [page, setPage] = useState(0);  // 페이지
+  const [loading, setLoading] = useState(false);  // 로딩 여부
+  const [isEnd, setIsEnd] = useState(true);  // 마지막 페이지 여부
+  const [inView, setInView] = useState(false);  // 자식 컴포넌트의 무한스크롤 컴포넌트 inView 여부
 
+  // 현재 검색한 방의 상태
+  const [roomState, setRoomState] = useState();
+  // 최신순, 오래된 순, 인기순 등 정렬 방식
   const [orderBy, setOrderBy] = useState("createnew");
-  const [category, setCategory] = useState("all");
+  // 전체, 음식, 영화/드라마 등 카테고리
+  const [category, setCategory] = useState("전체");
+  // 현재 렌더링 되고 있는 데이터
   const [contents, setContents] = useState([]);
 
-  // 정렬순이나 카테고리가 바뀔 때마다,
-  // 1. 서버에서 데이터 받아오기
-  // 2. 아톰 패밀리 업데이트
+  // 데이터 초기화
   useEffect(() => {
-    // 0. 모두보기 기준 설정 (열띤 토론중 또는 토론 대기중)
-    // roomState, true: 진행중, false: 대기중
-    let roomState = null;
-    // 아톰 패밀리 업데이트 시작 인덱스 설정 (열띤 토론중: 100 ~, 토론 대기중 200 ~)
-    let updateBeginIdx = 0;
+    // 제목 설정
     if (debateState === "debating") {
-      roomState = true;
-      updateBeginIdx = 100;
+      setTitleIcon(LightBulb);
+      setTitleText("열띤 토론중");
+      setRoomState(true);
     } else if (debateState === "waiting") {
-      roomState = false;
-      updateBeginIdx = 200;
+      setTitleIcon(Clock);
+      setTitleText("토론 대기중");
+      setRoomState(false);
     }
-    
-    // 1. 서버에서 데이터 받아오기 (최신순, 전체)
-    
-  }, [orderBy, category]);                                                                                                                                                                                      
+  }, []);
 
+  // 카테고리, 정렬순 변경의 경우 페이징이 아닌 새로운 데이터를 가져와야 하므로 초기화
+  useEffect(() => {
+    console.log("Initialize Page and Contents");
+    setPage(0);
+    setContents([]);
+  }, [orderBy, category]);
+  
   // 페이지가 변경되면 데이터를 가져오는 함수
   const getContents = useCallback(async () => {
     // 로딩 상태 설정
     setLoading(true);
-
+    console.log("Request Data", roomState, orderBy, category, page);
     await axios.get("/api/v1/search/main/modal", {
       params: {
         roomState: roomState,
@@ -105,26 +108,27 @@ function DebateListModal({ closeModalEvent, debateState }) {
       },
       withCredentials: false
     }).then(({ data }) => {
-      // 데이터 저장
+      // 새로운 데이터 저장
       setContents(current => [...current, ...data.body.content]);
+
+      console.log("Get Contents");
+      // 첫 데이터, 즉 상위 데이터를 가져왔을 경우 아톰 패밀리 업데이트
+      if (page === 0) {
+        console.log("Update Atom Family");
+      }
 
       // 마지막 페이지 여부 설정
       setIsEnd(data.body.last);
-
-      // 맨 첫 API 호출의 경우 아톰 패밀리 업데이트 (상위 10개)
-      if (page === 0) {
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 아톰 패밀리 업데이트 해야 합니다!");
-      }
-      // 페이지 
     }).catch(error => {
       alert(error);
     });
 
     // 로딩 상태 해제
     setLoading(false);
-  }, [page]);
-
-  // 페이지가 바뀌면 함수 실행
+  }, [page, orderBy, category]);
+  
+  // 페이지, 정렬 방식, 카테고리가 바뀔 때마다
+  // 데이터를 가져 와 contents에 저장
   useEffect(() => {
     getContents();
   }, [getContents]);
@@ -133,23 +137,22 @@ function DebateListModal({ closeModalEvent, debateState }) {
   useEffect(() => {
     // 마지막 요소가 view에 들어온데다 데이터 대기중도 아니고 마지막 페이지가 아닐 경우 페이지 갱신
     if (inView && !loading && !isEnd) {
+      console.log("Next Page", page);
       setPage(current => current + 1);
     }
-  }, [inView, loading]);
-  
-  // 무한스크롤을 위해 감지할 변수 생성
-  const [page, setPage] = useState(0);  // 페이지
-  const [loading, setLoading] = useState(false);  // 로딩 여부
-  const [isEnd, setIsEnd] = useState(true);  // 마지막 페이지 여부
-  const { ref, inView } = useInView();  // 감시할 컴포넌트, 뷰포트에 들어왔는지
+  }, [inView, loading, isEnd]);
 
   return (
     <StyledDebateListModal>
+      {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle image={titleIcon} text={titleText} />
+      {/* Modal 닫는 이벤트 넘겨주기 */}
       <CloseButton src={Close} onClick={closeModalEvent} />
+      {/* 정렬 방식과 카테고리 setter를 넘겨 데이터 변경 권한 주기 */}
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />
-      <ModalContents contents={contents} ref={ref} loading={loading} isEnd={isEnd} />
+      {/* 데이터 로딩 현황, 마지막 페이지 여부를 넘겨 InView 컴포넌트를 렌더링 할 수 있게 하기 */}
+      <ModalContents contents={contents} setInView={setInView} loading={loading} isEnd={isEnd} />
     </StyledDebateListModal>
   );
 }
