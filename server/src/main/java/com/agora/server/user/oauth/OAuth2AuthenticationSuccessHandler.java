@@ -24,23 +24,22 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        UUID userId = principal.getUser().getUser_id();
-        Map<String, Object> item = principal.getAttributes();
-        if(userId == null){
+        String userId = principal.getUserId();
+        if (userId == null) {
+            log.info("no user id --------------------" + principal.getUserId());
             response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/signup/input")
-                    .queryParam("userId", item.get("id"))
-                    .queryParam("type", item.get("type"))
-                    .queryParam("nickname", item.get("nickname"))
-                    .queryParam("email", item.get("email"))
-                    .queryParam("profile", item.get("profile"))
+                    .queryParam("userId", principal.getUserId())
+                    .queryParam("type", principal.getSocialType())
+                    .queryParam("nickname", principal.getNickname())
+                    .queryParam("profile", principal.getProfile())
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString()
             );
-        }else {
+        } else {
             log.info("회원가입 진행 불필요");
             response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/login/redirect-handler")
-                            .queryParam("userId", userId)
+                    .queryParam("userId", userId)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString());
