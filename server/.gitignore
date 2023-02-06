@@ -38,4 +38,5 @@ out/
 env.yml
 *.DS_Store
 application-local.yml
+application-my.yml
 application.yml
