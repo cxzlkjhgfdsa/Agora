@@ -11,6 +11,8 @@ import customAxios from "utils/customAxios";
 // Title
 import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
+import { useRecoilCallback } from "recoil";
+import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 
 const StyledDebateListModal = styled.div`
   // 크기 설정
@@ -53,42 +55,53 @@ const CloseButton = styled.img`
 function DebateListModal({ closeModalEvent, debateState }) {
   const axios = customAxios();
 
-  // 제목 관련 이미지 및 글자
+  // 제목 관련 이미지 및 글자, 아톰 패밀리 업데이트 인덱스 (화제의 토론: 0 ~, 열띤 토론중: 100 ~, 토론 대기중: 200 ~)
   const [titleIcon, setTitleIcon] = useState();
   const [titleText, setTitleText] = useState("");
-  
+
+  // 현재 검색한 방의 상태
+  let roomState = null;
+  // 아톰 패밀리 시작 키
+  let updateBeginIndex = 0;
+  // 제목 설정
+  if (debateState === "debating") {
+    roomState = true;
+    updateBeginIndex = 100;
+  } else if (debateState === "waiting") {
+    roomState = false;
+    updateBeginIndex = 200;
+  }
+
   // 무한스크롤을 위해 감지할 변수 생성
   const [page, setPage] = useState(0);  // 페이지
   const [loading, setLoading] = useState(false);  // 로딩 여부
   const [isEnd, setIsEnd] = useState(true);  // 마지막 페이지 여부
   const [inView, setInView] = useState(false);  // 자식 컴포넌트의 무한스크롤 컴포넌트 inView 여부
 
-  // 현재 검색한 방의 상태
-  const [roomState, setRoomState] = useState();
   // 최신순, 오래된 순, 인기순 등 정렬 방식
   const [orderBy, setOrderBy] = useState("createnew");
   // 전체, 음식, 영화/드라마 등 카테고리
   const [category, setCategory] = useState("전체");
   // 현재 렌더링 되고 있는 데이터
   const [contents, setContents] = useState([]);
+  // 아톰 패밀리 setter
+  const updateAtom = useRecoilCallback(({ set }) => (roomInfo, newKey) => {
+    set(debateRoomsAtomFamily(newKey), roomInfo);
+  });
 
-  // 데이터 초기화
+  // State 초기화
   useEffect(() => {
-    // 제목 설정
     if (debateState === "debating") {
       setTitleIcon(LightBulb);
       setTitleText("열띤 토론중");
-      setRoomState(true);
     } else if (debateState === "waiting") {
       setTitleIcon(Clock);
       setTitleText("토론 대기중");
-      setRoomState(false);
     }
   }, []);
 
   // 카테고리, 정렬순 변경의 경우 페이징이 아닌 새로운 데이터를 가져와야 하므로 초기화
   useEffect(() => {
-    console.log("Initialize Page and Contents");
     setPage(0);
     setContents([]);
   }, [orderBy, category]);
@@ -97,7 +110,6 @@ function DebateListModal({ closeModalEvent, debateState }) {
   const getContents = useCallback(async () => {
     // 로딩 상태 설정
     setLoading(true);
-    console.log("Request Data", roomState, orderBy, category, page);
     await axios.get("/api/v1/search/main/modal", {
       params: {
         roomState: roomState,
@@ -105,16 +117,21 @@ function DebateListModal({ closeModalEvent, debateState }) {
         category: category,
         page: page,
         size: 10
-      },
+      }
+    }, {
       withCredentials: false
     }).then(({ data }) => {
-      // 새로운 데이터 저장
-      setContents(current => [...current, ...data.body.content]);
+      // 새로운 데이터
+      const newContents = data.body.content;
+      // 저장
+      setContents(current => [...current, ...newContents]);
 
-      console.log("Get Contents");
       // 첫 데이터, 즉 상위 데이터를 가져왔을 경우 아톰 패밀리 업데이트
       if (page === 0) {
-        console.log("Update Atom Family");
+        // 새로 받아 온 데이터 개수만큼 업데이트
+        for (let updateIndex = updateBeginIndex; updateIndex < updateBeginIndex + newContents.length; updateIndex++) {
+          updateAtom(newContents[updateIndex - updateBeginIndex], updateIndex);
+        }
       }
 
       // 마지막 페이지 여부 설정
@@ -137,7 +154,6 @@ function DebateListModal({ closeModalEvent, debateState }) {
   useEffect(() => {
     // 마지막 요소가 view에 들어온데다 데이터 대기중도 아니고 마지막 페이지가 아닐 경우 페이지 갱신
     if (inView && !loading && !isEnd) {
-      console.log("Next Page", page);
       setPage(current => current + 1);
     }
   }, [inView, loading, isEnd]);

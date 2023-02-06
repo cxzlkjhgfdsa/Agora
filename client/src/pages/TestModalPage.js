@@ -21,9 +21,8 @@ function TestMoadlPage() {
   return (
     <>
       {isOnModal
-        ? <DebateListModal closeModalEvent={closeModal} debateState={"debating"} />
-        :
-          <button onClick={openModal}>열띤 토론중 모달 켜기</button>
+        ? <DebateListModal closeModalEvent={closeModal} debateState="debating" />
+        : <button onClick={openModal}>열띤 토론중 모달 켜기</button>
       }
       {isOnWaitModal
           ? <DebateListModal closeModalEvent={closeWaitModal} debateState="waiting" />
