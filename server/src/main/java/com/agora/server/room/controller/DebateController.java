@@ -29,8 +29,14 @@ public class DebateController {
      * @param requestRoomEnterDto
      */
     @PutMapping("debate/ready")
-    public void changeReadyState(@RequestBody RequestRoomEnterDto requestRoomEnterDto){
+    public ResponseEntity<ResponseDTO> changeReadyState(@RequestBody RequestRoomEnterDto requestRoomEnterDto){
         debateService.ready(requestRoomEnterDto);
+        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setBody(responseRoomEnterDto);
+        responseDTO.setMessage("레디 성공");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -52,7 +58,7 @@ public class DebateController {
     }
 
     @PutMapping("debate/phasestart")
-    public ResponseEntity<ResponseDTO> phaseStart (@RequestBody RequestPhaseStartDto requestPhaseStartDto){
+    public ResponseEntity<ResponseDTO> phaseStart(@RequestBody RequestPhaseStartDto requestPhaseStartDto){
         debateService.startPhase(requestPhaseStartDto);
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
@@ -63,7 +69,7 @@ public class DebateController {
     }
 
     @PutMapping("debate/phaseskip")
-    public ResponseEntity<ResponseDTO> phaseStart (@RequestBody RequestSkipDto requestSkipDto){
+    public ResponseEntity<ResponseDTO> phaseSkip(@RequestBody RequestSkipDto requestSkipDto){
         debateService.skipPhase(requestSkipDto);
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
@@ -74,7 +80,7 @@ public class DebateController {
     }
 
     @PutMapping("debate/votestart")
-    public ResponseEntity<ResponseDTO> phaseStart (@RequestBody RequestVoteStartDto requestVoteStartDto){
+    public ResponseEntity<ResponseDTO> voteStart(@RequestBody RequestVoteStartDto requestVoteStartDto){
         debateService.startVote(requestVoteStartDto);
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
