@@ -5,12 +5,12 @@ import Close from "assets/icons/Close.png";
 export const ModalDiv = styled.div`
   // 크기 설정
   min-width: 900px;
-  width: calc( 90% - 160px );
+  width: calc( 90% - 10% );
   ${({ hasDefaultHeight }) => hasDefaultHeight
-    ? "height: calc( 90% - 80px );"
+    ? "height: calc( 86% - 4% );"
     : ""}
   margin: 0;
-  padding: 40px 80px;
+  padding: 2% 5%;
 
   // 위치 설정
   position: fixed;
@@ -79,6 +79,7 @@ const Description = styled.p`
   color: #FFFFFF;
   font-size: 1.2rem;
   text-align: center;
+  letter-spacing: -0.05rem;
 
   display: block;
 `;
@@ -97,9 +98,9 @@ export function ModalTitle({ image, text, description, titleSize }) {
 
 // Modal 흰색 세로선
 const StyledModalColorBar = styled.div`
-width: 8px;
-height: 70%;
-background-color: #FFFFFF;
+  width: 8px;
+  height: 70%;
+  background-color: #FFFFFF;
 `;
 export function ModalColorBar() {
   return (
