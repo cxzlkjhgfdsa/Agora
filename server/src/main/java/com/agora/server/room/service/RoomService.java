@@ -2,6 +2,7 @@ package com.agora.server.room.service;
 
 import com.agora.server.room.controller.dto.*;
 import com.agora.server.room.domain.Room;
+import com.agora.server.room.exception.DebateEndedException;
 import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisKeyUtil;
@@ -57,11 +58,14 @@ public class RoomService {
         String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
         // 토론 방의 시청자 수 방 생성시는 0
         String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+        // 토론이 끝났는지 확인하는 키 시작은 false
+        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
 
         // 저장
         valueOperations.set(phaseKey, 0);
         valueOperations.set(phaseStartTimeKey, 0);
         valueOperations.set(watchCntKey, 0);
+        valueOperations.set(debateEndedKey, "FALSE");
 
         return roomId;
     }
@@ -76,20 +80,25 @@ public class RoomService {
      * 토론자의 ready여부가 저장 됩니다.
      * 입장시 이므로 ready여부는 FALSE로 들어갑니다
      *
-     * @param userId
+     * @param userNickname
      * @param roomId
      * @param side
      * @return
      */
-    public boolean enterRoomAsDebater(UUID userId, Long roomId, Integer side) {
-        User user = userRepository.findById(userId).get();
+    public boolean enterRoomAsDebater(String userNickname, Long roomId, Integer side) {
+//        User user = userRepository.findById(userId).get();
 
-        String userNickname = user.getUser_nickname();
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
 
+        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
+        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
+        if(isEnded.equals("TRUE")){
+           throw new DebateEndedException("토론이 끝났습니다");
+        }
 
         try {
+
             String userisReadyKey = redisKeyUtil.isReadyKey(roomId,userNickname);
             String watchCntKey = redisKeyUtil.watchCntKey(roomId);
 
@@ -119,6 +128,12 @@ public class RoomService {
 
     public boolean enterRoomAsWatcher(Long roomId) {
 
+        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
+        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
+        if(isEnded.equals("TRUE")){
+            throw new DebateEndedException("토론이 끝났습니다");
+        }
+
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
 
         String watchCntKey = redisKeyUtil.watchCntKey(roomId);
@@ -137,15 +152,13 @@ public class RoomService {
      * <p>
      * Redis의 room:roomId:userNickname:isReady key도 삭제합니다
      *
-     * @param userId
+     * @param userNickname
      * @param roomId
      * @param side
      * @return
      */
-    public boolean leaveRoomAsDebater(UUID userId, Long roomId, Integer side) {
-        User user = userRepository.findById(userId).get();
+    public boolean leaveRoomAsDebater(String userNickname, Long roomId, Integer side) {
 
-        String userNickname = user.getUser_nickname();
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
 
@@ -469,6 +482,14 @@ public class RoomService {
 
         Long roomId = requestRoomEnterDto.getRoomId();
 
+        Room room = roomRepository.findById(roomId).get();
+        if(room.getRoom_creater_name().equals(requestRoomEnterDto.getUserNickname())){
+            responseRoomEnterBeforeStartDto.setIsUserCreater(true);
+        }else{
+            responseRoomEnterBeforeStartDto.setIsUserCreater(false);
+        }
+        responseRoomEnterBeforeStartDto.setCreaterNickname(room.getRoom_creater_name());
+
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
         ArrayList<String> leftUserList = new ArrayList<>();
         ArrayList<Boolean> leftUserIsReadyList = new ArrayList<>();
@@ -520,6 +541,10 @@ public class RoomService {
 
     public void setRoomCurrentStatusAfterStart(RequestRoomEnterDto requestRoomEnterDto, ResponseRoomEnterAfterStartDto responseRoomEnterAfterStartDto) {
         Long roomId = requestRoomEnterDto.getRoomId();
+
+        Room room = roomRepository.findById(roomId).get();
+        responseRoomEnterAfterStartDto.setIsUserCreater(false);
+        responseRoomEnterAfterStartDto.setCreaterNickname(room.getRoom_creater_name());
 
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
         ArrayList<String> leftUserList = new ArrayList<>();

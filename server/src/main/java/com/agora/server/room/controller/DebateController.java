@@ -1,6 +1,7 @@
 package com.agora.server.room.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
+import com.agora.server.debatehistory.service.DebateHistoryService;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
@@ -23,6 +24,7 @@ public class DebateController {
 
     private final RoomService roomService;
     private final DebateService debateService;
+    private final DebateHistoryService debateHistoryService;
 
     /**
      * 대기방에서 Ready 누르는 API
@@ -82,6 +84,10 @@ public class DebateController {
     @PutMapping("debate/votestart")
     public ResponseEntity<ResponseDTO> voteStart(@RequestBody RequestVoteStartDto requestVoteStartDto){
         debateService.startVote(requestVoteStartDto);
+        if(requestVoteStartDto.getVotePhase()==3){
+
+//            debateHistoryService
+        }
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
         responseDTO.setMessage(requestVoteStartDto.getVotePhase()+"페이즈 투표 시작합니다");

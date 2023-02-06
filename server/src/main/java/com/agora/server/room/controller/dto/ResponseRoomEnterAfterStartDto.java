@@ -9,8 +9,13 @@ import java.util.List;
 @Setter
 public class ResponseRoomEnterAfterStartDto {
 
-    private boolean isEnter;
+    private Boolean isEnter;
     private String token;
+
+    // 방장 닉네임
+    private String createrNickname;
+    // 지금 유저가 방장인지
+    private Boolean isUserCreater;
 
     // 토론 진행 중인 방에 들어 갈 때 필요한 추가 정보 + 갱신 할 정보
     private List<String> leftUserList;
