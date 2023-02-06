@@ -6,22 +6,29 @@ import com.agora.server.encrypt.util.EncryptionUtil;
 import com.agora.server.user.controller.dto.request.RequestJoinDto;
 import com.agora.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class EncryptService {
     private final EncryptionRepository encryptionRepository;
 
 
     @Transactional
-    public String getEncryptedUserName(Encrypt encrypt, RequestJoinDto requestJoinDto) throws Exception {
+    public String getEncryptedUserName(Encrypt encrypt, RequestJoinDto requestJoinDto) {
         encryptionRepository.save(encrypt);
         String salt = encrypt.getSalt();
         byte[] key = EncryptionUtil.hexToByteArray(salt);
-        return EncryptionUtil.aesEncrypt(requestJoinDto.getUser_name(), key);
+        try {
+            return EncryptionUtil.aesEncrypt(requestJoinDto.getUser_name(), key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public String getUserName(User user) throws Exception {

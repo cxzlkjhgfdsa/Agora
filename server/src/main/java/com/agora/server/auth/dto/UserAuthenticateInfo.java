@@ -10,12 +10,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UserAuthenticateInfo {
-    private UUID id;
+    private String userId;
 
-    private SocialType socialType;
-
-    public UserAuthenticateInfo(Claims claims) {
-        this.id = UUID.fromString(claims.get("id").toString());
-        this.socialType = SocialType.valueOf(claims.get("socialType").toString());
+    public UserAuthenticateInfo(String userId) {
+        this.userId = userId;
     }
 }

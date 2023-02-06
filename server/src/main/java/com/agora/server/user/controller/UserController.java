@@ -1,6 +1,7 @@
 package com.agora.server.user.controller;
 
 import com.agora.server.auth.domain.RefreshToken;
+import com.agora.server.auth.dto.UserAuthenticateInfo;
 import com.agora.server.auth.provider.JwtTokenProvider;
 import com.agora.server.auth.repository.AuthRepository;
 import com.agora.server.category.domain.Category;
@@ -18,6 +19,9 @@ import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,9 +39,7 @@ public class UserController {
 
     private final UserCategoryRepository userCategoryRepository;
     private final JwtTokenProvider tokenProvider;
-    private final AuthRepository authRepository;
     private final EncryptService encryptService;
-
 
     /**
      * RequestBody로 회원가입자의 정보를 받아옴
@@ -51,6 +53,7 @@ public class UserController {
         ResponseDTO responseDTO = new ResponseDTO();
 
         Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
+        // 카테고리 객체로 리스트 얻기
         List<Category> categoryList = userService.findById(requestJoinDto.getCategories());
         String encryptedUserName = encryptService.getEncryptedUserName(encrypt, requestJoinDto);
 
