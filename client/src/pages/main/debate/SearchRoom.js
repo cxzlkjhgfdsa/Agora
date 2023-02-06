@@ -13,8 +13,8 @@ const StyledSearchRoom = styled.div`
 
 function SearchRoom() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchWord = searchParams.get("searchWord");
-  const hashTags = searchParams.get("hashTags");
+  const searchWord = decodeURIComponent(searchParams.get("searchWord"));
+  const hashTags = decodeURIComponent(searchParams.get("hashTags"));
   const searchType = searchParams.get("searchType");
 
   // 검색 유형에 따라 End Point 설정해주기
@@ -24,7 +24,7 @@ function SearchRoom() {
   } else if (searchType === "title") {  // 방 제목
     endPoint = "roomname";
   } else if (searchType === "hashtags") {  // 해시태그
-    endPoint = "hashTags";
+    endPoint = "hashtags";
   }
 
   const [contents, setContents] = useState([]);  // 검색결과
@@ -61,7 +61,7 @@ function SearchRoom() {
       // 마지막 페이지 여부 설정
       setIsEnd(body.last);
     }).catch(error => {
-      console.log(error);
+      alert(error);
     });
 
     // 로딩 상태 해제
