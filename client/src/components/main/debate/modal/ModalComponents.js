@@ -1,11 +1,14 @@
 import styled from "styled-components";
+import Close from "assets/icons/Close.png";
 
 // Modal 창
 export const ModalDiv = styled.div`
   // 크기 설정
   min-width: 900px;
   width: calc( 90% - 160px );
-  height: calc( 90% - 80px );
+  ${({ hasDefaultHeight }) => hasDefaultHeight
+    ? "height: calc( 90% - 80px );"
+    : ""}
   margin: 0;
   padding: 40px 80px;
 
@@ -24,7 +27,7 @@ export const ModalDiv = styled.div`
 `;
 
 // 닫기 버튼
-export const CloseButton = styled.img`
+const StyledCloseButton = styled.img`
   width: 46px; height: 46px;
   position: absolute;
   top: 15px;
@@ -34,6 +37,11 @@ export const CloseButton = styled.img`
   
   border-radius: 2rem;
 `;
+export function CloseButton({ onClick }) {
+  return (
+    <StyledCloseButton src={Close} onClick={onClick} />
+  );
+};
 
 // 제목 부분
 const StyledModalTitle = styled.div`
@@ -59,7 +67,7 @@ const TitleIcon = styled.img`
 const Title = styled.span`
   // 글꼴 설정
   color: #FFFFFF;
-  font-size: 4rem;
+  font-size: ${({ titleSize }) => titleSize ? titleSize : "4rem"};
   font-weight: 700;
   text-align: center;
   letter-spacing: -0.05rem;
@@ -75,12 +83,12 @@ const Description = styled.p`
   display: block;
 `;
 
-export function ModalTitle({ image, text, description }) {
+export function ModalTitle({ image, text, description, titleSize }) {
   return (
     <StyledModalTitle>
       <TitleWrapper>
         {image ? <TitleIcon src={image} /> : null}
-        <Title>{text}</Title>
+        <Title titleSize={titleSize}>{text}</Title>
       </TitleWrapper>
       {description ? <Description>{description}</Description> : null}
     </StyledModalTitle>

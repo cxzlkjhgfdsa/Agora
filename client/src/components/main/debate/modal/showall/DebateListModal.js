@@ -2,7 +2,6 @@ import ModalCategory from "./ModalCategory";
 import ModalContents from "./ModalContents";
 import ModalOrderBy from "./ModalOrderBy";
 
-import Close from "assets/icons/Close.png";
 import { useCallback, useEffect, useState } from "react";
 import customAxios from "utils/customAxios";
 
@@ -124,11 +123,11 @@ function DebateListModal({ closeModalEvent, debateState }) {
   }, [inView, loading, isEnd]);
 
   return (
-    <ModalDiv>
+    <ModalDiv hasDefaultHeight={true}>
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle image={titleIcon} text={titleText} />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton src={Close} onClick={closeModalEvent} />
+      <CloseButton onClick={closeModalEvent} />
       {/* 정렬 방식과 카테고리 setter를 넘겨 데이터 변경 권한 주기 */}
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />
