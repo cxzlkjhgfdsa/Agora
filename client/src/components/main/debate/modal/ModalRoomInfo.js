@@ -23,11 +23,12 @@ const ModalRoomInfoTitleWrapper = styled.div`
 const ModalRoomInfoTitle = styled.p`
   // 크기 및 마진 설정
   width: calc( 100% - 6% );
-  margin: 8px 3%;
+  height: calc( 100% - 6% );
+  margin: 3%;
 
   // 글꼴 설정
   color: #FFFFFF;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   vertical-align: middle;
 
@@ -69,7 +70,7 @@ const Opinion = styled.p`
 
   // 글꼴 설정
   color: ${({ color }) => color};
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   letter-spacing: -0.05rem;
 
   // 글자 초과 처리
@@ -82,7 +83,7 @@ const Word = styled.span`
 
   // 글꼴 설정
   color: ${({ color }) => color};
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   letter-spacing: -0.05rem;
   z-index: 1;
 `;
@@ -107,7 +108,7 @@ const HashTags = styled.div`
 const HashTag = styled.span`
   // 글꼴 설정
   color: #FFFFFF;
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   // 마진 설정
   margin-right: 8px;
