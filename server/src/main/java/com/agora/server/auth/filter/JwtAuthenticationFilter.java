@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -17,31 +18,30 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends GenericFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
-
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            Claims claims = jwtTokenProvider.accessTokenValidation((HttpServletRequest) request);
+            Claims claims = jwtTokenProvider.accessTokenValidation(request);
             if (claims != null) {
                 log.info("claims is exist");
                 SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(claims));
             } else {
                 log.warn("you need to login");
+                response.sendRedirect("https://i8a705.p.ssafy.io/user/login");
             }
         } catch (MalformedJwtException e) {
             log.error("손상된 토큰입니다.");
-            throw new TokenValidFailedException();
         } catch (DecodingException e) {
             log.error("잘못된 인증입니다.");
             throw new TokenValidFailedException();
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다.");
             throw new TokenValidFailedException();
-        }finally {
-            chain.doFilter(request, response);
+        } finally {
+            filterChain.doFilter(request, response);
         }
     }
 }
