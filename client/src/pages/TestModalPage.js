@@ -1,4 +1,4 @@
-import DebateListModal from "components/main/debate/modal/DebateListModal";
+import DebateListModal from "components/main/debate/modal/showall/DebateListModal";
 import { useState } from "react";
 
 function TestMoadlPage() {
