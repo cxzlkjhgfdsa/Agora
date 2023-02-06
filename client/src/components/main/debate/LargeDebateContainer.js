@@ -13,7 +13,7 @@ function LargeDebateContainer({ url }) {
       </TextWrapper>
       {/* <Suspense fallback={<Spinner />}> */}
         <DebateContainer
-        maximumVisibleCounts={4}
+        maximumVisibleCounts={3}
         minimumVisibleCounts={2}
         type="hot-thumbnail"
         url={url}

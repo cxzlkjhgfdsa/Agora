@@ -14,10 +14,9 @@ function DebateList() {
     <MainWrapper>
       <Header></Header>
       <DebateContainerWrapper>
-        <LargeDebateContainer url="/api/v1/search/main/hot5" />
-        <LargeDebateContainer url="/api/v1/search/main/hot5" />
+        {/* <LargeDebateContainer url="/api/v1/search/main/hot5" /> */}
         {/* <SmallDebateContainer url="/api/v1/search/main/modal?roomState=true&category=전체&order=createnew&page=0&size=10" /> */}
-        {/* <SmallDebateContainer url="/api/v1/search/main/modal?roomState=false&category=전체&order=createnew&page=0&size=10" /> */}
+        <SmallDebateContainer url="/api/v1/search/main/modal?roomState=false&category=전체&order=createnew&page=0&size=10" />
       </DebateContainerWrapper>
     </MainWrapper>
   )
@@ -26,7 +25,8 @@ function DebateList() {
 export default DebateList;
 
 const MainWrapper = styled.div`
-  overflow-y: scroll; 
+  /* overflow-y: scroll;  */
+  /* overflow-x: hidden; */
 `
 
 const DebateContainerWrapper = styled.div`

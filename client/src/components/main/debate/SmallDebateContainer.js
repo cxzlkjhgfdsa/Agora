@@ -12,7 +12,7 @@ function SmallDebateContainer({ url }) {
         <Text>SmallDebateContainer</Text>
       </TextWrapper>
       {/* <Suspense fallback={<Spinner />}> */}
-        <DebateContainer
+      <DebateContainer
         maximumVisibleCounts={4}
         minimumVisibleCounts={3}
         type="normal"
@@ -28,13 +28,13 @@ function SmallDebateContainer({ url }) {
 export default SmallDebateContainer;
 
 const Wrapper = styled.div`
-  background-color: black;
+  background-color: #FFFFFF;
 `
 
 const TextWrapper = styled.div`
 `
 
 const Text = styled.span`
-color: white;
+color: black;
 font-size: 3rem;
 `

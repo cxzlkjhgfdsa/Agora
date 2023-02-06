@@ -154,7 +154,7 @@ const ThumbnailInfoWrapper = styled.div`
       }
     }}
     position: absolute;
-    z-index: 5;
+    z-index: 2;
   }
 
 `;
