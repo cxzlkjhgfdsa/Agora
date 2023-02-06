@@ -43,8 +43,7 @@ const CloseButton = styled.img`
   right: 15px;
 
   cursor: pointer;
-
-  background-color: #000000;
+  
   border-radius: 2rem;
 `;
 

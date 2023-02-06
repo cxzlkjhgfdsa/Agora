@@ -50,7 +50,7 @@ const StyledBackgroundImage = styled.img`
   left: 0;
 
   // fit
-  object-fit: contain;
+  // object-fit: contain;
 `;
 const HalfClearBlack = styled.div`
   // 크기 설정
