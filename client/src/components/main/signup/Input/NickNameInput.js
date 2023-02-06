@@ -34,7 +34,7 @@ function NickNameInput({ color, defaultNickname }) {
     axios({
       // 목업 서버 url
       method: 'get',
-      url: "https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/user/check/nickname?",
+      url: `${process.env.REACT_APP_SERVER_BASE_URL}/v1/user/check/nickname?`,
       params: {
         "nickname" : nickName
       }

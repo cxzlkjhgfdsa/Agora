@@ -94,7 +94,7 @@ function CategoryItem() {
     const axios = customAxios()
 
     axios.post(
-      'https://2eabc1ce-08b7-4b51-a88a-89f8081e62e3.mock.pstmn.io/api/v1/user/join',
+      '${process.env.REACT_APP_SERVER_BASE_URL}/v1/user/join',
       {
         "user_name": nameData,
         "user_age": birthData,
