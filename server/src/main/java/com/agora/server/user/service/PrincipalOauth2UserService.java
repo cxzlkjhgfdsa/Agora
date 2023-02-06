@@ -66,6 +66,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             responseData.put("nickname", oAuth2UserInfo.getName());
             responseData.put("profile", oAuth2UserInfo.getProfile());
 //            findUser = registerNewUser(userRequest, oAuth2UserInfo);
+
+
             OAuthUserPrincipalDto oAuthUserPrincipalDto = new OAuthUserPrincipalDto(
                     null,
                     oAuth2UserInfo.getProvider(),
