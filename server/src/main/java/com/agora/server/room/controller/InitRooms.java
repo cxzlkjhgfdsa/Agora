@@ -161,21 +161,24 @@ public class InitRooms {
 
                 ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
                 String phaset = "room:"+roomId+":phase";
-                String phasestarttime = "room:"+roomId+":phasetime";
-                String watchcntt = "room:"+roomId+":watchcnt";
+                String phasestarttime = "room:"+roomId+":phaseTime";
+                String watchcntt = "room:"+roomId+":watchCnt";
+                String debateEndedKey = "room:"+roomId+":isDebateEnded";
+
 
                 Integer phase = idx%3+1;
                 // 저장
                 valueOperations.set(phaset, 0);
                 valueOperations.set(phasestarttime, 0);
                 valueOperations.set(watchcntt, customDummy.getRoom_watch_cnt());
+                valueOperations.set(debateEndedKey, "FALSE");
 
-                roomService.enterRoomAsDebater(dummyUser1.getUser_id(),roomId,idx%2);
-                roomService.enterRoomAsDebater(dummyUser2.getUser_id(),roomId,(idx+1)%2);
-                roomService.enterRoomAsDebater(dummyUser3.getUser_id(),roomId,(idx+2)%2);
-                roomService.enterRoomAsDebater(dummyUser4.getUser_id(),roomId,(idx+3)%2);
-                roomService.enterRoomAsDebater(dummyUser5.getUser_id(),roomId,(idx+4)%2);
-                roomService.enterRoomAsDebater(dummyUser6.getUser_id(),roomId,(idx+5)%2);
+                roomService.enterRoomAsDebater(dummyUser1.getUser_nickname(),roomId,idx%2);
+                roomService.enterRoomAsDebater(dummyUser2.getUser_nickname(),roomId,(idx+1)%2);
+                roomService.enterRoomAsDebater(dummyUser3.getUser_nickname(),roomId,(idx+2)%2);
+                roomService.enterRoomAsDebater(dummyUser4.getUser_nickname(),roomId,(idx+3)%2);
+                roomService.enterRoomAsDebater(dummyUser5.getUser_nickname(),roomId,(idx+4)%2);
+                roomService.enterRoomAsDebater(dummyUser6.getUser_nickname(),roomId,(idx+5)%2);
 
                 roomService.roomPhaseStart(roomId,phase);
             }

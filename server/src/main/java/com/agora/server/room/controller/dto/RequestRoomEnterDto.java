@@ -10,7 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class RequestRoomEnterDto {
 
-    private UUID userId;
+//    private UUID userId;
+
+    private String userNickname;
 
     private Long roomId;
 
