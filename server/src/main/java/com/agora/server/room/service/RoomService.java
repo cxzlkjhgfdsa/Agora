@@ -482,6 +482,14 @@ public class RoomService {
 
         Long roomId = requestRoomEnterDto.getRoomId();
 
+        Room room = roomRepository.findById(roomId).get();
+        if(room.getRoom_creater_name().equals(requestRoomEnterDto.getUserNickname())){
+            responseRoomEnterBeforeStartDto.setIsUserCreater(true);
+        }else{
+            responseRoomEnterBeforeStartDto.setIsUserCreater(false);
+        }
+        responseRoomEnterBeforeStartDto.setCreaterNickname(room.getRoom_creater_name());
+
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
         ArrayList<String> leftUserList = new ArrayList<>();
         ArrayList<Boolean> leftUserIsReadyList = new ArrayList<>();
@@ -533,6 +541,10 @@ public class RoomService {
 
     public void setRoomCurrentStatusAfterStart(RequestRoomEnterDto requestRoomEnterDto, ResponseRoomEnterAfterStartDto responseRoomEnterAfterStartDto) {
         Long roomId = requestRoomEnterDto.getRoomId();
+
+        Room room = roomRepository.findById(roomId).get();
+        responseRoomEnterAfterStartDto.setIsUserCreater(false);
+        responseRoomEnterAfterStartDto.setCreaterNickname(room.getRoom_creater_name());
 
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
         ArrayList<String> leftUserList = new ArrayList<>();
