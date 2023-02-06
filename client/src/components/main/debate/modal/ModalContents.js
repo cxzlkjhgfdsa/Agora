@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const StyledModalContents = styled.div`
   // 크기 설정
   width: 100%;
-  height: 75%;
+  max-height: 75%;
   margin: 0;
 
   // display
@@ -46,6 +46,9 @@ function ModalContents({ contents, setInView, loading, isEnd }) {
   countInRow += useMediaQuery({
     query: "(min-width: 1024px)"
   });
+  countInRow += useMediaQuery({
+    query: "(min-width: 1536px)"
+  });
 
   const [ref, inView] = useInView();
   useEffect(() => {
@@ -56,13 +59,13 @@ function ModalContents({ contents, setInView, loading, isEnd }) {
     <>
       <StyledModalContents>
         {contents.map((item, index) => (
-          <StyledDebateWrapper countInRow={countInRow}>
-            <ModalThumbnail key={item + index} content={item} />
+          <StyledDebateWrapper key={item + index} countInRow={countInRow}>
+            <ModalThumbnail content={item} />
           </StyledDebateWrapper>
         ))}
         {contents.length === 0 ? <NoContents /> : null}
         {/* 스크롤 마지막임을 알리는 컴포넌트 */}
-        {loading || isEnd ? null : <div ref={ref} style={{width: "100%", height: "1px"}} />}
+        {loading || isEnd ? null : <div ref={ref} style={{ width: "100%", height: "1px" }} />}
       </StyledModalContents>
     </>
   );
