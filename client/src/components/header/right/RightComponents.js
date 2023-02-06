@@ -1,4 +1,3 @@
-import ExitButton from "./ExitButton";
 import styled from "styled-components";
 
 // Styled Button
@@ -8,9 +7,8 @@ import { StyledDarkButton, StyledLightButton } from "../../common/Buttons";
 import UserProfileIcon from "./UserProfileIcon";
 
 // 라우터 이동을 위한 Link
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { debateInfoState } from "stores/atoms";
+import { Link, useLocation } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import { userInfoState } from "stores/userInfoState";
 
 import { useMediaQuery } from "react-responsive";
@@ -24,32 +22,14 @@ const Wrapper = styled.div`
 function RightComponents() {
   // 로그인 여부, 페이지 위치 등 각종 상태에 따라 다른 컴포넌트 반환
   const userInfo = useRecoilValue(userInfoState);
-  const setDebateInfo = useSetRecoilState(debateInfoState);
   const curPath = useLocation().pathname;
-  const navigate = useNavigate();
 
   const isDesktop = useMediaQuery({
     query: "(min-width: 1024px)"
   });
 
-  // 토론방에서는 나가기 버튼 표시
-  if (curPath.startsWith("/debate/room")) {
-    const exit = () => {
-      alert("나가기 버튼을 눌렀습니다. 나가기 처리 후 토론방 목록으로 이동합니다.");
-      // 토론방 정보 초기화?
-      setDebateInfo({});
-      // 나가기
-      navigate("/debate/list");
-    };
-
-    return (
-      <Wrapper>
-        <ExitButton onClick={exit} />
-      </Wrapper>
-    );
-  }
   // 회원가입 페이지라면 미표시
-  else if (curPath.startsWith("/user/signup")) {
+  if (curPath.startsWith("/user/signup")) {
     return (
       <Wrapper></Wrapper>
     );

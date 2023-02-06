@@ -28,10 +28,6 @@ function CenterComponents() {
   if (curPath.startsWith("/debate/list")) {
     DesktopComponents = <SearchBar />;
   }
-  // 토론방 페이지에 있을 경우 토론 주제 표시
-  else if (curPath.startsWith("/debate/room")) {
-    DesktopComponents = <DebateTopic topic={"딱딱한 복숭아 vs 물렁한 복숭아"} />;
-  }
 
   // 이외의 페이지는 미표시
   return (
