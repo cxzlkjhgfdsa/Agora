@@ -198,7 +198,7 @@ function Thumbnail({ type, content }) {
   const minutes = content.room_phase_current_time_minute;
   const seconds = content.room_phase_current_time_second;
 
-  const imageUrl = content.room_thumbnail_url | NoImageAvailable;
+  const imageUrl = content.room_thumbnail_url || NoImageAvailable;
 
   const to_02d = (value) => value < 10 ? "0" + value : value;
 

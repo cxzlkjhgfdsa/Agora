@@ -1,4 +1,7 @@
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+
+import { debateRoomsSelectorFamily, debateRoomsAtomFamily } from "stores/debateRoomStates";
 
 const RoomInfoWrapper = styled.div`
   // 크기 설정
@@ -102,20 +105,21 @@ const HashTag = styled.span`
   margin-right: 8px;
 `;
 
-function RoomInfo({ content }) {
-  const title = content.room_name;
+function RoomInfo({ roomId }) {
 
-  const leftOpinion = content.room_opinion_left;
-  const rightOpinion = content.room_opinion_right;
-
-  const category = content.room_category;
-
-  const leftUsersCnt = content.left_user_list.length;
-  const rightUsersCnt = content.right_user_list.length;
+  const roomInfo = useRecoilValue(debateRoomsAtomFamily(roomId));
+  const {
+    roomName: title,
+    roomOpinionLeft: leftOpinion,
+    roomOpinionRight: rightOpinion,
+    roomCategory: category,
+    leftUserList: { length: leftUsersCnt },
+    rightUserList: { length: rightUsersCnt },
+    roomHashtags = "",
+  } = roomInfo
+  const hashTags = roomHashtags.split(",") || [];
   
-  const hashTags = content.room_hashtags
-    ? content.room_hashtags.split(",")
-    : [];
+
   
   return (
     <RoomInfoWrapper>
