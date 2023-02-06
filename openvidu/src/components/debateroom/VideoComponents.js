@@ -1,12 +1,16 @@
+// 기본 요소 import
+import React, { Component } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import Grid from '@mui/material/Grid';
-import Container from '@mui/system/Container';
+import styled from 'styled-components';
 
-import React, { Component } from 'react';
+// 자식 component import
 import './VideoComponent.css';
 import UserVideoComponent from '../video/UserVideoComponent';
-
 import getToken from './GetToken';
+import DebaterBox from './DebaterBox';
+
+import axios from 'axios';
 
 
 class VideoComponent extends Component {
@@ -20,6 +24,8 @@ class VideoComponent extends Component {
             session: undefined,
             cons: ['A', 'B', 'C'],
             pros: ['D', 'E', 'F'],
+            consOpinion: '라면이지 무슨소리냐',
+            prosOpinion: '계란 없으면 라면 무슨 맛?',
             consStreamManager: undefined,  // Will be the one of the cons 'subscribers'
             prosStreamManager: undefined,  // Will be the one of the pros 'subscribers'
             publisher: undefined,
@@ -137,7 +143,7 @@ class VideoComponent extends Component {
                                 resolution: '640x480', // The resolution of your video
                                 frameRate: 30, // The frame rate of your video
                                 insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                                mirror: false, // Whether to mirror your local video or not
+                                mirror: true, // Whether to mirror your local video or not
                             });
 
                             // --- 6) Publish your stream ---
@@ -172,6 +178,17 @@ class VideoComponent extends Component {
 
         if (mySession) {
             mySession.disconnect();
+            // 나갈 때 api 요청
+            // axios({
+            //   method: 'get',
+            //   url: 'http://70.12.247.157:8080/api/v1/search/mian/hot5',
+            // })
+            // .then((response) => {
+            //   console.log(response)
+            // })
+            // .catch((error) => {
+            //   console.log(error)
+            // })
         }
 
         // Empty all properties...
@@ -181,6 +198,10 @@ class VideoComponent extends Component {
             subscribers: [],
             mySessionId: 'SessionA',
             myUserName: 'Participant' + Math.floor(Math.random() * 100),
+            consStreamManager: undefined,
+            prosStreamManager: undefined,
+            sessionNum: -1,
+            start: false,
         });
     }
     
@@ -312,7 +333,7 @@ class VideoComponent extends Component {
         const myUserName = this.state.myUserName;
 
         return (
-            <Container maxWidth='xl'>
+            <div>
                 {this.state.session === undefined ? (
                     <div id="join">
                         <div id="join-dialog" className="jumbotron vertical-center">
@@ -351,56 +372,128 @@ class VideoComponent extends Component {
                     </div>
                 ) : null}
                   {this.state.session !== undefined ? (
-                      <div id="session">
-                          <div id="session-header">
-                              <h1 id="session-title">{mySessionId}</h1>
+                      <div>
+                        <Grid container spacing={3}>
+                          {this.state.prosStreamManager !== undefined ? (
+                            <Grid item xs={12} md={6}>
+                              <OpinionDiv>
+                                {this.state.prosOpinion}
+                              </OpinionDiv>
+                              <UserVideoComponent
+                                streamManager={this.state.prosStreamManager}
+                                />
+                              <DebaterBox data={this.state.pros} sessionNum={this.state.sessionNum} />
+                            </Grid>
+                          ) : (
+                            <Grid item xs={12} md={6}>
+                              <OpinionDiv>
+                                {this.state.prosOpinion}
+                              </OpinionDiv>
+                              <EmptyVideoDiv>
+                                토론 준비중
+                              </EmptyVideoDiv>
+                              <DebaterBox data={this.state.pros} sessionNum={this.state.sessionNum} />
+                            </Grid>
+                          )}
+                          {this.state.consStreamManager !== undefined ? (
+                            <Grid item xs={12} md={6}>
+                              <OpinionDiv>
+                                {this.state.consOpinion}
+                              </OpinionDiv>
+                              <UserVideoComponent
+                                streamManager={this.state.consStreamManager} />
+                              <DebaterBox data={this.state.cons} sessionNum={this.state.sessionNum} />
+                            </Grid>
+                          ) : (
+                            <Grid item xs={12} md={6}>
+                              <OpinionDiv>
+                                {this.state.consOpinion}
+                              </OpinionDiv>
+                              <EmptyVideoDiv>
+                                토론 준비중
+                              </EmptyVideoDiv>
+                              <DebaterBox data={this.state.cons} sessionNum={this.state.sessionNum} />
+                            </Grid>
+                            )}
+                          </Grid>
+                          <Grid container spacing={1}>
                               <Grid item xs={4}>
-                                <input
+                                <button
                                     className="btn btn-large btn-danger"
-                                    type="button"
                                     id="buttonLeaveSession"
                                     onClick={this.leaveSession}
-                                    value="Leave session"
-                                />
+                                    >
+                                        leave Session
+                                    </button>
                               </Grid>
                               <Grid item xs={4}>
-                                <input
+                                <button
                                   type="button"
                                   id="buttonDebateStart"
                                   onClick={this.debateStart}
-                                  value="Start debate"
-                                />
+                                  >
+                                    Start Debate
+                                  </button>
                               </Grid>
                               <Grid item xs={4}>
-                                <input
-                                  type="button"
+                                <button
                                   id="buttonChangeSession"
                                   onClick={this.changeDebater}
-                                  value="Change debator" 
-                                />
+                                  >
+                                    Change Debater
+                                  </button>
                               </Grid>
-                          </div>
-                          <Grid container spacing={2}>
-                              {this.state.prosStreamManager !== undefined ? (
-                                  <Grid item xs={6}>
-                                      <UserVideoComponent
-                                          streamManager={this.state.prosStreamManager} />
-                                  </Grid>
-                              ) : null}
-                              {this.state.consStreamManager !== undefined ? (
-                                  <Grid item xs={6}>
-                                      <UserVideoComponent
-                                          streamManager={this.state.consStreamManager} />
-                                  </Grid>
-                              ) : null}
-                          </Grid>
+                            </Grid>
                       </div>
                   ) : null}
-            </Container>
+            </div>
         );
     }
 }
 
+// 대기 상태 박스
+const EmptyVideoDiv = styled.div`
+  // 박스 크기
+  box-sizing: border-box;
+  width: 100%;
+  height: 600px;
+  border-radius: 18px;
+  letter-spacing: -2px;
+  
+  // 배경 색상
+  background-color: #f1f1f1;
+  
+  // font
+  font-size: 36px;
+  font-weight: bold;
+  color: #bbbbbb;
+
+  // 중앙배치
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  // 드래그 방지
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
+`
+
+const OpinionDiv = styled.div`
+  // font
+  font-size: 24px;
+  font-weight: bold;
+  color: #555555;
+  // letter-spacing: -1px;
+
+  // 문자 정렬
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 10px; 
+`
 
 
 export default VideoComponent;
