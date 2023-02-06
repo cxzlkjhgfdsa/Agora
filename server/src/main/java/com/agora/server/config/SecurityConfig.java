@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
+                .baseUri("/login/oauth2/code/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService)

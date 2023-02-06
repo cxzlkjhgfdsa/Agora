@@ -40,3 +40,4 @@ env.yml
 application-local.yml
 application-my.yml
 application.yml
+*/.DS_Store
