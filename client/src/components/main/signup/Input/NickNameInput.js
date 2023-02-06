@@ -34,7 +34,7 @@ function NickNameInput({ color, defaultNickname }) {
     axios({
       // 목업 서버 url
       method: 'get',
-      url: `${process.env.REACT_APP_SERVER_BASE_URL}/v1/user/check/nickname?`,
+      url: `${process.env.REACT_APP_SERVER_BASE_URL}/v2/user/check/nickname?`,
       params: {
         "nickname" : nickName
       }
