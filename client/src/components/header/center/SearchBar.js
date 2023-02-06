@@ -7,9 +7,9 @@ import SearchIcon from "assets/icons/Search_Gray.png";
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import SearchResult from "./SearchResult";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { creatorSearchResultState, hashTagsSearchResultState, searchStringHashTagsState, searchKeywordState, titleSearchResultState } from "stores/SearchRoomStates";
-import API from "api/axios";
+import customAxios from "utils/customAxios";
 
 // 검색바 전체
 const StyledSearchBar = styled.div`
@@ -59,6 +59,8 @@ const StyledInput = styled.input`
 `;
 
 function SearchBar() {
+  const axios = customAxios();
+
   // 사용자 입력 검색어
   const [searchString, setSearchString] = useState("");
   
@@ -71,8 +73,8 @@ function SearchBar() {
   const [isSearched, setIsSearched] = useState(false);
 
   // 검색 키워드 문자열 및 해시태그 문자열
-  const [keyword, setKeyword] = useRecoilState(searchKeywordState);
-  const [stringHashTags, setStringHashTags] = useRecoilState(searchStringHashTagsState);
+  const setKeyword = useSetRecoilState(searchKeywordState);
+  const setStringHashTags = useSetRecoilState(searchStringHashTagsState);
 
   // 키워드, 해시태그 토큰화
   const tokenize = (inputString) => {
@@ -134,7 +136,7 @@ function SearchBar() {
       const [localKeyword, localHashTags] = tokenize(inputString);
       
       // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색      
-      API.get("/room/search", {
+      axios.get("/api/v1/search/dropdown", {
         params: {
           searchWord: localKeyword,
           hashTags: localHashTags.join(",")
@@ -156,14 +158,6 @@ function SearchBar() {
     , []
   );
 
-  // Enter Event
-  const pressEnter = (event) => {
-    if (event.key === "Enter") {
-      const [localKeyword, localHashTags] = tokenize(event.target.value);
-      alert("엔터를 눌렀으며 검색어는 `" + localKeyword + "`, 해시태그는 `" + localHashTags.join(",") + "` 입니다.");
-    }
-  };
-
   return (
     <StyledSearchBar isSearched={isSearched}>
       <StyledImg src={SearchIcon} />
@@ -172,7 +166,6 @@ function SearchBar() {
         placeholder="검색"
         value={searchString}
         onChange={changeEvent}
-        onKeyDown={pressEnter}
       />
       {isSearched
         ? <SearchResult />

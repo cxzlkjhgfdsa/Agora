@@ -1,12 +1,7 @@
 import styled from "styled-components";
 import { useMediaQuery } from "react-responsive";
 
-// READY, START 버튼
-import ReadyButton from "./ReadyButton";
-import StartButton from "./StartButton";
-import { useLocation } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { debateInfoState } from "stores/atoms";
+import { useSetRecoilState } from "recoil";
 import { showToggleMenuState } from "stores/ToggleMenuStates";
 import LogoIcon from "./LogoIcon";
 
@@ -25,19 +20,6 @@ const TabletIcon = styled.img`
 `;
 
 function LeftComponents() {
-  // 현재 페이지 파악
-  const curPath = useLocation().pathname;
-
-  // 사용자 정보 및 토론방 정보 가져오기
-  const [debateInfo, setDebateInfo] = useRecoilState(debateInfoState);
-
-  // READY 이벤트
-  const ready = () => {
-    alert("준비 버튼을 눌렀습니다.");
-    const copiedDebateInfo = { ...debateInfo, isReady: true };
-    setDebateInfo(copiedDebateInfo);
-  };
-
   const isDesktop = useMediaQuery({
     query: "(min-width: 1024px)"
   });
@@ -56,20 +38,6 @@ function LeftComponents() {
     <LogoIcon />;
   let TabletComponents =
     <TabletIcon src={HamburgerIcon} onClick={ onClickHamburger } />;
-
-  // 토론방
-  if (curPath.startsWith("/debate/room")) {
-    // 방장일 경우 비활성화 START 표시
-    if (debateInfo.isLeader) {
-      DesktopComponents = TabletComponents = <StartButton enabled={false} />;
-    }
-    // 발언자일 경우 활성화 READY 표시
-    else if (debateInfo.position === "Speaker") {
-      DesktopComponents = TabletComponents = !debateInfo.isReady
-        ? <ReadyButton onClick={ready} enabled={true} />
-        : <ReadyButton enabled={false} />;
-    }
-  }
 
   return (
     <Wrapper>
