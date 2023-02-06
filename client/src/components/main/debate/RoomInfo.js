@@ -31,6 +31,7 @@ const RoomInfoTitle = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
 `;
 const IndentedInfoWrapper = styled.div`
   // 크기 설정
@@ -118,7 +119,6 @@ function RoomInfo({ roomId }) {
     roomHashtags = "",
   } = roomInfo
   const hashTags = roomHashtags.split(",") || [];
-  
 
   
   return (

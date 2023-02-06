@@ -76,7 +76,6 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
             {title}
             </Title>
 
-
             {/* 중앙부 대립 의견 */}
             <Center type={type}>
               {/* 왼쪽 의견 */}
@@ -121,11 +120,11 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
 export default memo(Debate);
 
 const Wrapper = styled.div`
-  position: relative;  //chatgpt가 지우랬음
+  position: relative;
   flex: 0 0 ${props => 100 / props.visibleCounts}%;
   max-width: ${props => 100 / props.visibleCounts}%;
   min-width: 4rem;
-  order: ${props => -props.viewers};
+  /* order: ${props => -props.viewers}; */
   
   aspect-ratio: 16 / 9;
   padding: .25rem;
@@ -143,17 +142,15 @@ const ThumbnailInfoWrapper = styled.div`
   background-color: #FFFFFF;
   box-sizing: border-box;
   cursor: pointer;
-
   transition: 0.35s;
   &:hover {
     ${props => {
       if ((props.itemIdx - props.currSlideIdx) % props.visibleCounts === 0) {
-        return "transform-origin: 0% 0%; transform: scale(1.2);"
+        return "transform-origin: 0% 0%; transform: scale(1.15);"
       } else if ((props.itemIdx - props.currSlideIdx) === props.visibleCounts-1) {
-        return "transform-origin: 100% 0%; transform: scale(1.2);"
+        return "transform-origin: 100% 0%; transform: scale(1.15);"
       } else {
-        console.log(props.itemIdx, props.visibleCounts)
-        return "transform-origin: 50% 0; transform: scale(1.2);"
+        return "transform-origin: 50% 0; transform: scale(1.15);"
       }
     }}
     position: absolute;
