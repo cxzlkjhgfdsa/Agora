@@ -3,6 +3,7 @@ package com.agora.server.room.service;
 import com.agora.server.debatehistory.domain.DebateHistory;
 import com.agora.server.debatehistory.repository.DebateHistoryRepository;
 import com.agora.server.debatehistory.service.DebateHistoryService;
+import com.agora.server.file.dto.FileDto;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
@@ -511,5 +512,70 @@ public class DebateService {
         return turn;
     }
 
- 
+
+    /**
+     * 파일을 업로드 하면 redis에 파일 name과 url을 저장하고 앞으로 들어올 사람들에게 보내줍니다
+     *
+     * room:roomId 채널에 전체적으로 name과 url을 현재 방에 들어와 있는 사람들에게 뿌려줍니다
+     *
+     * cardOpenState도 만들어서 현재 카드 오픈상태를 ready처럼 관리합니다
+     *
+     *
+     * @param fileDtos
+     */
+    public void cardsUpload(Long roomId, String userNickname, List<FileDto> fileDtos) {
+
+        String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+        String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+
+        List<Object> leftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
+        List<Object> rightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
+
+        for (int useridx = 0; useridx < leftUserList.size(); useridx++) {
+            String curUserNick = (String) leftUserList.get(useridx);
+            System.out.println(curUserNick);
+            if(curUserNick.equals(userNickname)){
+                setFileInRedis(useridx, "LEFT", roomId, fileDtos);
+            }
+        }
+
+
+        for (int useridx = 0; useridx < rightUserList.size(); useridx++) {
+            String curUserNick = (String) rightUserList.get(useridx);
+            System.out.println(curUserNick);
+            if(curUserNick.equals(userNickname)){
+                setFileInRedis(useridx, "RIGHT", roomId, fileDtos);
+            }
+        }
+
+
+    }
+
+    private void setFileInRedis(int useridx, String team, Long roomId, List<FileDto> fileDtos) {
+
+        String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
+
+        for (int fileidx = 0; fileidx < fileDtos.size(); fileidx++){
+            FileDto fileDto = fileDtos.get(fileidx);
+            String fileName = fileDto.getFileName();
+            String fileUrl = fileDto.getFileUrl();
+
+            int curfileidx = (useridx*2)+fileidx;
+
+            String imgCardNameKey = redisKeyUtil.imgCardNameKey(roomId, curfileidx, team);
+            String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, curfileidx, team);
+            String imgCardIsOpenedKey = redisKeyUtil.imgCardIsOpenedKey(roomId, curfileidx, team);
+
+
+            redisTemplate.opsForValue().set(imgCardNameKey,fileName);
+            redisTemplate.opsForValue().set(imgCardUrlKey,fileUrl);
+            redisTemplate.opsForValue().set(imgCardIsOpenedKey,"FALSE");
+
+            String imgCardSetMessage = redisMessageUtil.imgCardSetMessage(team, curfileidx,fileUrl);
+            redisPublisher.publishMessage(roomChannelKey,imgCardSetMessage);
+
+        }
+
+    }
+
 }

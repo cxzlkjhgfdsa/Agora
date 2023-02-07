@@ -1,5 +1,6 @@
 package com.agora.server.room.util;
 
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +28,7 @@ public class RedisMessageUtil {
     private final String PHASE_SKIP_TAG = "[PHASESKIP] ";
     private final String VOTE_START_TAG = "[VOTESTART] ";
     private final String VOTE_END_TAG = "[VOTEEND] ";
+    private final String IMG_CARD_SET_TAG = "[CARDSET] ";
 
     // 파라미터 태그
     private final String NICKNAME_TAG = "[NICKNAME] ";
@@ -35,6 +37,9 @@ public class RedisMessageUtil {
     private final String VOTE_RESULT_TAG = "[VOTERESULT] ";
     private final String TURN_TAG = "[TURN] ";
     private final String TEAM_TAG = "[TEAM] ";
+    private final String IMG_CARD_INDEX_TAG = "[CARDINDEX] ";
+    private final String IMG_NAME_TAG = "[CARDNAME] ";
+    private final String IMG_URL_TAG = "[CARDURL] ";
 
     public String enterMessage(Integer userSide, String userNickname) {
         String team = getTeam(userSide);
@@ -82,6 +87,8 @@ public class RedisMessageUtil {
     public String debateEndMessage() {
         return DEBATE_END_TAG + "debate ended please leave room";
     }
+
+    public String imgCardSetMessage(String team, Integer cardindex, String imgurl){ return IMG_CARD_SET_TAG + TEAM_TAG + IMG_CARD_INDEX_TAG+ IMG_URL_TAG  + team + " " + cardindex + " " + imgurl; }
 
     /**
      * 편의용 메서드

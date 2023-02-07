@@ -56,4 +56,17 @@ public class RedisKeyUtil {
     public String isDebateEndedKey(Long roomId) {
         return "room:"+roomId+":isDebateEnded";
     }
+
+    public String imgCardNameKey(Long roomId, int index, String team){
+        return "room:"+roomId+":"+team+":imgCardName:"+index;
+    }
+
+    public String imgCardUrlKey(Long roomId, int index, String team){
+        return "room:"+roomId+":"+team+":imgCardUrl:"+index;
+    }
+
+    public String imgCardIsOpenedKey(Long roomId, int index, String team){
+        return "room:"+roomId+":"+team+":imgCardIsOpened:"+index;
+    }
+
 }

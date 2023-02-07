@@ -3,6 +3,7 @@ package com.agora.server.file.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.file.dto.FileDto;
 import com.agora.server.file.service.FileService;
+import com.agora.server.room.service.DebateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,14 @@ public class FileController {
 
     private final FileService fileService;
 
+    private final DebateService debateService;
+
     @PostMapping(value = "save", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ResponseDTO> addFile(@RequestParam("files") MultipartFile[] files){
+    public ResponseEntity<ResponseDTO> addFile(@RequestParam("files") MultipartFile[] files, @RequestParam("userNickname") String userNickname, @RequestParam("roomId") Long roomId){
         ArrayList<MultipartFile> allfile = new ArrayList<>();
         for(int i=0; i<files.length; i++){
             allfile.add(files[i]);
         }
-
         List<FileDto> fileDtos = fileService.uploadFiles(allfile);
         ResponseDTO responseDTO = new ResponseDTO();
         if(fileDtos!=null){
@@ -36,6 +38,8 @@ public class FileController {
             responseDTO.setStatusCode(200);
             responseDTO.setMessage("파일 정상 업로드 완료");
             responseDTO.setBody(fileDtos);
+
+            debateService.cardsUpload(roomId,userNickname,fileDtos);
         }else{
             responseDTO.setState(false);
             responseDTO.setMessage("파일 업로드 실패");
