@@ -101,14 +101,14 @@ public class UserController {
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDto loginRequestDto) throws NoSuchFieldException {
         ResponseDTO responseDTO = new ResponseDTO();
 
-        Optional<User> Ouser = userRepository.findById(loginRequestDto.getUser_id());
+        Optional<User> Ouser = userRepository.findById(UUID.fromString(loginRequestDto.getUser_id()));
 
         if (Ouser.isPresent()) {
             // 유저 정상적으로 찾았을 시
             User user = Ouser.get();
             String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
             String refreshToken = tokenProvider.createRefreshToken();
-            //authRepository.save(RefreshToken.createRefreshToken(user.getUser_id(), refreshToken));
+
             userService.saveRefreshToken(user.getUser_id(), refreshToken);
 
             LoginResponseDto loginResponseDto = new LoginResponseDto();
