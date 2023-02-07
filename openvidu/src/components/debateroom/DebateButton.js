@@ -37,7 +37,7 @@ const DebateButton = styled.div`
   align-items: center;
   box-sizing: border-box;
 
-  margin-top: 10px;
+  margin-top: 5px;
 
   // prevent drag
   -webkit-user-select:none;

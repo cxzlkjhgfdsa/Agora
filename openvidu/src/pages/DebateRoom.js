@@ -30,10 +30,10 @@ function DebateRoom() {
     <Container maxWidth="xl">
       <HeadTitle isStart={isStart} />
       <Grid container spacing={4}>
-        <Grid item xs={12} md={7} lg={9}>
+        <Grid item xs={12} md={7} lg={8}>
           <VideoComponent data={data}/>
         </Grid>
-        <Grid item xs={12} md={5} lg={3}>
+        <Grid item xs={12} md={5} lg={4}>
           <TimeBox />
           <CardComponent />
         </Grid>

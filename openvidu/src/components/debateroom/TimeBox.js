@@ -7,13 +7,13 @@ import CardInputButton from "./CardInputButton";
 import Grid from "@mui/material/Grid";
 
 // recoil
-import { useRecoilState } from "recoil";
-import { isReadyState, isStartState, isAllReadyState, roleState } from "../stores/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isReadyState, isStartState, isAllReadyState, roleState, CardNumState } from "../stores/atoms";
 
 
 function TimeBox() {
   // state
-  const [cardNum, setCardNum] = useState(0)
+  const cardNum = useRecoilValue(CardNumState);
 
   // recoil state
   const [isReady, setIsReady] = useRecoilState(isReadyState);
@@ -58,9 +58,9 @@ function TimeBox() {
           </Grid>
           <Grid item xs={4}>
             <CardNumDiv>
-              <div>
-                카드 제출
-              </div>
+              <TitleDiv>
+                카드 등록
+              </TitleDiv>
               <div>
                 {cardNum}/2장
               </div>
@@ -73,7 +73,9 @@ function TimeBox() {
             </CardNumDiv>
           </Grid>
           <Grid item xs={12}>
-            준비가 완료되었다면 준비 완료를 눌러주세요
+            <SubText>
+              최대 2개까지 카드(이미지 자료)를 등록할 수 있습니다
+            </SubText>
           </Grid>
         </Grid>
       </AreaDiv>
@@ -97,7 +99,7 @@ const Wrapper = styled.div`
 
 const CardNumDiv = styled.div`
   // font
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #777777;
   letter-spacing: -1px;
@@ -108,7 +110,32 @@ const CardNumDiv = styled.div`
   align-items: center;
 
   // margin & padding
-  margin-top: 20%;
+  margin-top: 25px;
   margin-right: 10px;
   line-height: 150%
+`
+
+const SubText = styled.div`
+  // font
+  font-size: 15px;
+  color: #777777;
+
+  // positioning
+  text-align: center;
+
+  // margin
+  margin-top: 20px;
+`
+
+const TitleDiv = styled.div`
+  // font
+  font-size: 24px;
+  font-weight: bold;
+  color: #444444;
+
+  // positioning
+  text-align: center;
+
+  // margin
+  margin-top: 10px;
 `

@@ -19,3 +19,8 @@ export const isStartState = atom({
   key: 'isStartState',
   default: false,
 })
+
+export const CardNumState = atom({
+  key: 'cardNumState',
+  default: 0,
+})

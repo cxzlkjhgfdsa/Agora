@@ -1,5 +1,10 @@
+* {
+    font-family: 'Inter', san-serif !important;
+    letter-spacing: -0.5px;
+}
+
 .card-input {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
     padding-left: 10px;
 }
@@ -21,13 +26,15 @@
     font-size: inherit;
 
     background-color: #eeeeee;
-    width: calc(100px);
-    height: calc(100px);
+    width: calc(80px + 2vw);
+    height: calc(80px + 2vw);
     cursor: pointer;
     
     display: flex;
     align-items: center;
     justify-content: center;
+
+    box-sizing: border-box;
 
     border: 2px solid #bbbbbb;
     border-radius: 3px;
