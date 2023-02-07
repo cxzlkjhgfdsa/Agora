@@ -15,6 +15,8 @@ const StyledCreateRoomButton = styled.button`
   border: 0;
   border-radius: 10px;
   box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.25);
+
+  cursor: pointer;
 `;
 
 function CreateRoomButton(props) {
