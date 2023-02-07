@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledModalSetting = styled.div`
   // 크기 설정
   width: 90%;
-  margin: 0;
+  margin: 0 0 4% 0;
   padding: 0;
 `;
 

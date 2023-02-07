@@ -4,13 +4,12 @@ export const Container = styled.div`
   // 크기 설정
   width: calc( 100% - 16px );
   margin: 8px;
-
 `;
 
 export const CenterDiv = styled.div`
   // 크기 조절
   width: 100%;
-  margin: 0;
+  margin: 2% 0 0 0;
   padding: 0;
 
   // Display
@@ -32,7 +31,7 @@ export const BottomDiv = styled.div`
   // 크기 설정
   width: 100%;
   padding: 0;
-  margin: 8px 0;
+  margin: 0;
 
   // Display
   display: flex;
