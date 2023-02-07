@@ -43,16 +43,16 @@ function PhoneNumInput({ color }) {
     // 전화번호 인증 요청 함수
     const getAuthNum = async () => {
         const phoneNum = await axios.get("/v2/user/check/phonenum");
-        alert(phoneNum);
+        alert(phoneNum.data.body);
         setAuthNum(phoneNum);
     };
 
     // 전화번호 인증 함수
     const checkAuthNum = () => {
         axios
-            .get(`/v2/user/verify/phonenum`, { params: { authnum: authInputNum } })
+            .post(`/v2/user/verify/phonenum`, { authnum: authInputNum })
             .then(res => {
-                if (res.data.body.authResult === authInputNum) {
+                if (res.data.state) {
                     // 전화번호 인증 확인
                     setIsValid("valid");
                     // 유효성 검사 요청
