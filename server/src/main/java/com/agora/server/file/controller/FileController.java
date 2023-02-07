@@ -48,7 +48,15 @@ public class FileController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @DeleteMapping("/delete")
+
+
+    /**
+     * 테스트중 파일 삭제용
+     * @param items
+     * @return
+     * @throws IOException
+     */
+    @DeleteMapping("/delete/dev")
     public ResponseEntity<ResponseDTO> deleteFile(@RequestBody Map<String, List<String>> items) throws IOException {
         fileService.deleteFile(items.get("files"));
         ResponseDTO responseDTO = new ResponseDTO();
