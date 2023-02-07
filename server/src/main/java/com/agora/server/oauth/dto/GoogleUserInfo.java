@@ -1,16 +1,14 @@
-package com.agora.server.user.oauth.dto;
+package com.agora.server.oauth.dto;
 
 
 import com.agora.server.user.controller.dto.SocialType;
 
 import java.util.Map;
 
-public class GoogleUserInfo implements OauthUserInfo{
-
-    private Map<String, Object> attributes;
+public class GoogleUserInfo extends OauthUserInfo {
 
     public GoogleUserInfo(Map<String, Object> attributes) {
-        this.attributes = attributes;
+        super(attributes);
     }
     @Override
     public String getProviderId() {

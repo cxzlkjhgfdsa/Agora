@@ -1,11 +1,11 @@
-package com.agora.server.user.oauth.dto;
+package com.agora.server.oauth.dto;
 
 
 import com.agora.server.user.controller.dto.SocialType;
 
 import java.util.Map;
 
-public class KakaoUserInfo implements OauthUserInfo{
+public class KakaoUserInfo extends OauthUserInfo {
 
     private Map<String, Object> attributes;
 
@@ -13,10 +13,11 @@ public class KakaoUserInfo implements OauthUserInfo{
 
     private String id;
 
-    public KakaoUserInfo(Map<String, Object> attributes, Map<String, Object> profile_item, String id) {
-        this.attributes = attributes;
-        this.profile_item = profile_item;
-        this.id = id;
+    public KakaoUserInfo(Map<String, Object> attributes) {
+        super(attributes);
+        this.attributes = (Map<String, Object>) attributes.get("properties");
+        this.profile_item = (Map<String, Object>) attributes.get("kakao_account");
+        this.id = String.valueOf(attributes.get("id"));
     }
 
     @Override
@@ -26,7 +27,7 @@ public class KakaoUserInfo implements OauthUserInfo{
 
     @Override
     public SocialType getProvider() {
-        return (SocialType)SocialType.KAKAO;
+        return (SocialType) SocialType.KAKAO;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class KakaoUserInfo implements OauthUserInfo{
 
     @Override
     public String getProfile() {
-        return (String)attributes.get("profile_image");
+        return (String) attributes.get("profile_image");
     }
 
 }

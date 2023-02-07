@@ -20,7 +20,7 @@ import java.util.List;
 public class SwaggerConfiguration {
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .securityContexts(Collections.singletonList(securityContext()))
                 .securitySchemes(List.of(apiKey()))
                 .select()

@@ -87,7 +87,7 @@ public class UserService {
         return categoryList;
     }
 
-    public void saveRefreshToken(UUID uuid, String refreshToken){
+    public void saveRefreshToken(UUID uuid, String refreshToken) {
         String userId = uuid.toString();
         redisTemplate.opsForValue().set(userId, refreshToken, 10, TimeUnit.DAYS);
     }

@@ -2,12 +2,10 @@ package com.agora.server.config;
 
 import com.agora.server.auth.filter.JwtAuthenticationFilter;
 import com.agora.server.auth.provider.JwtTokenProvider;
-import com.agora.server.auth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.agora.server.config.filter.CorsFilterConfig;
-import com.agora.server.config.filter.MyFilter;
-import com.agora.server.user.oauth.OAuth2AuthenticationFailureHandler;
-import com.agora.server.user.oauth.OAuth2AuthenticationSuccessHandler;
-import com.agora.server.user.service.PrincipalOauth2UserService;
+import com.agora.server.oauth.handler.OAuth2AuthenticationFailureHandler;
+import com.agora.server.oauth.handler.OAuth2AuthenticationSuccessHandler;
+import com.agora.server.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.agora.server.oauth.service.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,15 +14,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsFilterConfig corsFilter;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -39,8 +40,8 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-
-                .addFilter(corsFilter.corsFilter())
+                .cors()
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -51,7 +52,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/room/**").authenticated()
+                .antMatchers("/api/v1/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
@@ -60,7 +61,8 @@ public class SecurityConfig {
                 .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
-                .baseUri("/login/oauth2/code/*")
+                // 테스트 후 redirect url 변경 필요
+                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService)
@@ -68,9 +70,19 @@ public class SecurityConfig {
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new MyFilter(), FilterSecurityInterceptor.class);
+                .addFilterBefore(new JwtAuthenticationFilter(new JwtTokenProvider(jwtSecret)), UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://i8a705.p.ssafy.io/"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
 

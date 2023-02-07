@@ -7,5 +7,5 @@ import java.util.UUID;
 
 @Getter@Setter
 public class LoginRequestDto {
-    private UUID user_id;
+    private String user_id;
 }

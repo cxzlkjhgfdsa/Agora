@@ -38,5 +38,10 @@ out/
 env.yml
 *.DS_Store
 application-local.yml
+application-my.yml
 application.yml
+<<<<<<< HEAD
+*/.DS_Store
+=======
 gcp-account-file.json
+>>>>>>> 78c1e2c97eeeb30e1a9b2a0e3be72b58344e97a4
