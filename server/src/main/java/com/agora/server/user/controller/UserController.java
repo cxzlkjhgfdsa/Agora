@@ -18,6 +18,7 @@ import com.agora.server.user.repository.UserRepository;
 import com.agora.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -84,7 +85,7 @@ public class UserController {
             responseDTO.setMessage("이미 사용중인 닉네임입니다");
             responseDTO.setState(false);
         }
-        return ResponseEntity.ok(responseDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     /**
@@ -126,4 +127,6 @@ public class UserController {
         }
         return ResponseEntity.ok(responseDTO);
     }
+
+
 }

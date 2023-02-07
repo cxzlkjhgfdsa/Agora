@@ -4,7 +4,7 @@ spring:
     port: 6379    #redis port를 집어넣으면 됩니다
   config:
     activate:
-      on-profile: my
+      on-profile: default
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

@@ -24,7 +24,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String userId = principal.getUserId();
         if (userId == null) {
             log.info("no user id --------------------" + principal.getUserId());
-            response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/signup/input")
+            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/signup/input")
                     .queryParam("userId", principal.getUserId())
                     .queryParam("type", principal.getSocialType())
                     .queryParam("nickname", principal.getNickname())
@@ -35,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             );
         } else {
             log.info("회원가입 진행 불필요");
-            response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/login/redirect-handler")
+            response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/login/redirect-handler")
                     .queryParam("userId", userId)
                     .build()
                     .encode(StandardCharsets.UTF_8)
