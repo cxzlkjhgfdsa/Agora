@@ -1,7 +1,7 @@
 import googleLogo from "../../assets/login/btn_google_signin_light_normal_web@2x.png"
 
 function GoogleBtn () {
-    const GOOGLE_AUTH_URL = `${process.env.REACT_APP_SERVER_BASE_URL}/oauth2/authorization/google`
+    const GOOGLE_AUTH_URL = `${process.env.REACT_APP_SERVER_BASE_URL}/oauth/google`
 
     return (
         <div>
