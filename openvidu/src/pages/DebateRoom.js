@@ -1,22 +1,40 @@
 import Grid from "@mui/material/Grid";
 import Container from "@mui/system/Container";
 
+// component
 import VideoComponent from "../components/debateroom/VideoComponents"
 import HeadTitle from "../components/debateroom/HeadTitle";
-import TimeBar from "../components/debateroom/TimeBar";
+import TimeBox from "../components/debateroom/TimeBox";
 import CardComponent from "../components/debateroom/CardComponent";
+import DebateButton from "../components/debateroom/DebateButton";
+
+// recoil
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isStartState, isAllReadyState, isReadyState, roleState } from "../components/stores/atoms";
+import { useEffect } from "react";
 
 function DebateRoom() {
 
+  const [isStart, setIsStart] = useRecoilState(isStartState);
+  const [isAllReady, setISAllReady] = useRecoilState(isAllReadyState);
+  const [isReady, setISReady] = useRecoilState(isReadyState);
+  const [role, setRole] = useRecoilState(roleState)
+
+  const data = {
+    isReady: isReady,
+    isStart: isStart,
+    role: role,
+  }
+  
   return(
     <Container maxWidth="xl">
-      <HeadTitle isStart={true} />
+      <HeadTitle isStart={isStart} />
       <Grid container spacing={4}>
-        <Grid item xs={8}>
-          <VideoComponent />
+        <Grid item xs={12} md={7} lg={9}>
+          <VideoComponent data={data}/>
         </Grid>
-        <Grid item xs={4}>
-          <TimeBar />
+        <Grid item xs={12} md={5} lg={3}>
+          <TimeBox />
           <CardComponent />
         </Grid>
       </Grid>

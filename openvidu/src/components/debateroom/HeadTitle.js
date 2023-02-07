@@ -1,6 +1,25 @@
 import styled from "styled-components"
 import { useEffect } from "react"
 
+// recoil
+import { useRecoilValue } from "recoil"
+
+
+function HeadTitle({isStart}) {
+
+  return(
+    <TitleDiv>
+      <OnAirDiv className={isStart ? "isStart-root": null}>
+        {isStart ? "On Air" : "Off Air"}
+      </OnAirDiv>
+      이것은 주제 제목 부분입니다.
+    </TitleDiv> 
+  )
+}
+
+export default HeadTitle
+
+
 
 const TitleDiv = styled.div`
   font-weight: bold;
@@ -50,17 +69,3 @@ const OnAirDiv = styled.div`
     background-color: #EF404A;
   }
 `
-
-function HeadTitle({isStart}) {
-
-  return(
-    <TitleDiv>
-      <OnAirDiv className={isStart ? "isStart-root": null}>
-        {isStart ? "On Air" : "Off Air"}
-      </OnAirDiv>
-      이것은 주제 제목 부분입니다.
-    </TitleDiv> 
-  )
-}
-
-export default HeadTitle

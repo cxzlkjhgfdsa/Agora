@@ -31,7 +31,12 @@ class VideoComponent extends Component {
             publisher: undefined,
             subscribers: [],
             start: false,
-            sessionNum: -1
+            sessionNum: -1,
+
+            // pros data
+            role: this.props.data.role,
+            isReady: this.props.data.isReady,
+            isStart: this.props.data.isStart,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -331,6 +336,7 @@ class VideoComponent extends Component {
     render() {
         const mySessionId = this.state.mySessionId;
         const myUserName = this.state.myUserName;
+        const isStart = this.state.isStart
 
         return (
             <div>
@@ -416,34 +422,36 @@ class VideoComponent extends Component {
                             </Grid>
                             )}
                           </Grid>
-                          <Grid container spacing={1}>
-                              <Grid item xs={4}>
-                                <button
-                                    className="btn btn-large btn-danger"
-                                    id="buttonLeaveSession"
-                                    onClick={this.leaveSession}
+                          <ButtonDiv>
+                            <Grid container spacing={1}>
+                                <Grid item xs={4}>
+                                  <button
+                                      className="btn btn-large btn-danger"
+                                      id="buttonLeaveSession"
+                                      onClick={this.leaveSession}
+                                      >
+                                          leave Session
+                                      </button>
+                                </Grid>
+                                <Grid item xs={4}>
+                                  <button
+                                    type="button"
+                                    id="buttonDebateStart"
+                                    onClick={this.debateStart}
                                     >
-                                        leave Session
+                                      Start Debate
                                     </button>
+                                </Grid>
+                                <Grid item xs={4}>
+                                  <button
+                                    id="buttonChangeSession"
+                                    onClick={this.changeDebater}
+                                    >
+                                      Change Debater
+                                    </button>
+                                </Grid>
                               </Grid>
-                              <Grid item xs={4}>
-                                <button
-                                  type="button"
-                                  id="buttonDebateStart"
-                                  onClick={this.debateStart}
-                                  >
-                                    Start Debate
-                                  </button>
-                              </Grid>
-                              <Grid item xs={4}>
-                                <button
-                                  id="buttonChangeSession"
-                                  onClick={this.changeDebater}
-                                  >
-                                    Change Debater
-                                  </button>
-                              </Grid>
-                            </Grid>
+                          </ButtonDiv>
                       </div>
                   ) : null}
             </div>
@@ -493,6 +501,10 @@ const OpinionDiv = styled.div`
   text-align: center;
   margin-top: 40px;
   margin-bottom: 10px; 
+`
+
+const ButtonDiv = styled.div`
+  margin-top: 30px;
 `
 
 

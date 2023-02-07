@@ -3,9 +3,9 @@ import styled from "styled-components";
 
 const CardArea = styled.div`
   width: 100%;
-  height: 400px;
+  height: 450px;
   
-  background-color: #f1f1f1;
+  box-shadow: 1px 1px 3px #777777, -1px -1px 1px #eeeeee;
   border-radius: 12px;
 `
 

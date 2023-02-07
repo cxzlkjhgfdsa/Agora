@@ -1,0 +1,48 @@
+.card-input {
+    font-size: 30px;
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.card-input input[type="file"] {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    clip:rect(0,0,0,0);
+    border: 0;
+    
+}
+
+.card-input label {
+    color: #bbbbbb;
+    font-size: inherit;
+
+    background-color: #eeeeee;
+    width: calc(100px);
+    height: calc(100px);
+    cursor: pointer;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #bbbbbb;
+    border-radius: 3px;
+}
+
+.card-input label:hover{
+    animation-duration: 0.3s;
+    animation-name: labelhover;
+    animation-fill-mode: forwards;
+}
+
+@keyframes labelhover {
+    
+    to {
+        background-color: #bbbbbb;
+        color: #eeeeee
+    }
+}

@@ -1,6 +1,43 @@
 import styled from "styled-components";
 import Grid from "@mui/material/Grid";
 
+// react
+import { useRecoilState } from "recoil";
+import { isReadyState } from "../stores/atoms";
+
+
+function DebaterBox({data, sessionNum}) {
+  
+  return(
+    <DebaterBoxDiv>
+      <Grid container spacing={0} >
+        <Grid item xs={4}>
+          <MemberDiv>
+            <NicknameDiv className={sessionNum === 0 ? "isSpeaking-root" : null}>
+              {data[0]}
+            </NicknameDiv>
+          </MemberDiv>
+        </Grid>
+        <Grid item xs={4}>
+          <MemberDiv>
+            <NicknameDiv className={sessionNum === 1 ? "isSpeaking-root" : null}>
+              {data[1]}
+            </NicknameDiv>
+          </MemberDiv>
+        </Grid>
+        <Grid item xs={4}>
+          <MemberDiv>
+            <NicknameDiv className={sessionNum === 2 ? "isSpeaking-root" : null}>
+              {data[2]}
+            </NicknameDiv>
+          </MemberDiv>
+        </Grid>
+      </Grid>
+    </DebaterBoxDiv>
+  )
+}
+
+export default DebaterBox
 
 const DebaterBoxDiv = styled.div`
   width: 100%;
@@ -49,41 +86,15 @@ const NicknameDiv = styled.div`
   -ms-user-select:none;
   user-select:none;
 
+  // speaking state
   &.isSpeaking-root {
     background-color: #F6C026;
     color: white;
   }
+
+  // ready state
+  &.isReady-root {
+    background-color: #00BF00;
+    color: white;
+  }
 `
-
-function DebaterBox({data, sessionNum}) {
-  
-  return(
-    <DebaterBoxDiv>
-      <Grid container spacing={0} >
-        <Grid item xs={4}>
-          <MemberDiv>
-            <NicknameDiv className={sessionNum === 0 ? "isSpeaking-root" : null}>
-              {data[0]}
-            </NicknameDiv>
-          </MemberDiv>
-        </Grid>
-        <Grid item xs={4}>
-          <MemberDiv>
-            <NicknameDiv className={sessionNum === 1 ? "isSpeaking-root" : null}>
-              {data[1]}
-            </NicknameDiv>
-          </MemberDiv>
-        </Grid>
-        <Grid item xs={4}>
-          <MemberDiv>
-            <NicknameDiv className={sessionNum === 2 ? "isSpeaking-root" : null}>
-              {data[2]}
-            </NicknameDiv>
-          </MemberDiv>
-        </Grid>
-      </Grid>
-    </DebaterBoxDiv>
-  )
-}
-
-export default DebaterBox
