@@ -146,7 +146,7 @@ public class SearchController {
     }
 
     @GetMapping("search/main/modal")
-    public ResponseEntity<ResponseDTO> searchShowallCreatername(
+    public ResponseEntity<ResponseDTO> searchModal(
             ModalRoomSearchCondition modalRoomSearchCondition, Pageable pageable){
 
         Page<ResponseRoomInfoDto> searchPage = roomService.modalRoomSearch(modalRoomSearchCondition, pageable);

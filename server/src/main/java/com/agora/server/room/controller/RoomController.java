@@ -2,11 +2,9 @@ package com.agora.server.room.controller;
 
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.openvidu.service.OpenViduService;
-import com.agora.server.room.controller.dto.RequestRoomCreateDto;
-import com.agora.server.room.controller.dto.RequestRoomEnterDto;
-import com.agora.server.room.controller.dto.ResponseRoomCreateDto;
-import com.agora.server.room.controller.dto.ResponseRoomEnterDto;
+import com.agora.server.room.controller.dto.*;
 import com.agora.server.room.domain.Room;
+import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -17,11 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("api/v2")
 public class RoomController {
 
     private final RoomService roomService;
     private final OpenViduService openViduService;
+    private final DebateService debateService;
 
     /**
      * 방을 생성
@@ -51,22 +50,98 @@ public class RoomController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * 추후 추가
+     * roomstate == false 방에 입장하기로 room/enter 요청을 보냈는데
+     * 그 사이에 roomstate == true로 바뀌면 에러 던지기
+     *
+     * 입장하려는 진영 토론자 수가 3명 꽉차있으면 에러 던지기
+     */
     @PostMapping("room/enter")
-    public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
-        String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getType());
+    public ResponseEntity<ResponseDTO> roomEnter(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        boolean isEntered = roomService.enterRoom(requestRoomEnterDto.getUserId(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+//        String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getType());
 
-        ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
-        responseRoomEnterDto.setEnter(isEntered);
-        responseRoomEnterDto.setToken(token);
+        ResponseRoomEnterBeforeStartDto responseRoomEnterBeforeStartDto = new ResponseRoomEnterBeforeStartDto();
+        ResponseRoomEnterAfterStartDto responseRoomEnterAfterStartDto = new ResponseRoomEnterAfterStartDto();
+
+        // 없어도 될 듯?
+        boolean isEntered = true;
+
+        if(requestRoomEnterDto.getRoomState()==false){
+            switch (requestRoomEnterDto.getType()){
+                case "debater":
+                    roomService.enterRoomAsDebater(requestRoomEnterDto.getUserNickname(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
+                    // Redis Pub/Sub에서 입장 메시지 송신하는 부분
+                    // type의 토론자 -> debater와 관전자 -> watcher로 구분
+                    // debater의 경우에만 메시지 송신
+                    debateService.debaterEnter(requestRoomEnterDto);
+                    break;
+                case "watcher":
+                    roomService.enterRoomAsWatcher(requestRoomEnterDto.getRoomId());
+                    break;
+            }
+            roomService.setRoomCurrentStatusBeforeStart(requestRoomEnterDto, responseRoomEnterBeforeStartDto);
+            responseRoomEnterBeforeStartDto.setIsEnter(isEntered);
+//            responseRoomEnterBeforeStartDto.setToken(token);
+        } else if(requestRoomEnterDto.getRoomState()==true){
+
+            roomService.enterRoomAsWatcher(requestRoomEnterDto.getRoomId());
+            roomService.setRoomCurrentStatusAfterStart(requestRoomEnterDto, responseRoomEnterAfterStartDto);
+
+            responseRoomEnterAfterStartDto.setIsEnter(isEntered);
+//            responseRoomEnterAfterStartDto.setToken(token);
+        }
+
 
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setBody(responseRoomEnterDto);
+        if(requestRoomEnterDto.getRoomState()==false){
+            responseDTO.setBody(responseRoomEnterBeforeStartDto);
+        } else if(requestRoomEnterDto.getRoomState()==true){
+            responseDTO.setBody(responseRoomEnterAfterStartDto);
+        }
         responseDTO.setMessage("정상적으로 입장하였습니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
+
+    /**
+     * 방 나가기 api
+     * Redis Pub/Sub 테스트용으로 틀만 만들어놨습니다.
+     * 자유롭게 수정하세요
+     */
+    @PostMapping("room/leave")
+    public ResponseEntity<ResponseDTO> roomLeave (@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        if(requestRoomLeaveDto.getType().equals("debater")){
+            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserSide());
+        } else if(requestRoomLeaveDto.getType().equals("watcher")){
+            roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
+        }
+
+        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
+        // type의 토론자 -> debater와 관전자 -> watcher로 구분
+        switch (requestRoomLeaveDto.getType()){
+            case "debater" :
+                debateService.debaterLeave(requestRoomLeaveDto);
+                break;
+            case "watcher" :
+                break;
+        }
+
+        if(requestRoomLeaveDto.getIsUserCreater()){
+            debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
+        }
+
+        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setBody(responseRoomEnterDto);
+        responseDTO.setMessage("정상적으로 퇴장하였습니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+
 
 }

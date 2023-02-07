@@ -4,7 +4,7 @@ spring:
     port: 6379    #redis port를 집어넣으면 됩니다
   config:
     activate:
-      on-profile: local
+      on-profile: default
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -13,7 +13,15 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-
+  gcp:
+    config:
+      file: gcp-account-file.json
+    project:
+      id: agora-374311
+    bucket:
+      id: agora_real1
+    dir:
+      name: img
 
   jpa:
     hibernate:
@@ -80,3 +88,5 @@ logging.level:
 server:
     port: 8080
 
+jwt:
+  secret: ksjhdkj
