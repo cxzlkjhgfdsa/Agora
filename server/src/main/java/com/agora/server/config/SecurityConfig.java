@@ -40,7 +40,6 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-//                .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
                 .cors()
                 .and()
                 .sessionManagement()
@@ -63,7 +62,7 @@ public class SecurityConfig {
                 .and()
                 .redirectionEndpoint()
                 // 테스트 후 redirect url 변경 필요
-                .baseUri("/login/oauth2/code/*")
+                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService)
@@ -78,7 +77,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("https://i8a705.p.ssafy.io/"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
