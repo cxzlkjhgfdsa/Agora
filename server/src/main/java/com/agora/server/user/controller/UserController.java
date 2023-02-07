@@ -50,6 +50,7 @@ public class UserController {
      * @param requestJoinDto
      * @return 회원가입이 정상적으로 실행되었다는 메세지를 보냄
      */
+    // TODO: 회원 가입 시 user_social_id 가 들어가지 않는 경우 발생
     @PostMapping("join")
     public ResponseEntity<ResponseDTO> userJoin(@RequestBody RequestJoinDto requestJoinDto) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
