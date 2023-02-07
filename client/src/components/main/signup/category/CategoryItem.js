@@ -105,7 +105,7 @@ function CategoryItem() {
         const axios = customAxios();
 
         axios
-            .post("${process.env.REACT_APP_SERVER_BASE_URL}/v2/user/join", {
+            .post(`${process.env.REACT_APP_SERVER_BASE_URL}/v2/user/join`, {
                 user_name: nameData,
                 user_age: birthData,
                 user_nickname: nicknameData,
