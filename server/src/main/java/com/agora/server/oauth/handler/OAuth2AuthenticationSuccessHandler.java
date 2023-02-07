@@ -21,8 +21,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        String userId = principal.getUserId();
-        if (userId == null) {
+        Boolean state = principal.getState();
+        if (!state) {
             log.info("no user id --------------------" + principal.getUserId());
             response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/signup/input")
                     .queryParam("userId", principal.getUserId())
@@ -36,7 +36,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         } else {
             log.info("회원가입 진행 불필요");
             response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/user/login/redirect-handler")
-                    .queryParam("userId", userId)
+                    .queryParam("userId", principal.getUserId())
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString());

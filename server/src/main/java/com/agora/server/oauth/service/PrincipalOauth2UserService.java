@@ -51,16 +51,18 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                             findUser.getUser_id().toString(),
                             oAuth2UserInfo.getProvider(),
                             oAuth2UserInfo.getName(),
-                            oAuth2UserInfo.getProfile()
+                            oAuth2UserInfo.getProfile(),
+                            true
                     )
             );
         } else {
             // 존재하지 않으면 회원가입
             OAuthUserPrincipalDto oAuthUserPrincipalDto = new OAuthUserPrincipalDto(
-                    null,
+                    oAuth2UserInfo.getProviderId(),
                     oAuth2UserInfo.getProvider(),
                     oAuth2UserInfo.getName(),
-                    oAuth2UserInfo.getProfile()
+                    oAuth2UserInfo.getProfile(),
+                    false
             );
             return PrincipalDetails.create(oAuthUserPrincipalDto);
         }

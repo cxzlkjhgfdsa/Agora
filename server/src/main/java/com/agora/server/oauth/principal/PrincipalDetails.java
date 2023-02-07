@@ -1,5 +1,6 @@
 package com.agora.server.oauth.principal;
 
+import com.agora.server.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -14,26 +15,28 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     private String socialType;
     private String nickname;
     private String profile;
+    private Boolean state;
     private Map<String, Object> attributes;
 
     public PrincipalDetails() {
     }
 
-    public PrincipalDetails(String userId, String socialType, String nickname, String profile) {
+    public PrincipalDetails(String userId, String socialType, String nickname, String profile, Boolean state) {
         this.userId = userId;
         this.socialType = socialType;
         this.nickname = nickname;
         this.profile = profile;
+        this.state = state;
 
     }
-
 
     public static PrincipalDetails create(OAuthUserPrincipalDto user) {
         return new PrincipalDetails(
                 user.getUserId(),
                 user.getUserSocialType(),
                 user.getUserNickName(),
-                user.getUserPhotoUrl()
+                user.getUserPhotoUrl(),
+                user.getState()
         );
     }
 
@@ -77,6 +80,14 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
+    }
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
     }
 
     @Override

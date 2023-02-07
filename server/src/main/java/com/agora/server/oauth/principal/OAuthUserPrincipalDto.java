@@ -11,11 +11,13 @@ public class OAuthUserPrincipalDto {
     private String userSocialType;
     private String userNickName;
     private String userPhotoUrl;
+    private Boolean state;
 
-    public OAuthUserPrincipalDto(String userId, SocialType userSocialType, String userNickName, String userPhotoUrl) {
+    public OAuthUserPrincipalDto(String userId, SocialType userSocialType, String userNickName, String userPhotoUrl, Boolean state) {
         this.userId = userId;
         this.userSocialType = userSocialType.toString();
         this.userNickName = userNickName;
         this.userPhotoUrl = userPhotoUrl;
+        this.state = state;
     }
 }
