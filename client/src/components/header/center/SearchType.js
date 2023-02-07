@@ -44,7 +44,10 @@ function SearchType({ searchType }) {
   return (
     <StyledSearchType>
       <StyledTypeLabel>{searchTypeLabel}</StyledTypeLabel>
-      <Link to={`/debate/search?searchWord=${keyword}&hashTags=${hashTags}&searchType=${searchType}`} style={{ display: "flex", alignItems: "center" }}>
+      <Link
+        to={`/debate/search?searchWord=${encodeURIComponent(keyword)}&hashTags=${encodeURIComponent(hashTags)}&searchType=${searchType}`}
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <StyledSearchAll>모두보기</StyledSearchAll>
         <img src={RightArrow} style={{ marginLeft: "8px", width: "6px", height: "10px" }} alt={""} />
       </Link>
