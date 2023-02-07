@@ -13,8 +13,8 @@ const StyledSearchRoom = styled.div`
 
 function SearchRoom() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchWord = searchParams.get("searchWord");
-  const hashTags = searchParams.get("hashTags");
+  const searchWord = decodeURIComponent(searchParams.get("searchWord"));
+  const hashTags = decodeURIComponent(searchParams.get("hashTags"));
   const searchType = searchParams.get("searchType");
 
   // 검색 유형에 따라 End Point 설정해주기
@@ -24,12 +24,12 @@ function SearchRoom() {
   } else if (searchType === "title") {  // 방 제목
     endPoint = "roomname";
   } else if (searchType === "hashtags") {  // 해시태그
-    endPoint = "hashTags";
+    endPoint = "hashtags";
   }
 
   const [contents, setContents] = useState([]);  // 검색결과
   const [page, setPage] = useState(0);  // 검색할 페이지
-  const [isEnd, setIsEnd] = useState(false);
+  const [isEnd, setIsEnd] = useState(true);
   const [loading, setLoading] = useState(false);  // 데이터 요청 후 대기중 여부
 
   const [ref, inView] = useInView();  // 감시할 컴포넌트
@@ -38,8 +38,6 @@ function SearchRoom() {
   const axios = customAxios();
 
   const getContents = useCallback(async () => {
-    console.log("Get", page);
-
     // 로딩 상태 설정
     setLoading(true);
 
@@ -63,7 +61,7 @@ function SearchRoom() {
       // 마지막 페이지 여부 설정
       setIsEnd(body.last);
     }).catch(error => {
-      console.log(error);
+      alert(error);
     });
 
     // 로딩 상태 해제
@@ -94,7 +92,7 @@ function SearchRoom() {
           : null}
       </StyledSearchRoom>
       {/* 스크롤 마지막임을 알리는 컴포넌트 */}
-      {loading ? null : <span ref={ref} />}
+      {loading || isEnd ? null : <span ref={ref} />}
     </>
   );
 }
