@@ -1,33 +1,29 @@
 package com.agora.server.room.service;
 
 import com.agora.server.debatehistory.domain.DebateHistory;
-import com.agora.server.debatehistory.repository.DebateHistoryRepository;
 import com.agora.server.debatehistory.service.DebateHistoryService;
 import com.agora.server.file.dto.FileDto;
+import com.agora.server.file.service.FileService;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterDto;
 import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
-import com.agora.server.room.controller.dto.ResponseRoomEnterBeforeStartDto;
 import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
-import com.agora.server.room.domain.Room;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisChannelUtil;
 import com.agora.server.room.util.RedisKeyUtil;
 import com.agora.server.room.util.RedisMessageUtil;
-import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.*;
 
 @Service
@@ -39,6 +35,7 @@ public class DebateService {
 
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final FileService fileService;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -51,8 +48,6 @@ public class DebateService {
     private final RedisMessageUtil redisMessageUtil;
 
     private final DebateHistoryService debateHistoryService;
-
-
 
 
     /**
@@ -301,7 +296,7 @@ public class DebateService {
 
         String phaseStartAllInOneMessage = redisMessageUtil.phaseStartAllInOneMessage(phase, turn, team, userNickname);
 
-        redisPublisher.publishMessage(roomChannelKey,phaseStartAllInOneMessage);
+        redisPublisher.publishMessage(roomChannelKey, phaseStartAllInOneMessage);
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -310,7 +305,7 @@ public class DebateService {
             @Override
             public void run() {
                 String phaseEndAllInOneMessage = redisMessageUtil.phaseEndAllInOneMessage(phase, finalTurn, team, userNickname);
-             redisPublisher.publishMessage(roomChannelKey,phaseEndAllInOneMessage);
+                redisPublisher.publishMessage(roomChannelKey, phaseEndAllInOneMessage);
 
                 redisTemplate.delete(currentSpeakingTeamKey);
                 redisTemplate.delete(currentSpeakingUserKey);
@@ -370,7 +365,7 @@ public class DebateService {
                 Integer voteResultRight = (Integer) redisTemplate.opsForValue().get(voteRightKey);
                 String voteEndMessage = redisMessageUtil.voteEndMessage(votePhase, voteResultLeft, voteResultRight);
                 redisPublisher.publishMessage(roomChannelKey, voteEndMessage);
-                if(votePhase==3){
+                if (votePhase == 3) {
                     // 3번째 투표까지 정상적으로 진행 된 경우 사실상 정상적으로 Debate가 끝난 경우임
                     // 이때 DebateHistory를 생성해서 저장해 줌
                     String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
@@ -379,12 +374,12 @@ public class DebateService {
                     List<Object> rightuserlist = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
                     for (Object o : leftuserlist) {
                         String userNickname = (String) o;
-                        DebateHistory debateHistory = debateHistoryService.createDebateHistory(roomId,userNickname,"LEFT");
+                        DebateHistory debateHistory = debateHistoryService.createDebateHistory(roomId, userNickname, "LEFT");
                         debateHistoryService.saveHistory(debateHistory);
                     }
                     for (Object o : rightuserlist) {
                         String userNickname = (String) o;
-                        DebateHistory debateHistory = debateHistoryService.createDebateHistory(roomId,userNickname,"RIGHT");
+                        DebateHistory debateHistory = debateHistoryService.createDebateHistory(roomId, userNickname, "RIGHT");
                         debateHistoryService.saveHistory(debateHistory);
                     }
                     // 끝난 경우에는 더 이상 관전자가 들어오지 못하게 redis에 isDebateEnded key의 값을 TRUE로 바꿔 줌
@@ -397,12 +392,12 @@ public class DebateService {
 
         scheduledFutures.put(roomId + "_vote", future);
 
-        if(votePhase==3){
+        if (votePhase == 3) {
             ScheduledFuture<?> futureDebateEnd = executorService.schedule(new Runnable() {
                 @Override
                 public void run() {
-                     // 마지막 투표가 끝난 후 일정 시간 후에 Redis Pub/Sub에 전체적으로 토론 종료 됐다는 메시지 보냄
-                     // 클라이언트에서는 이 메시지를 받은 클라이언트를 메인으로 쫒아내버리기
+                    // 마지막 투표가 끝난 후 일정 시간 후에 Redis Pub/Sub에 전체적으로 토론 종료 됐다는 메시지 보냄
+                    // 클라이언트에서는 이 메시지를 받은 클라이언트를 메인으로 쫒아내버리기
                     String debateEndMessage = redisMessageUtil.debateEndMessage();
                     redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
                 }
@@ -412,6 +407,16 @@ public class DebateService {
             ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
                 @Override
                 public void run() {
+
+                    List<String> leftFileArr = getDeletingFileList(roomId, "LEFT");
+                    List<String> rightFileArr = getDeletingFileList(roomId, "RIGHT");
+                    try {
+                        fileService.deleteFile(leftFileArr);
+                        fileService.deleteFile(rightFileArr);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+
                     // 모든 클라이언트를 메인으로 내보낸 후 저장되어 있던 모든 방 정보 삭제
                     List<String> keyList = new ArrayList<>();
                     keyList.add(redisKeyUtil.phaseKey(roomId));
@@ -481,11 +486,11 @@ public class DebateService {
 
                 for (Object o : leftUserList) {
                     String userNickname = (String) o;
-                    keyList.add(redisKeyUtil.isReadyKey(roomId,userNickname));
+                    keyList.add(redisKeyUtil.isReadyKey(roomId, userNickname));
                 }
                 for (Object o : rightUserList) {
                     String userNickname = (String) o;
-                    keyList.add(redisKeyUtil.isReadyKey(roomId,userNickname));
+                    keyList.add(redisKeyUtil.isReadyKey(roomId, userNickname));
                 }
 
                 keyList.add(redisKeyUtil.isDebateEndedKey(roomId));
@@ -515,11 +520,10 @@ public class DebateService {
 
     /**
      * 파일을 업로드 하면 redis에 파일 name과 url을 저장하고 앞으로 들어올 사람들에게 보내줍니다
-     *
+     * <p>
      * room:roomId 채널에 전체적으로 name과 url을 현재 방에 들어와 있는 사람들에게 뿌려줍니다
-     *
+     * <p>
      * cardOpenState도 만들어서 현재 카드 오픈상태를 ready처럼 관리합니다
-     *
      *
      * @param fileDtos
      */
@@ -533,8 +537,7 @@ public class DebateService {
 
         for (int useridx = 0; useridx < leftUserList.size(); useridx++) {
             String curUserNick = (String) leftUserList.get(useridx);
-            System.out.println(curUserNick);
-            if(curUserNick.equals(userNickname)){
+            if (curUserNick.equals(userNickname)) {
                 setFileInRedis(useridx, "LEFT", roomId, fileDtos);
             }
         }
@@ -542,8 +545,7 @@ public class DebateService {
 
         for (int useridx = 0; useridx < rightUserList.size(); useridx++) {
             String curUserNick = (String) rightUserList.get(useridx);
-            System.out.println(curUserNick);
-            if(curUserNick.equals(userNickname)){
+            if (curUserNick.equals(userNickname)) {
                 setFileInRedis(useridx, "RIGHT", roomId, fileDtos);
             }
         }
@@ -555,27 +557,44 @@ public class DebateService {
 
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
 
-        for (int fileidx = 0; fileidx < fileDtos.size(); fileidx++){
+        for (int fileidx = 0; fileidx < fileDtos.size(); fileidx++) {
             FileDto fileDto = fileDtos.get(fileidx);
             String fileName = fileDto.getFileName();
             String fileUrl = fileDto.getFileUrl();
 
-            int curfileidx = (useridx*2)+fileidx;
+            int curfileidx = (useridx * 2) + fileidx;
 
             String imgCardNameKey = redisKeyUtil.imgCardNameKey(roomId, curfileidx, team);
             String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, curfileidx, team);
-            String imgCardIsOpenedKey = redisKeyUtil.imgCardIsOpenedKey(roomId, curfileidx, team);
+//            String imgCardIsOpenedKey = redisKeyUtil.imgCardIsOpenedKey(roomId, curfileidx, team);
 
 
-            redisTemplate.opsForValue().set(imgCardNameKey,fileName);
-            redisTemplate.opsForValue().set(imgCardUrlKey,fileUrl);
-            redisTemplate.opsForValue().set(imgCardIsOpenedKey,"FALSE");
+            redisTemplate.opsForValue().set(imgCardNameKey, fileName);
+            redisTemplate.opsForValue().set(imgCardUrlKey, fileUrl);
+//            redisTemplate.opsForValue().set(imgCardIsOpenedKey, "FALSE");
 
-            String imgCardSetMessage = redisMessageUtil.imgCardSetMessage(team, curfileidx,fileUrl);
-            redisPublisher.publishMessage(roomChannelKey,imgCardSetMessage);
+            String imgCardSetMessage = redisMessageUtil.imgCardSetMessage(team, curfileidx, fileUrl);
+            redisPublisher.publishMessage(roomChannelKey, imgCardSetMessage);
 
         }
 
     }
 
+    public List<String> getDeletingFileList(Long roomId, String team) {
+        List<String> fileList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            String imgCardNameKey = redisKeyUtil.imgCardNameKey(roomId, i, team);
+            String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, i, team);
+            Object o = redisTemplate.opsForValue().get(imgCardNameKey);
+            if (o != null) {
+                String o1 = (String) o;
+                fileList.add(o1);
+                System.out.println(o1);
+                redisTemplate.delete(imgCardNameKey);
+                redisTemplate.delete(imgCardUrlKey);
+            }
+        }
+
+        return fileList;
+    }
 }
