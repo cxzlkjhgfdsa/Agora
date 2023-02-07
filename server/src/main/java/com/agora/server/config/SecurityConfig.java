@@ -2,11 +2,9 @@ package com.agora.server.config;
 
 import com.agora.server.auth.filter.JwtAuthenticationFilter;
 import com.agora.server.auth.provider.JwtTokenProvider;
-import com.agora.server.config.filter.CorsFilterConfig;
-import com.agora.server.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.agora.server.config.filter.CorsFilterConfig_1;
 import com.agora.server.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.agora.server.oauth.handler.OAuth2AuthenticationSuccessHandler;
+import com.agora.server.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.agora.server.oauth.service.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,8 +26,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsFilterConfig_1 corsFilterConfig;
-    private final CorsFilterConfig corsFilter;
 
     @Value("${jwt.secret}")
     private String jwtSecret;

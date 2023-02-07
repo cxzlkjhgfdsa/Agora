@@ -11,6 +11,7 @@ import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.encrypt.service.EncryptService;
 import com.agora.server.user.controller.dto.request.LoginRequestDto;
+import com.agora.server.user.controller.dto.request.RequestCertificateByPhoneNumber;
 import com.agora.server.user.controller.dto.request.RequestJoinDto;
 import com.agora.server.user.controller.dto.response.LoginResponseDto;
 import com.agora.server.user.domain.User;
@@ -126,6 +127,28 @@ public class UserController {
             responseDTO.setMessage("잘못된 접근입니다");
         }
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("check/phonenum")
+    public ResponseEntity<ResponseDTO> checkPhoneNumValidation() {
+        ResponseDTO res = new ResponseDTO();
+        res.setBody("5667687");
+        res.setState(true);
+        res.setMessage("인증 코드 입니다");
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("verify/phonenum")
+    public ResponseEntity<ResponseDTO> verifyPhoneNumCheck(@RequestBody RequestCertificateByPhoneNumber authNum) {
+        ResponseDTO res = new ResponseDTO();
+        if ("5667687".equals(authNum.getAuthnum())) {
+            res.setState(true);
+            res.setMessage("인증되었습니다.");
+        } else {
+            res.setState(false);
+            res.setMessage("인증번호가 틀렸습니다.");
+        }
+        return ResponseEntity.ok(res);
     }
 
 
