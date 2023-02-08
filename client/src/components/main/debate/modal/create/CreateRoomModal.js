@@ -23,7 +23,7 @@ function CreateRoomModal({ closeModalEvent }) {
   const [rightOpinion, setRightOpinion] = useState("");
   const [selectedOpinion, setSelectedOpinion] = useState("");
   const [category, setCategory] = useState("");
-  const [videoRef, setVideoRef] = useState(null);
+  const [onCamera, setOnCamera] = useState(false);
 
   const onHashTagsChange = (event) => {
     setHashTags(event.target.value);
@@ -50,7 +50,7 @@ function CreateRoomModal({ closeModalEvent }) {
     document.querySelector("#category").classList.remove("wrong");
   };
 
-  const createRoom = () => {
+  const createRoom = async () => {
     // 유효성 검증
     let isValid = true;
     if (debateTitle === "") {  // 방 제목
@@ -77,6 +77,18 @@ function CreateRoomModal({ closeModalEvent }) {
       document.querySelector("#category").classList.add("wrong");
       isValid = false;
     }
+    // 카메라, 오디오 확인
+    const tracks = await navigator.mediaDevices.getTracks();
+    tracks.forEach(track => {
+      // 카메라
+      if (track.kind === "videoinput") {
+        
+      }
+      // 오디오
+      else if (track.kind === "audioinput") {
+
+      }
+    });
   };
 
   return (
@@ -92,7 +104,7 @@ function CreateRoomModal({ closeModalEvent }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setVideoRef={setVideoRef} />
+              <WebCam setOnCamera={setOnCamera} />
             } />
             <ModalSetting name="썸네일 선택" content={
               <FileUploader getter={thumbnail} setter={setThumbnail} />
