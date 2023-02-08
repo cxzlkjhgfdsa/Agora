@@ -16,6 +16,5 @@ services:
       PASSWORD: 08a705
       JWT_SECRET: siudhrkjh
       REDISHOST: redis
-networks:
-  AGORA:
-    name: AGORA
+    networks:
+      - AGORA
