@@ -23,7 +23,9 @@ function CreateRoomModal({ closeModalEvent }) {
   const [rightOpinion, setRightOpinion] = useState("");
   const [selectedOpinion, setSelectedOpinion] = useState("");
   const [category, setCategory] = useState("");
+
   const [onCamera, setOnCamera] = useState(false);
+  const [onAudio, setOnAudio] = useState(false);
 
   const onHashTagsChange = (event) => {
     setHashTags(event.target.value);
@@ -104,7 +106,7 @@ function CreateRoomModal({ closeModalEvent }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setOnCamera={setOnCamera} />
+              <WebCam setOnCamera={setOnCamera} setOnAudio={setOnAudio} />
             } />
             <ModalSetting name="썸네일 선택" content={
               <FileUploader getter={thumbnail} setter={setThumbnail} />

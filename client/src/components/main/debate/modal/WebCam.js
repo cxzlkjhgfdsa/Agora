@@ -16,25 +16,30 @@ const StyledVideo = styled.video`
   // 크기 설정
   width: 100%;
   aspect-ratio: 16 / 9;
-
-  border: 2px solid #FFFFFF;
-  border-radius: 10px;
-
-  &.wrong {
-    border: 2px solid #EF404A;
-  }
 `;
 
 const ComboBoxDiv = styled.div`
   // 크기 설정
   width: 100%;
+
+  // Display
+  display: flex;
+  justify-content: space-between;
 `;
 
 function WebCam(props) {
   // 비디오 장치
+  const [curVideoDevice, setCurVideoDevice] = useState(undefined);
   const [videoDevices, setVideoDevices] = useState([]);
+  const [onVideo, setOnVideo] = useState(false);
   // 오디오 장치
+  const [curAudioDevice, setCurAudioDevice] = useState(undefined);
   const [audioDevices, setAudioDevices] = useState([]);
+  const [onAudio, setOnAudio] = useState(false);
+
+  // 비디오 컴포넌트 Ref
+  let videoRef = useRef(null)
+
   // 비디오 및 오디오 장치 가져오기
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices()
@@ -60,53 +65,39 @@ function WebCam(props) {
       });
   }, []);
 
-  let videoRef = useRef(null)
-
-  //사용자 웹캠을 켜는 함수
-  const cameraOn = (deviceId) => {
-    navigator.mediaDevices.getUserMedia({
-      video: { deviceId: deviceId },
-      audio: true
-    }).then((stream) => {
-      //비디오 tag에 stream 추가
-      let video = videoRef.current;
-      video.srcObject = stream;
-      video.play();
-
-      // 카메라 On 처리
-      props.setOnCamera(true);
-      videoRef?.current?.classList?.remove("wrong");
-    }).catch((error) => {
-      console.log(error);
-    })
-  };
-  // 사용자 웹캠을 끄는 함수
-  const cameraOff = () => {
+  useEffect(() => {
+    // 기존 스트림 삭제
     const srcObject = videoRef?.current?.srcObject;
-    console.log(srcObject.getTracks());
     if (srcObject) {
       srcObject.getTracks().forEach(track => {
         track.stop();
+        srcObject.removeTrack(track);
       });
-      console.log(srcObject.getTracks());
-
-      // 카메라 Off 처리
-      props.setOnCamera(false);
     }
-  };
 
-  const switchCam = () => {
-    const s = videoRef?.current?.srcObject;
-    if (!s || !s.active) {
-      cameraOn();
-    } else {
-      cameraOff();
+    // 비디오나 오디오가 켜져 있다면 새로운 스트림으로 교체
+    if (onVideo || onAudio) {
+      let userMediaParams = {};
+      if (onVideo) {
+        userMediaParams = { ...userMediaParams, video: { deviceId: curVideoDevice } };
+      }
+      if (onAudio) {
+        userMediaParams = { ...userMediaParams, audio: { deviceId: curAudioDevice } };
+      }
+
+      navigator.mediaDevices.getUserMedia(userMediaParams)
+        .then(stream => {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
-  };
+  }, [curVideoDevice, curAudioDevice, onVideo, onAudio]);
 
   return (
     <StyledWebCam>
-      <button onClick={switchCam}>TEST</button>
       <StyledVideo id="webCam" ref={videoRef} />
       <ComboBoxDiv>
         <WebCamComboBox
@@ -114,26 +105,32 @@ function WebCam(props) {
           contentId="cameraSelection"
           name="카메라"
           icon={CameraIcon}
-          width="40%"
+          width="35%"
           items={videoDevices}
+          setter={setCurVideoDevice}
         />
         <WebCamComboBox
           isDevice={true}
           contentId="microphoneSelection"
           name="마이크"
           icon={MicrophoneIcon}
-          width="40%"
+          width="35%"
           items={audioDevices}
+          setter={setCurAudioDevice}
         />
         <WebCamComboBox
           isDevice={false}
           contentId="deviceSetting"
           name="설정"
           icon={SawToothIcon}
-          width="20%"
+          width="25%"
           items={[
             "카메라 On/Off",
             "마이크 On/Off"
+          ]}
+          customEvents={[
+            setOnVideo,
+            setOnAudio
           ]}
         />
       </ComboBoxDiv>
