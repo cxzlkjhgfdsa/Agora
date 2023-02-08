@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    @Value("jwt.secret")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     public JwtTokenProvider(String jwtSecret) {
@@ -105,13 +105,19 @@ public class JwtTokenProvider {
         return header == null;
     }
 
-    public Authentication getAuthentication(Claims claims) {
-        return new UsernamePasswordAuthenticationToken(new UserAuthenticateInfo(claims), "", getAuthorities(claims));
+    public UsernamePasswordAuthenticationToken getAuthentication(String userId) {
+        return new UsernamePasswordAuthenticationToken(new UserAuthenticateInfo(userId), null, null);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
         return Arrays.stream(new String[]{claims.get("id").toString()})
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public String getUserIdFromAccessToken(String accessToken) {
+        Claims claims = resolveToken(accessToken);
+        return (String) claims.get("id");
+
     }
 }

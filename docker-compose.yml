@@ -1,0 +1,21 @@
+version: '3'
+services:
+  client:
+    image: nowgnas/agora:client
+    environment:
+      REACT_APP_SERVER_BASE_URL: https://i8a705.p.ssafy.io/api
+    networks:
+      - AGORA
+  server:
+    image: nowgnas/agora:server
+    environment:
+      USE_PROFILE: prod
+      HOST_NAME: mysql
+      SCHEMA: agora
+      USERNAME: root
+      PASSWORD: 08a705
+      JWT_SECRET: siudhrkjh
+      REDISHOST: redis
+networks:
+  AGORA:
+    name: AGORA

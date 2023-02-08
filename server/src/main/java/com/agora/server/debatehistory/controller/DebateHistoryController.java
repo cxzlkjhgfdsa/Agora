@@ -58,7 +58,7 @@ public class DebateHistoryController {
 
         ResponseDTO responseDTO = new ResponseDTO();
 
-        List<DebateHistory> histories = debateHistoryService.findByUserId(userInfo.getId().toString());
+        List<DebateHistory> histories = debateHistoryService.findByUserId(userInfo.getUserId());
         
         // 테스트용
         // List<DebateHistory> histories = debateHistoryService.findByUserId(userId);

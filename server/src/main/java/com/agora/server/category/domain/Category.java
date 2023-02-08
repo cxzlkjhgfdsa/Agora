@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Setter
 public class Category {
     @Id
-    @GeneratedValue
     @Column(length = 100, name = "category_id")
     private Long id;
 
