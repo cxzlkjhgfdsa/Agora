@@ -1,9 +1,6 @@
 package com.agora.server.user.controller;
 
-import com.agora.server.auth.domain.RefreshToken;
-import com.agora.server.auth.dto.UserAuthenticateInfo;
 import com.agora.server.auth.provider.JwtTokenProvider;
-import com.agora.server.auth.repository.AuthRepository;
 import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.category.repository.UserCategoryRepository;
@@ -21,9 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
