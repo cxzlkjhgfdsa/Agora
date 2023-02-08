@@ -4,12 +4,14 @@ import Spinner from "components/common/Spinner";
 // const DebateContainer = lazy(() => import("./DebateContainer"));
 import DebateContainer from "./DebateContainer";
 
+import Icon from "../../../assets/icons/Main_fire.png";
+
 function LargeDebateContainer({ url }) {
   return (
     <Wrapper>
       <TextWrapper>
-        <img src="src/assets/icons/Main_fire.png" alt=""></img>
-        <Text>화제의 토론 !!!</Text>
+        <Img src={Icon} alt=""></Img>
+        <Text>화제의 토론 TOP 5</Text>
       </TextWrapper>
       <Suspense fallback={<Spinner />}>
         <DebateContainer
@@ -28,14 +30,21 @@ export default LargeDebateContainer;
 
 const Wrapper = styled.div`
   background-color: black;
-  height: 100%;
+  padding-bottom: 3%;
 `
 
 const TextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 1% 5% 0.5%;
+`
+
+const Img = styled.img`
+  width:20px;
 `
 
 const Text = styled.span`
 color: white;
-font-size: 2rem;
-margin: 5% 7%;
+font-size: 1.5rem;
+margin-left: 1%;
 `
