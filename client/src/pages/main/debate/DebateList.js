@@ -4,53 +4,41 @@ import styled from "styled-components"
 
 import Header from "../../Header";
 import Spinner from "../../../components/common/Spinner"
-const DebateContainerHot = lazy(() => import("../../../components/main/debate/DebateContainerHot"));
-
+import LargeDebateContainer from "components/main/debate/LargeDebateContainer";
+import SmallDebateContainer from "components/main/debate/SmallDebateContainer";
+// const SmallDebateContainer = lazy(() => import("../../../components/main/debate/SmallDebateContainer"));
+// const LargeDebateContainer = lazy(() => import("../../../components/main/debate/LargeDebateContainer"));
 
 function DebateList() {
-  const [currXoffset, setCurrXoffset] = useState(0);
-  const [visibleSlides, setVisibleSlides] = useState(0);
-
-  useEffect(() => {
-    if (window.innerWidth < 768) {
-      setVisibleSlides(2);
-    } else if (window.innerWidth < 1200) {
-      setVisibleSlides(3);
-    } else {
-      setVisibleSlides(4);
-    }
-    console.log("visibleSlides >> ", visibleSlides);
-  }, [visibleSlides]);
 
   return (
-    <MainWrapper>
-      <Header></Header>
-      <DebateContainerWrapper>
-        <h3>화제의 토론 top 5</h3>
-        <Suspense fallback={<Spinner />}>
-          <DebateContainerHot 
-            currXoffset={currXoffset}
-          />
-        </Suspense>
-      </DebateContainerWrapper>
-
-
-
-  
-    </MainWrapper>
+    // <MainWrapper>
+      // <Header></Header>
+      <Wrapper>
+        <LargeDebateContainer url="/api/v1/search/main/hot" position="top" />
+        <SmallDebateContainer url="/api/v1/search/main/modal" position="mid"/>
+        <SmallDebateContainer url="/api/v1/search/main/modal" position="bottom" />
+      </Wrapper>
+    // </MainWrapper>
   )
 }
 
 export default DebateList;
 
-const MainWrapper = styled.div`
+// const MainWrapper = styled.div`
+//   overflow-y: visible;
+//   overflow-x: hidden;
+//   background-color: grey;
+//   height: 100%;
+// `
 
-`
+const Wrapper = styled.div`
+  position: relative;
+  overflow-x: hidden;
+  background-color: white;
+  /* height: 3000px; */
+  min-width: 1024px;
 
-const DebateContainerWrapper = styled.div`
-  width: 100%;
-  height: 35%;
-  /* overflow: hidden; */
-  background-color: grey;
-
+  display: flex;
+  flex-direction: column;
 `
