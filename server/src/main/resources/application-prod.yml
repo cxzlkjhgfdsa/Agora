@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: prod
   redis:
-    host: 127.0.0.1
+    host: ${redishost}
     port: 6379
   gcp:
     config:
