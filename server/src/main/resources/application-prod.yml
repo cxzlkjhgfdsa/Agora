@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: prod
   redis:
-    host: 127.0.0.1
+    host: ${redishost}
     port: 6379
   gcp:
     config:
@@ -24,7 +24,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
@@ -80,7 +80,6 @@ spring:
 
 server:
   port: 8081
-
 #management:
 #  endpoint:
 #    health:
