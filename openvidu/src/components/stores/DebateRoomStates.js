@@ -24,3 +24,8 @@ export const CardNumState = atom({
   key: 'cardNumState',
   default: 0,
 })
+
+export const readyMemberState = atom({
+  key: 'readyMemberState',
+  default: [],
+})

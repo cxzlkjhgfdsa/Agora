@@ -2,32 +2,36 @@ import styled from "styled-components";
 import Grid from "@mui/material/Grid";
 
 // react
-import { useRecoilState } from "recoil";
-import { isReadyState } from "../stores/atoms";
+import { useRecoilValue } from "recoil";
+import { isStartState, readyMemberState } from "../stores/DebateRoomStates";
+
 
 
 function DebaterBox({data, sessionNum}) {
-  
+
+  const readyMember = useRecoilValue(readyMemberState);
+  const isStart = useRecoilValue(isStartState)
+
   return(
     <DebaterBoxDiv>
       <Grid container spacing={0} >
         <Grid item xs={4}>
           <MemberDiv>
-            <NicknameDiv className={sessionNum === 0 ? "isSpeaking-root" : null}>
+            <NicknameDiv className={sessionNum === 0 ? "isSpeaking-root" : readyMember.includes(data[0])&&!isStart ? "isReady-root" : null}>
               {data[0]}
             </NicknameDiv>
           </MemberDiv>
         </Grid>
         <Grid item xs={4}>
           <MemberDiv>
-            <NicknameDiv className={sessionNum === 1 ? "isSpeaking-root" : null}>
+            <NicknameDiv className={sessionNum === 1 ? "isSpeaking-root" : readyMember.includes(data[1])&&!isStart ? "isReady-root" : null}>
               {data[1]}
             </NicknameDiv>
           </MemberDiv>
         </Grid>
         <Grid item xs={4}>
           <MemberDiv>
-            <NicknameDiv className={sessionNum === 2 ? "isSpeaking-root" : null}>
+            <NicknameDiv className={sessionNum === 2 ? "isSpeaking-root" : readyMember.includes(data[2])&&!isStart ? "isReady-root" : null}>
               {data[2]}
             </NicknameDiv>
           </MemberDiv>

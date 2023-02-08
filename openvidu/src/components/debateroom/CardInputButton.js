@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid";
 // recoil
 import { SetRecoilState, useRecoilState } from "recoil";
-import { CardNumState } from "../stores/atoms";
+import { CardNumState } from "../stores/DebateRoomStates";
 
 function CardInputButton () {
   // state
@@ -132,11 +132,10 @@ const ImageCropping = styled.div`
 const PreviewImg = styled.img`
   position: absoulte;
 
-  width: 120%;
+  width: 150px;
   height: auto;
 
-  margin-top: calc(50% - 40px - 1vw);
-  margin-left: calc(50% - 40px - 1vw);
+  margin-left: calc(50% - 75px);
 `
 
 const TextWrapper = styled.div`
@@ -183,10 +182,10 @@ const ImgWrapper = styled.div`
 
   &:hover {
     ${DeleteImg} {
-      animation: ${ SelectAnime } 0.5s 0.1s ease 1 forwards;
+      animation: ${ SelectAnime } 0.3s 0.01s ease 1 forwards;
     }
     ${TextWrapper} {
-      animation: ${ SelectTextAnime } 0.5s 0.1s ease 1 forwards;
+      animation: ${ SelectTextAnime } 0.3s 0.01s ease 1 forwards;
     }
   }
 `

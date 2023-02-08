@@ -10,21 +10,64 @@ import DebateButton from "../components/debateroom/DebateButton";
 
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isStartState, isAllReadyState, isReadyState, roleState } from "../components/stores/atoms";
-import { useEffect } from "react";
+import { isStartState, isAllReadyState, isReadyState, roleState } from "../components/stores/DebateRoomStates";
+import { useEffect, useState } from "react";
 
 function DebateRoom() {
 
+  // sse test
   const [isStart, setIsStart] = useRecoilState(isStartState);
   const [isAllReady, setISAllReady] = useRecoilState(isAllReadyState);
   const [isReady, setISReady] = useRecoilState(isReadyState);
   const [role, setRole] = useRecoilState(roleState)
-
+  
   const data = {
     isReady: isReady,
     isStart: isStart,
     role: role,
   }
+  
+  // const [listening, setListening] = useState(false);
+  // const [meventSource, msetEventSource] = useState(undefined);
+  
+  // let eventSource = undefined;
+
+  // // sse test
+  // useEffect(() => {
+  //   if (!listening) {
+
+  //     console.log("listening", listening);
+
+  //     eventSource = new EventSource('http://70.12.247.157:8080/api/v2/room/124/subscribe')
+  //     msetEventSource(eventSource);
+  //     console.log("eventSource", eventSource);
+
+  //     eventSource.onopen = event => {
+  //         console.log("연결완료");
+  //     };
+
+  //     eventSource.onmessage = event => {
+  //       console.log("onmessage");
+
+  //       const data = JSON.parse(event.data)
+
+  //       console.log(data)
+  //     };
+
+  //     eventSource.onerror = event => {
+  //       console.log(event.target.readyState);
+  //       if (event.target.readyState === EventSource.CLOSED) {
+  //         console.log("eventsource closed (" + event.target.readyState + ")");
+  //       }
+  //       eventSource.close();
+  //     };
+  //     setListening(true);  
+  //   }
+  //   return () => {
+  //     eventSource.close();
+  //     console.log("eventsource closed")
+  //   };
+  // }, []);
   
   return(
     <Container maxWidth="xl">

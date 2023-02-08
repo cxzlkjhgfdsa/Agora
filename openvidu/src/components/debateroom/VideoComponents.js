@@ -32,6 +32,8 @@ class VideoComponent extends Component {
             subscribers: [],
             start: false,
             sessionNum: -1,
+            
+            sessionState: 0,
 
             // pros data
             role: this.props.data.role,
@@ -48,6 +50,9 @@ class VideoComponent extends Component {
         this.getNicknameTag = this.getNicknameTag.bind(this);
         this.changeDebater = this.changeDebater.bind(this);
         this.joinListnerSession = this.joinListnerSession.bind(this);
+        this.onConSpeaker = this.onConSpeaker.bind(this);
+        this.onProSpeaker = this.onProSpeaker.bind(this);
+        this.changeSpeaker = this.changeSpeaker.bind(this);
     }
 
     componentDidMount() {
@@ -207,6 +212,7 @@ class VideoComponent extends Component {
             prosStreamManager: undefined,
             sessionNum: -1,
             start: false,
+            sessionState: 0
         });
     }
     
@@ -331,7 +337,49 @@ class VideoComponent extends Component {
               });
           },
       );
-  }
+    };
+
+    // mute Speaker
+    onConSpeaker(bool) {
+      if (this.getNicknameTag(this.state.consStreamManager) === this.state.myUserName) {
+        this.state.consStreamManager.publishVideo(bool);
+      } else {
+        this.state.consStreamManager.subscribeToVideo(bool);
+      }
+    }
+    onProSpeaker(bool) {
+      if (this.getNicknameTag(this.state.prosStreamManager) === this.state.myUserName) {
+        this.state.prosStreamManager.publishVideo(bool);
+      } else {
+        this.state.prosStreamManager.subscribeToVideo(bool);
+      }
+    }
+
+    // change speaker
+    changeSpeaker() {
+
+      const newSessionState = (this.state.sessionState === 4 ? 1: this.state.sessionState + 1)
+
+      this.setState({
+        sessionState: newSessionState
+      }, () => {
+        const sessionState = this.state.sessionState;
+
+        if (sessionState === 1) {
+          this.onProSpeaker(true);
+          this.onConSpeaker(false);
+        } 
+        else if (sessionState === 2) {
+          this.onProSpeaker(false);
+          this.onConSpeaker(true);
+        }
+        else {
+          this.onProSpeaker(false);
+          this.onConSpeaker(false);
+        }
+      })
+    };
+
 
     render() {
         const mySessionId = this.state.mySessionId;
@@ -385,9 +433,19 @@ class VideoComponent extends Component {
                               <OpinionDiv>
                                 {this.state.prosOpinion}
                               </OpinionDiv>
-                              <UserVideoComponent
-                                streamManager={this.state.prosStreamManager}
-                                />
+                              <VideoWrapper>
+                                {this.state.sessionState === 1 
+                                  ? (
+                                    <div>
+                                      <SpeakingDiv>발언중</SpeakingDiv>
+                                      <SpeakingWrapper/>
+                                    </div>
+                                  )
+                                  : null
+                                }
+                                <UserVideoComponent
+                                  streamManager={this.state.prosStreamManager} />
+                              </VideoWrapper>
                               <DebaterBox data={this.state.pros} sessionNum={this.state.sessionNum} />
                             </Grid>
                           ) : (
@@ -406,8 +464,19 @@ class VideoComponent extends Component {
                               <OpinionDiv>
                                 {this.state.consOpinion}
                               </OpinionDiv>
-                              <UserVideoComponent
-                                streamManager={this.state.consStreamManager} />
+                              <VideoWrapper>
+                                {this.state.sessionState === 2 
+                                  ? (
+                                    <div>
+                                      <SpeakingDiv>발언중</SpeakingDiv>
+                                      <SpeakingWrapper/>
+                                    </div>
+                                  )
+                                  : null
+                                }
+                                <UserVideoComponent
+                                  streamManager={this.state.consStreamManager} />
+                              </VideoWrapper>
                               <DebaterBox data={this.state.cons} sessionNum={this.state.sessionNum} />
                             </Grid>
                           ) : (
@@ -424,7 +493,7 @@ class VideoComponent extends Component {
                           </Grid>
                           <ButtonDiv>
                             <Grid container spacing={1}>
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
                                   <button
                                       className="btn btn-large btn-danger"
                                       id="buttonLeaveSession"
@@ -433,7 +502,7 @@ class VideoComponent extends Component {
                                           leave Session
                                       </button>
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
                                   <button
                                     type="button"
                                     id="buttonDebateStart"
@@ -442,12 +511,36 @@ class VideoComponent extends Component {
                                       Start Debate
                                     </button>
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={2}>
                                   <button
                                     id="buttonChangeSession"
                                     onClick={this.changeDebater}
                                     >
                                       Change Debater
+                                    </button>
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <button
+                                    id="changeSpeaker"
+                                    onClick={this.onProSpeaker}
+                                    >
+                                      mute pro
+                                    </button>
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <button
+                                    id="changeSpeaker"
+                                    onClick={this.onConSpeaker}
+                                    >
+                                      mute con
+                                    </button>
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <button
+                                    id="changeSpeaker"
+                                    onClick={this.changeSpeaker}
+                                    >
+                                      changeSpeaker
                                     </button>
                                 </Grid>
                               </Grid>
@@ -505,6 +598,37 @@ const OpinionDiv = styled.div`
 
 const ButtonDiv = styled.div`
   margin-top: 30px;
+`
+
+const VideoWrapper = styled.div`
+ position: relative;
+`
+
+const SpeakingWrapper = styled.div`
+  position: absolute;
+  z-index: 1;
+
+  width: 98%;
+  height: 99%;
+
+  border: 5px solid #F6C026;
+  border-radius: 12px;
+`
+
+const SpeakingDiv = styled.div`
+  position: absolute;
+  z-index: 2;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+
+  background-color: #F6C026;
+  color: white;
+
+  font-size: 18px;
+  font-weight: bold;
 `
 
 
