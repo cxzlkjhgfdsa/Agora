@@ -7,15 +7,15 @@ import DebateContainer from "./DebateContainer";
 import Lightbulb from "../../../assets/icons/Main_lightbulb.png";
 import Clock from "../../../assets/icons/Main_clock.png";
 
-function SmallDebateContainer({ url, position }) {
-  const imgSrc = "src/assets/icons/Main_fire.png";
+function SmallDebateContainer({ url, position, openModalEvent }) {
+
   const text = position === "mid" ? "열띤 토론 중" : "토론 준비 중";
   return (
     <Wrapper>
       <TextWrapper>
         <Img src={ position === "mid" ? Lightbulb : Clock} alt=""></Img>
         <Text>{text}</Text>
-        <ShowAll>모두 보기 &gt;</ShowAll>
+        <ShowAll onClick={openModalEvent}>모두 보기 &gt;</ShowAll>
       </TextWrapper>
       <Suspense fallback={<Spinner />}>
       <DebateContainer
@@ -57,4 +57,9 @@ const ShowAll = styled.span`
   color: #F6C026;
   margin-left: 2%;
   font-size: 1rem;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 `
