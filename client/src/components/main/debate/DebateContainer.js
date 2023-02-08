@@ -1,46 +1,36 @@
 import Debate from "./Debate"
 
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import customAxios from "utils/customAxios";
 
-function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url, bgColor, slidePerClick, } ) {
+function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url, slidePerClick, position} ) {
   const [debateList, setDebateList] = useState([]);
   const [currSlideIdx, setCurrSlideIdx] = useState(0);
-  const [visibleCounts, setVisibleCounts] = useState(0);
-  const [SLIDE_PER_CLICK, set_SLIDE_PER_CLICK] = useState(0);
-
-  const isBigScreen = useMediaQuery({ query: '(min-width: 1023px)'})
-
-  useEffect(() => {
-    visibleCounts === 1 ? set_SLIDE_PER_CLICK(1) : set_SLIDE_PER_CLICK(visibleCounts);
-  }, [visibleCounts])
+  const [visibleCounts, setVisibleCounts] = useState(maximumVisibleCounts);
+  
+  const SLIDE_PER_CLICK = useRef(null);
+  const isBigScreen = useMediaQuery({ query: '(min-width: 1025px)'})
 
   useEffect(() => {
-    isBigScreen ? setVisibleCounts(maximumVisibleCounts) : setVisibleCounts(minimumVisibleCounts);
-  }, [isBigScreen])
+    async function get() {
+      const axios = customAxios();
+      const params = type === "hot-thumbnail"
+        ? null
+        : {roomState: `${type === "mid" ? true : false}`, category: "전체", order: "createnew", page: 0, size: 10,}
+      const config = {params,}
 
-  const prevSlide = () => {
-    if (currSlideIdx > 0) setCurrSlideIdx(currSlideIdx - SLIDE_PER_CLICK);
-  }
-
-  const nextSlide = () => {
-    if (currSlideIdx + visibleCounts < debateList.length) setCurrSlideIdx(currSlideIdx + SLIDE_PER_CLICK);
-  } 
-
-  useEffect(() => {
-    // async function get() {
-    //   const axios = customAxios();
-    //   axios.get(`${url}`).then(res => {
-    //   if (res.data.body.hasOwnProperty("content")) {
-    //     console.log(res.data.body.content)
-    //     setDebateList(res.data.body.content)
-    //   } else {
-    //     setDebateList(res.data.body);
-    //   }
-    //   }).catch(err => console.warn(err));
-    // }
+      axios.get(`${url}`, config).then(res => {
+      if (res.data.body.hasOwnProperty("content")) {
+        console.log(res.data.body.content)
+        setDebateList(res.data.body.content)
+      } else {
+        console.log(res.data.body);
+        setDebateList(res.data.body);
+      }
+      }).catch(err => console.warn(err));
+    }
     // get();
 
     const response = {
@@ -323,12 +313,42 @@ function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url
     setDebateList(response.body)
   }, [])
 
-  console.log("re-render")
+  // useEffect(() => {
+  //   slidePerClick === 1 ? set_SLIDE_PER_CLICK(1) : set_SLIDE_PER_CLICK(visibleCounts);
+  // }, [visibleCounts])
+
+  useEffect(() => {
+    isBigScreen ? setVisibleCounts(maximumVisibleCounts) : setVisibleCounts(minimumVisibleCounts);
+  }, [isBigScreen])
+
+  useEffect(() => {
+    if (slidePerClick === 1) {
+      SLIDE_PER_CLICK.current = 1;
+      console.log("spk changed >> ", SLIDE_PER_CLICK.current)
+    } else {
+      SLIDE_PER_CLICK.current = visibleCounts;
+      console.log("spk changed >> ", SLIDE_PER_CLICK.current)
+    }
+  }, [visibleCounts])
+
+  const prevSlide = () => {
+    const max = (a, b) => {return a < b ? b : a};
+    if (currSlideIdx > 0) {
+      setCurrSlideIdx(max(currSlideIdx - SLIDE_PER_CLICK.current, 0));
+    }
+  }
+
+  const nextSlide = () => {
+    const min = (a, b) => {return a < b ? a : b};
+    if (currSlideIdx + visibleCounts < debateList.length) {
+      setCurrSlideIdx(min(currSlideIdx + SLIDE_PER_CLICK.current, debateList.length - visibleCounts));
+    }
+  } 
 
   return (
     <Container>
       <LeftButton direction="left" onClick={prevSlide} currSlideIdx={currSlideIdx}><Text>&#8249;</Text></LeftButton>
-        <DebateWrapper currSlideIdx={currSlideIdx} visibleCounts={visibleCounts} slidePerClick={SLIDE_PER_CLICK}>
+        <DebateWrapper currSlideIdx={currSlideIdx} visibleCounts={visibleCounts} >
           {debateList.map((debate, idx) => {
             return <Debate 
             key={type + debate.roomId} 
@@ -352,7 +372,6 @@ const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  border: 1px solid yellow;
   &:hover {
     z-index: 1;
   }
@@ -363,8 +382,8 @@ const DebateWrapper = styled.div`
   width: 92%;
   --current-index: ${props => props.currSlideIdx};
   --visible-counts: ${props => props.visibleCounts};
-  --slide-per-click: ${props => props.slidePerClick};
-  transform: translateX(calc(-100% / var(--visible-counts) * var(--current-index) * var(--slide-per-click)));
+
+  transform: translateX(calc(-100% * var(--current-index) / var(--visible-counts)));
   transition: transform 150ms ease-in-out;
 
   display: flex;
@@ -403,11 +422,13 @@ const Button = styled.button`
 
 const LeftButton = styled(Button)`
   border-top-left-radius: 0; border-bottom-left-radius: 0;
+  transition: visibility 150ms ease-in-out;
   visibility: ${props => props.currSlideIdx === 0 ? "hidden" : "visible"};
 `
 
 const RightButton = styled(Button)`
   border-top-right-radius: 0; border-bottom-right-radius: 0;
+  transition: visibility 150ms ease-in-out;
   visibility: ${props => props.currSlideIdx + props.visibleCounts >= props.numOfSlides ? "hidden" : "visible"};
 `
 

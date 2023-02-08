@@ -108,7 +108,7 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
             </Footer>
           </StyledThumbnail>
           {isHovered
-          ? <RoomInfo roomId={roomId} />
+          ? <RoomInfo roomId={roomId} type={type}/>
           : null}
 
         </ThumbnailInfoWrapper>
@@ -205,8 +205,8 @@ const Title = styled.p`
   color: #FFFFFF;
   text-align: center;
   ${({ type }) => type === "hot-thumbnail"
-  ? "font-size: calc(1rem + 1.5vw);" // "font-size: 2.4rem;"
-  : "font-size: calc(0.75rem + 1.25rem;"};
+  ? "font-size: calc(0.75rem + 1.5vw);" // "font-size: 2.4rem;"
+  : "font-size: calc(0.5rem + 1.25vw);"};
   font-weight: 700;
   letter-spacing: -0.05rem;
 
@@ -219,6 +219,12 @@ const Title = styled.p`
   position: absolute;
   top: 0;
   left: 0;
+
+  @media screen and (max-width: 1024px) {
+    ${({ type }) => type === "hot-thumbnail"
+  ? "font-size: 1.8rem;"
+  : "font-size: 1.2rem;"};
+  }
 `;
 
 const Center = styled.div`
@@ -237,12 +243,18 @@ const Center = styled.div`
   // 글자 크기 설정
   ${({ type }) => type === "hot-thumbnail"
     ? "font-size: calc(0.75rem + 1vw);" // "font-size: 2rem;"
-    : "font-size: 1.5rem;"}
+    : "font-size: calc(0.5rem + 0.75vw);"}
 
   // 위치 설정
   position: absolute;
   left: 0;
   bottom: 0;
+
+  @media screen and (max-width: 1024px) {
+    ${({ type }) => type === "hot-thumbnail"
+  ? "font-size: 1.8rem;"
+  : "font-size: 1.2rem;"};
+  }
 `;
 const Opinion = styled.p`
   width: calc( 45% - 16px );

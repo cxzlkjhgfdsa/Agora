@@ -4,23 +4,24 @@ import Spinner from "components/common/Spinner";
 // const DebateContainer = lazy(() => import("./DebateContainer"));
 import DebateContainer from "./DebateContainer";
 
-function SmallDebateContainer({ url }) {
+function SmallDebateContainer({ url, position }) {
+  const imgSrc = "src/assets/icons/Main_fire.png";
+  const text = position === "mid" ? "열띤 토론 중" : "토론 준비 중";
   return (
     <Wrapper>
       <TextWrapper>
-        <img src="../../../assets/icons/Main_fire.png" alt=""></img>
-        <Text>SmallDebateContainer</Text>
+        <img src={imgSrc} alt=""></img>
+        <Text>{text}</Text>
       </TextWrapper>
-      {/* <Suspense fallback={<Spinner />}> */}
+      <Suspense fallback={<Spinner />}>
       <DebateContainer
         maximumVisibleCounts={4}
         minimumVisibleCounts={3}
         type="normal"
         url={url}
-        bgColor="white"
-        slidePerClick={3}
-      />
-      {/* </Suspense> */}
+        slidePerClick={-1}
+        />
+      </Suspense>
     </Wrapper>
   )
 }
@@ -28,7 +29,7 @@ function SmallDebateContainer({ url }) {
 export default SmallDebateContainer;
 
 const Wrapper = styled.div`
-  background-color: #FFFFFF;
+  background-color: white;
 `
 
 const TextWrapper = styled.div`
@@ -36,5 +37,6 @@ const TextWrapper = styled.div`
 
 const Text = styled.span`
 color: black;
-font-size: 3rem;
+font-size: 2rem;
+margin: 3% 7%;
 `
