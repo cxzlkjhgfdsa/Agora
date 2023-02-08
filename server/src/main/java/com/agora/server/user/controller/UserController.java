@@ -51,7 +51,7 @@ public class UserController {
 
         Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
         // 카테고리 객체로 리스트 얻기
-        List<Category> categoryList = userService.findById(requestJoinDto.getCategories());
+        List<Category> categoryList = userService.findCategoryById(requestJoinDto.getCategories());
         String encryptedUserName = encryptService.getEncryptedUserName(encrypt, requestJoinDto);
 
         User joinUser = User.createUser(encrypt, requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()

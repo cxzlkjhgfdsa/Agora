@@ -33,7 +33,7 @@ public class UserService {
         return userRepository.findByUser_nickname(nickname);
     }
 
-    public List<Category> findById(List<Long> categories) {
+    public List<Category> findCategoryById(List<Long> categories) {
         List<Category> categoryList = new ArrayList<>();
         for (Long item :
                 categories) {
