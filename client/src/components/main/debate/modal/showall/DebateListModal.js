@@ -1,10 +1,7 @@
-import styled from "styled-components";
 import ModalCategory from "./ModalCategory";
 import ModalContents from "./ModalContents";
 import ModalOrderBy from "./ModalOrderBy";
-import ModalTitle from "./ModalTitle";
 
-import Close from "assets/icons/Close.png";
 import { useCallback, useEffect, useState } from "react";
 import customAxios from "utils/customAxios";
 
@@ -13,39 +10,7 @@ import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
 import { useRecoilCallback } from "recoil";
 import { debateRoomsAtomFamily } from "stores/debateRoomStates";
-
-const StyledDebateListModal = styled.div`
-  // 크기 설정
-  min-width: 900px;
-  width: calc( 90% - 160px );
-  height: calc( 90% - 80px );
-  margin: 0;
-  padding: 40px 80px;
-
-  // 위치 설정
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-
-  // 배경 설정
-  background-color: #333333;
-
-  // 테두리 설정
-  border-radius: 20px;
-`;
-
-const CloseButton = styled.img`
-  width: 46px; height: 46px;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-
-  cursor: pointer;
-  
-  border-radius: 2rem;
-`;
+import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -158,17 +123,17 @@ function DebateListModal({ closeModalEvent, debateState }) {
   }, [inView, loading, isEnd]);
 
   return (
-    <StyledDebateListModal>
+    <ModalDiv hasDefaultHeight={true}>
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle image={titleIcon} text={titleText} />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton src={Close} onClick={closeModalEvent} />
+      <CloseButton onClick={closeModalEvent} />
       {/* 정렬 방식과 카테고리 setter를 넘겨 데이터 변경 권한 주기 */}
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />
       {/* 데이터 로딩 현황, 마지막 페이지 여부를 넘겨 InView 컴포넌트를 렌더링 할 수 있게 하기 */}
       <ModalContents contents={contents} setInView={setInView} loading={loading} isEnd={isEnd} />
-    </StyledDebateListModal>
+    </ModalDiv>
   );
 }
 

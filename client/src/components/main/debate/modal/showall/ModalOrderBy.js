@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ModalColorBar from "./ModalColorBar";
+import { ModalColorBar } from "../ModalComponents";
 import Choice from "./Choice";
 import { useEffect } from "react";
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import ModalColorBar from "./ModalColorBar";
+import { ModalColorBar } from "../ModalComponents";
 import SelectedWord from "./Choice";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 const StyledModalCategory = styled.ul`
   // 크기 설정
