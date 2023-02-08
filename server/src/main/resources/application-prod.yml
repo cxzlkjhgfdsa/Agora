@@ -5,6 +5,7 @@ spring:
   redis:
     host: ${redishost}
     port: 6379
+    password: ${redispass}
   gcp:
     config:
       file: gcp-account-file.json

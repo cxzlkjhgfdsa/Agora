@@ -7,6 +7,7 @@ ENV USERNAME root
 ENV PASSWORD 1234
 ENV JWT_SECRET slfjlskdfjslkf
 ENV REDISHOST AGORA
+ENV REDISPASS redispass
 # env finish
 COPY server/gradlew .
 COPY server/gradle gradle
@@ -21,4 +22,4 @@ FROM adoptopenjdk:11-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
 EXPOSE 8888
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "-Dredishost=${REDISHOST}", "/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "-Dredishost=${REDISHOST}", "-Dredispass=${REDISPASS}", "/app.jar"]
