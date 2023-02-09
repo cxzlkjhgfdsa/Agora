@@ -29,3 +29,13 @@ export const readyMemberState = atom({
   key: 'readyMemberState',
   default: [],
 })
+
+export const phaseNumState = atom({
+  key: 'phaseNumState',
+  default: 0,
+})
+
+export const sessionNumState = atom({
+  key: 'sessionNum',
+  default: 0,
+})
