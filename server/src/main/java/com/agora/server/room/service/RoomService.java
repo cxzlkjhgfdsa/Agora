@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.*;
 
@@ -36,6 +37,8 @@ public class RoomService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private final RedisKeyUtil redisKeyUtil;
+
+
 
     /**
      * 방 생성
@@ -440,17 +443,17 @@ public class RoomService {
      * 10초마다 Redis의 실시간 시청자 수 정보를 가져와서
      * DB의 실시간 시청자 수 정보를 갱신합니다
      */
-    @Scheduled(cron = "0/10 * * * * *")
-    @Transactional
-    public void updateViewCount() {
-        List<Room> all = roomRepository.findAll();
-        for (Room room : all) {
-            Long roomId = room.getRoom_id();
-            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
-            room.roomWatchCntUpdate(watchCnt);
-        }
-    }
+//    @Scheduled(cron = "0/10 * * * * *")
+//    @Transactional
+//    public void updateViewCount() {
+//        List<Room> all = roomRepository.findAll();
+//        for (Room room : all) {
+//            Long roomId = room.getRoom_id();
+//            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+//            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
+//            room.roomWatchCntUpdate(watchCnt);
+//        }
+//    }
 
     /**
      * DB정보와 Redis정보를 합치는 편의 메서드
@@ -623,6 +626,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).get();
         room.roomStartDebate();
     }
+
 
 
 }
