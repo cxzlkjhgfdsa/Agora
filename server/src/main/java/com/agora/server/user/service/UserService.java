@@ -45,6 +45,6 @@ public class UserService {
 
     public void saveRefreshToken(UUID uuid, String refreshToken) {
         String userId = uuid.toString();
-        redisTemplate.opsForValue().set(userId, refreshToken, 10, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set(userId, refreshToken, 10, TimeUnit.DAYS);
     }
 }
