@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ArrowDownWhite from "assets/icons/Arrow_Down_White.png";
 
 // 콤보박스 컴포넌트
@@ -133,6 +133,8 @@ function WebCamComboBox(props) {
       TextRef.current.textContent = event.target.textContent;
       addSelected();
       setSelectedLabel(event.target.textContent);
+    } else {
+      document.querySelector("#deviceSetting").classList.remove("wrong");
     }
     toggleHide();
   };
@@ -149,8 +151,8 @@ function WebCamComboBox(props) {
             {props?.items?.map((item, index) => (
               <StyledLi key={props.isDevice ? item.deviceId : item}>
                 <ItemButton
-                  onClick={() => {
-                    selectOption();
+                  onClick={(event) => {
+                    selectOption(event);
                     if (props?.customEvents) {
                       props.customEvents[index](current => !current);
                     }

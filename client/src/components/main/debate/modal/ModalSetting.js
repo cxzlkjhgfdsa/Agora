@@ -5,6 +5,10 @@ const StyledModalSetting = styled.div`
   width: 90%;
   margin: 0 0 4% 0;
   padding: 0;
+
+  &.full {
+    width: 100%;
+  }
 `;
 
 const SettingTitleWrapper = styled.div`
@@ -43,7 +47,7 @@ const SettingContent = styled.div`
 
 function ModalSetting(props) {
   return (
-    <StyledModalSetting>
+    <StyledModalSetting className={props.className}>
       {/* 설정명 */}
       <SettingTitleWrapper>
         <ColorBar />
