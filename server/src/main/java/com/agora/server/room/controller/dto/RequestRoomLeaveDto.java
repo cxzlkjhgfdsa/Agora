@@ -10,15 +10,14 @@ import java.util.UUID;
 @NoArgsConstructor
 public class RequestRoomLeaveDto {
 
+    private Long roomId;
     private String userNickname;
 
 
-    private Long roomId;
-
 
     // 관전자는 위의 2개만 보내주면됩니다
-    private Boolean isUserCreater;
-    private Integer userSide;
+    private Boolean isUserCreater; // -> 이거는 닉네임 내가 확인해서 처리하기 없어도 됨
+    private String userTeam;
 
     private String type;
 

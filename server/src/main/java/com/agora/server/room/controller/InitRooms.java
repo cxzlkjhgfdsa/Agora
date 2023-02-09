@@ -160,25 +160,30 @@ public class InitRooms {
 //                openViduService.createSession(roomId);
 
                 ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-                String phaset = "room:"+roomId+":phase";
+                String phaseKey = "room:"+roomId+":phase";
+                String phaseDetailKey = "room:" + roomId + ":phasedetail";
                 String phasestarttime = "room:"+roomId+":phaseTime";
                 String watchcntt = "room:"+roomId+":watchCnt";
                 String debateEndedKey = "room:"+roomId+":isDebateEnded";
 
 
+                // 저장
+                valueOperations.set(phaseKey, 0);
+                valueOperations.set(phaseDetailKey, 0);
+
                 Integer phase = idx%3+1;
                 // 저장
-                valueOperations.set(phaset, 0);
+                valueOperations.set(phaseKey, 0);
                 valueOperations.set(phasestarttime, 0);
                 valueOperations.set(watchcntt, customDummy.getRoom_watch_cnt());
                 valueOperations.set(debateEndedKey, "FALSE");
 
-                roomService.enterRoomAsDebater(dummyUser1.getUser_nickname(),roomId,idx%2);
-                roomService.enterRoomAsDebater(dummyUser2.getUser_nickname(),roomId,(idx+1)%2);
-                roomService.enterRoomAsDebater(dummyUser3.getUser_nickname(),roomId,(idx+2)%2);
-                roomService.enterRoomAsDebater(dummyUser4.getUser_nickname(),roomId,(idx+3)%2);
-                roomService.enterRoomAsDebater(dummyUser5.getUser_nickname(),roomId,(idx+4)%2);
-                roomService.enterRoomAsDebater(dummyUser6.getUser_nickname(),roomId,(idx+5)%2);
+                roomService.enterRoomAsDebater(dummyUser1.getUser_nickname(),roomId,idx%2==0 ? "LEFT" : "RIGHT");
+                roomService.enterRoomAsDebater(dummyUser2.getUser_nickname(),roomId,idx%2==1 ? "LEFT" : "RIGHT");
+                roomService.enterRoomAsDebater(dummyUser3.getUser_nickname(),roomId,idx%2==0 ? "LEFT" : "RIGHT");
+                roomService.enterRoomAsDebater(dummyUser4.getUser_nickname(),roomId,idx%2==1 ? "LEFT" : "RIGHT");
+                roomService.enterRoomAsDebater(dummyUser5.getUser_nickname(),roomId,idx%2==0 ? "LEFT" : "RIGHT");
+                roomService.enterRoomAsDebater(dummyUser6.getUser_nickname(),roomId,idx%2==1 ? "LEFT" : "RIGHT");
 
                 roomService.roomPhaseStart(roomId,phase);
             }
