@@ -295,7 +295,6 @@ public class DebateService {
         redisPublisher.publishMessage(roomChannelKey, phaseStartAllInOneMessage);
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-
         Integer finalPhaseDetail = phaseDetail;
         ScheduledFuture<?> future = executorService.schedule(new Runnable() {
             @Override
@@ -399,6 +398,7 @@ public class DebateService {
                 }
             }, future.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
             scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
+
 
             ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
                 @Override

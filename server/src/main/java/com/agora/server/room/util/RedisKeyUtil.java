@@ -69,4 +69,7 @@ public class RedisKeyUtil {
         return "room:"+roomId+":"+team+":imgCardOpenedList";
     }
 
+    public String debateStartTimeKey(Long roomId) {
+        return "room:" + roomId + ":debateStartTime";
+    }
 }

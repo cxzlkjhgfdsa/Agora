@@ -10,7 +10,7 @@ import java.util.List;
 public class ResponseRoomEnterDto {
 
     // 0. OpenviduToken
-    private String openviduToken;
+    private String openviduToken; // check
 
     // 1. 방정보 (제목, 왼쪽 오른쪽 주장)
     private String roomName; // check
@@ -27,9 +27,14 @@ public class ResponseRoomEnterDto {
     // 4. 관전자 수
     private Integer roomWatchCnt; // check
 
-    // 5. 페이즈 진행 시간 분,초
-    private Integer roomPhaseCurrentTimeMinute; // check
-    private Integer roomPhaseCurrentTimeSecond; // check
+    // 5. 페이즈 진행 시간 분,초 -> 초로 수정
+//    private Integer roomPhaseCurrentTimeMinute; // check
+//    private Integer roomPhaseCurrentTimeSecond; // check
+    // 페이즈별 남은 시간
+    private Integer roomPhaseRemainSecond;
+
+    // 총 진행 시간
+    private Integer roomTimeInProgressSecond; // check
 
     // 6. 토론 시작했는지 (roomState == false 시작 전, true 시작 후)
     private Boolean roomState; // check
@@ -42,8 +47,8 @@ public class ResponseRoomEnterDto {
     private Integer roomPhaseDeatil; // check
 
     // 8. 오픈된 카드 URL 리스트(왼쪽, 오른쪽)
-    private List<String> leftOpenedCardList;
-    private List<String> rightOpenedCardList;
+    private List<String> leftOpenedCardList; // check
+    private List<String> rightOpenedCardList; // check
 
     // 9. 준비 완료 닉네임 리스트
     private List<String> readyUserList; // check

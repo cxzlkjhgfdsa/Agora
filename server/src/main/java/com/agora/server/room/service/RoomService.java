@@ -56,6 +56,8 @@ public class RoomService {
         String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
         // 토론 방 페이즈의 시작 시간 방 생성시는 0
         String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
+        // 토론 방 전체 시작 시간
+        String debateStartTime = redisKeyUtil.debateStartTimeKey(roomId);
         // 토론 방의 시청자 수 방 생성시는 0
         String watchCntKey = redisKeyUtil.watchCntKey(roomId);
         // 토론이 끝났는지 확인하는 키 시작은 false
@@ -66,6 +68,7 @@ public class RoomService {
         valueOperations.set(phaseKey, 0);
         valueOperations.set(phaseDetailKey, 0);
         valueOperations.set(phaseStartTimeKey, 0);
+        valueOperations.set(debateStartTime, 0);
         valueOperations.set(watchCntKey, 0);
         valueOperations.set(debateEndedKey, "FALSE");
 
@@ -156,7 +159,7 @@ public class RoomService {
      *
      * @param userNickname
      * @param roomId
-     * @param side
+     * @param userTeam
      * @return
      */
     public boolean leaveRoomAsDebater(String userNickname, Long roomId, String userTeam) {
@@ -483,6 +486,11 @@ public class RoomService {
     @Transactional
     public void roomStart(Long roomId) {
         Room room = roomRepository.findById(roomId).get();
+        String debateStartTimeKey = redisKeyUtil.debateStartTimeKey(roomId);
+        Long serverTime = System.currentTimeMillis() / 1000L;
+
+        // 저장
+        redisTemplate.opsForValue().set(debateStartTimeKey,serverTime);
         room.roomStartDebate();
     }
 
@@ -608,12 +616,20 @@ public class RoomService {
 
             Long currentTime = System.currentTimeMillis() / 1000L;
             Long timeDifference = currentTime - phaseStarttime;
-            Integer minutes = (int) ((timeDifference / 60) % 60);
-            Integer seconds = (int) (timeDifference % 60);
 
 
-            responseRoomEnterDto.setRoomPhaseCurrentTimeMinute(minutes);
-            responseRoomEnterDto.setRoomPhaseCurrentTimeSecond(seconds);
+//            Integer minutes = (int) ((timeDifference / 60) % 60);
+
+            String debateStartTimeKey = redisKeyUtil.debateStartTimeKey(roomId);
+            Long debateStarttime = ((Integer) redisTemplate.opsForValue().get(debateStartTimeKey)).longValue();
+            Long debateTimeDifference = currentTime - debateStarttime;
+            Integer seconds = debateTimeDifference.intValue();
+
+
+//            responseRoomEnterDto.setRoomPhaseCurrentTimeMinute(minutes);
+//            responseRoomEnterDto.setRoomPhaseCurrentTimeSecond(seconds);
+
+            responseRoomEnterDto.setRoomTimeInProgressSecond(seconds);
             responseRoomEnterDto.setRoomPhase(phase);
             responseRoomEnterDto.setRoomPhaseDeatil(phaseDetail);
 
@@ -642,8 +658,10 @@ public class RoomService {
             responseRoomEnterDto.setVoteRightResultsList(new ArrayList<>());
             responseRoomEnterDto.setCurrentSpeakingUser("");
             responseRoomEnterDto.setCurrentSpeakingTeam("");
-            responseRoomEnterDto.setRoomPhaseCurrentTimeMinute(0);
-            responseRoomEnterDto.setRoomPhaseCurrentTimeSecond(0);
+            responseRoomEnterDto.setRoomPhaseRemainSecond(0);
+            responseRoomEnterDto.setRoomTimeInProgressSecond(0);
+//            responseRoomEnterDto.setRoomPhaseCurrentTimeMinute(0);
+//            responseRoomEnterDto.setRoomPhaseCurrentTimeSecond(0);
             responseRoomEnterDto.setRoomPhase(0);
             responseRoomEnterDto.setRoomPhaseDeatil(0);
             responseRoomEnterDto.setLeftOpenedCardList(new ArrayList<>());
