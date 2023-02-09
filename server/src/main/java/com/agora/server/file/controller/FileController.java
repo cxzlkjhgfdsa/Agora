@@ -25,7 +25,7 @@ public class FileController {
 
     private final DebateService debateService;
 
-    @PostMapping(value = "save", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "save/card", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> addFile(@RequestParam("files") MultipartFile[] files, @RequestParam("userNickname") String userNickname, @RequestParam("roomId") Long roomId){
         ArrayList<MultipartFile> allfile = new ArrayList<>();
         for(int i=0; i<files.length; i++){
@@ -48,6 +48,26 @@ public class FileController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @PostMapping(value = "save/roomthumbnail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseDTO> addFile(@RequestParam("files") MultipartFile[] files){
+        ArrayList<MultipartFile> allfile = new ArrayList<>();
+        for(int i=0; i<files.length; i++){
+            allfile.add(files[i]);
+        }
+        List<FileDto> fileDtos = fileService.uploadFiles(allfile);
+        ResponseDTO responseDTO = new ResponseDTO();
+        if(fileDtos!=null){
+            responseDTO.setState(true);
+            responseDTO.setStatusCode(200);
+            responseDTO.setMessage("파일 정상 업로드 완료");
+            responseDTO.setBody(fileDtos);
+        }else{
+            responseDTO.setState(false);
+            responseDTO.setMessage("파일 업로드 실패");
+        }
+
+        return ResponseEntity.ok(responseDTO);
+    }
 
 
     /**

@@ -9,7 +9,7 @@ public class OpenViduConfig {
 
     @Bean
     public OpenVidu openVidu() {
-        OpenVidu openVidu = new OpenVidu("https://openvidutest.duckdns.org", "ssafy705");
+        OpenVidu openVidu = new OpenVidu("https://viduagora.duckdns.org", "ssafy705");
         return openVidu;
     }
 }
