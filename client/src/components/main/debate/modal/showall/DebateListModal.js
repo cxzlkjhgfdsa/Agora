@@ -5,6 +5,8 @@ import ModalOrderBy from "./ModalOrderBy";
 import { useCallback, useEffect, useState } from "react";
 import customAxios from "utils/customAxios";
 
+import styled, { css, keyframes } from "styled-components";
+
 // Title
 import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
@@ -16,7 +18,7 @@ import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
   closeModalEvent: Modal 닫는 이벤트
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
-function DebateListModal({ closeModalEvent, debateState }) {
+function DebateListModal({ isModalOpen, closeModalEvent, debateState }) {
   const axios = customAxios();
 
   // 제목 관련 이미지 및 글자, 아톰 패밀리 업데이트 인덱스 (화제의 토론: 0 ~, 열띤 토론중: 100 ~, 토론 대기중: 200 ~)
@@ -123,7 +125,8 @@ function DebateListModal({ closeModalEvent, debateState }) {
   }, [inView, loading, isEnd]);
 
   return (
-    <ModalDiv hasDefaultHeight={true}>
+    <StyleWrapper isModalOpen={isModalOpen}>
+      <ModalDiv hasDefaultHeight={true}>
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle image={titleIcon} text={titleText} />
       {/* Modal 닫는 이벤트 넘겨주기 */}
@@ -133,8 +136,31 @@ function DebateListModal({ closeModalEvent, debateState }) {
       <ModalCategory setCategory={setCategory} />
       {/* 데이터 로딩 현황, 마지막 페이지 여부를 넘겨 InView 컴포넌트를 렌더링 할 수 있게 하기 */}
       <ModalContents contents={contents} setInView={setInView} loading={loading} isEnd={isEnd} />
-    </ModalDiv>
+    </ModalDiv>    
+    </StyleWrapper>
+
   );
 }
 
 export default DebateListModal;
+
+const StyleWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+
+  transform: scale(${props => props.isModalOpen ? 0 : 1});
+  animation: ${props => props.isModalOpen 
+    ? css`${zoomIn} .5s 1s` 
+    : css`${zoomOut} .5s`
+  } cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+`
+
+const zoomIn = keyframes`
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+`
+
+const zoomOut = keyframes`
+  from { transform: scale(1); }
+  to { transform: scale(0); }
+`

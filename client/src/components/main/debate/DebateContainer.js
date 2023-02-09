@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import customAxios from "utils/customAxios";
 
-function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url, slidePerClick, position} ) {
+function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url, slidePerClick} ) {
   const [debateList, setDebateList] = useState([]);
   const [currSlideIdx, setCurrSlideIdx] = useState(0);
   const [visibleCounts, setVisibleCounts] = useState(maximumVisibleCounts);
@@ -311,6 +311,7 @@ function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url
       "state": true
     }
     setDebateList(response.body)
+    console.log("setDebateList", type)
   }, [])
 
   // useEffect(() => {
@@ -324,10 +325,10 @@ function DebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url
   useEffect(() => {
     if (slidePerClick === 1) {
       SLIDE_PER_CLICK.current = 1;
-      console.log("spk changed >> ", SLIDE_PER_CLICK.current)
+      // console.log("spk changed >> ", SLIDE_PER_CLICK.current)
     } else {
       SLIDE_PER_CLICK.current = visibleCounts;
-      console.log("spk changed >> ", SLIDE_PER_CLICK.current)
+      // console.log("spk changed >> ", SLIDE_PER_CLICK.current)
     }
   }, [visibleCounts])
 
@@ -384,7 +385,7 @@ const DebateWrapper = styled.div`
   --visible-counts: ${props => props.visibleCounts};
 
   transform: translateX(calc(-100% * var(--current-index) / var(--visible-counts)));
-  transition: transform 150ms ease-in-out;
+  transition: transform ${props => props.visibleCounts > 3 ? 300 : 150}ms ease-in-out;
 
   display: flex;
   flex-grow: 1;

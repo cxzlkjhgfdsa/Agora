@@ -129,7 +129,7 @@ const Wrapper = styled.div`
   aspect-ratio: 16 / 9;
   padding: .25rem;
   box-sizing: border-box;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   border:radius: .1rem;
 `
 
@@ -142,6 +142,7 @@ const ThumbnailInfoWrapper = styled.div`
   background-color: #FFFFFF;
   box-sizing: border-box;
   cursor: pointer;
+  
   transition: 0.35s;
   &:hover {
     ${props => {
@@ -161,28 +162,36 @@ const ThumbnailInfoWrapper = styled.div`
 
 const StyledThumbnail = styled.div`
   aspect-ratio: 16 / 9;
-  border: 1px solid red;
-  /* display: inline-block; */
+  /* border: 1px solid red; */
 
+  // 얘가 원인이었음
+  /* display: inline-block; */ 
+
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0 auto;
 `;
 
 const StyledBackgroundImage = styled.img`
   width: 100%;
   height: 100%;
+  /* aspect-ratio: 16 / 9; */
 
-  /* position: absolute;
-  top: 0;
-  left: 0; */
+  // 얘가 빌런?
+  /* position: absolute; */
 
   // fit
-  object-fit: contain;                                                                                                                                                                               ;
+  object-fit: cover;                  
+  
+  transform: scale(1.00);
 `;
 
 const HalfClearBlack = styled.div`
   // 크기 설정
   width: 100%;
   height: 100%;
-    
+  /* aspect-ratio: 16 / 9; */
+  
   // 검은색 배경에 투명도 50%
   background-color: #000000;
   opacity: 0.5;
