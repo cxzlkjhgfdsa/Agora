@@ -307,6 +307,7 @@ const VoteResultWrapper = styled.div`
 const VoteWrapper = styled.div`
   position: absolute;
   opacity: 0;
+  width: 100%;
 
   &.vote-root {
     animation: ${voteAnime} 0.3s 0.01s ease 1 forwards;
