@@ -30,7 +30,7 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory(){
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, 6379);
         redisConfig.setPassword(RedisPassword.of(pass));
-        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().useSsl().build();
+        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().build();
         return new LettuceConnectionFactory(redisConfig, lettuceClientConfiguration);
     }
 
@@ -47,13 +47,6 @@ public class RedisConfig {
 
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(serializer);
-
-//        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(redisConnectionFactory());
-//        redisTemplate.setConnectionFactory(connectionFactory);
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-
         return template;
     }
 }
