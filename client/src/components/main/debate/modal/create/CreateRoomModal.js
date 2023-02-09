@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { BottomDiv, CenterDiv, Container, LeftDiv, RightDiv } from "../ModalContainer";
 import ModalSetting from "../ModalSetting";
@@ -7,6 +7,7 @@ import { SettingInput } from "./InputComponents";
 import FileUploader from "./FileUploader";
 import SettingComboBox from "./SettingComboBox";
 import WebCam from "../WebCam";
+import { tokenize } from "components/common/Tokenizers";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -16,6 +17,7 @@ function CreateRoomModal({ closeModalEvent }) {
 
   const [hashTags, setHashTags] = useState("");
   const [thumbnail, setThumbnail] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState(null);
 
   const [debateTitle, setDebateTitle] = useState("");
   const [debateType, setDebateType] = useState("");
@@ -80,17 +82,44 @@ function CreateRoomModal({ closeModalEvent }) {
       isValid = false;
     }
     // 카메라, 오디오 확인
-    const tracks = await navigator.mediaDevices.getTracks();
-    tracks.forEach(track => {
-      // 카메라
-      if (track.kind === "videoinput") {
-        
-      }
-      // 오디오
-      else if (track.kind === "audioinput") {
+    const srcObject = document.querySelector("video").srcObject;
+    let onCameraTrack = false;
+    let onAudioTrack = false;
+    if (srcObject) {
+      const tracks = srcObject.getTracks();
+      tracks.forEach(track => {
+        if (track.kind === "video") {
+          onCameraTrack = true;
+        } else if (track.kind === "audio") {
+          onAudioTrack = true;
+        }
+      });
+    }
+    if (!onCameraTrack || !onAudioTrack) {
+      document.querySelector("#deviceSetting").classList.add("wrong");
+      isValid = false;
+    }
 
+    if (isValid) {
+      // 해시태그 변환
+      let hashTagsForSend = "";
+      if (hashTags.length > 0) {
+        const [_, hashTagsList] = tokenize(hashTags);
+        hashTagsForSend = hashTagsList.join(",");
       }
-    });
+
+      const sendData = {
+        roomName: debateTitle,
+        roomCreaterName: "NICK_DUMMY",
+        roomDebateType: (debateType === "정식 토론") ? "FORMAL" : "SHORT",
+        roomOpinionLeft: leftOpinion,
+        roomOpinionRight: rightOpinion,
+        roomHashtags: hashTagsForSend,
+        roomThumbnailUrl: "THUMBNAIL_DUMMY",
+        roomCategory: category
+      };
+      console.log(sendData);
+    }
   };
 
   return (
@@ -98,7 +127,18 @@ function CreateRoomModal({ closeModalEvent }) {
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle text="토론방 생성하기" titleSize="2.5rem" />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton onClick={closeModalEvent} />
+      <CloseButton onClick={() => {
+        // 기존 스트림 삭제
+        const srcObject = document.querySelector("video")?.srcObject;
+        if (srcObject) {
+          srcObject.getTracks().forEach(track => {
+            track.stop();
+            srcObject.removeTrack(track);
+          });
+        }
+        // Modal 종료
+        closeModalEvent();
+      }} />
 
       {/* 컨테이너 생성하여 메인 컴포넌트들 부착 */}
       <Container>
@@ -109,8 +149,12 @@ function CreateRoomModal({ closeModalEvent }) {
               <WebCam setOnCamera={setOnCamera} setOnAudio={setOnAudio} />
             } />
             <ModalSetting name="썸네일 선택" content={
-              <FileUploader getter={thumbnail} setter={setThumbnail} />
-            } />
+              <FileUploader
+                getter={thumbnail}
+                setter={setThumbnail}
+                fileSetter={setThumbnailFile}
+              />}
+            />
           </LeftDiv>
           {/* 토론방을 설정하는 우측 컴포넌트 */}
           <RightDiv>
@@ -171,14 +215,14 @@ function CreateRoomModal({ closeModalEvent }) {
                   />
                 </>
               } />
-              <ModalSetting name="해시 태그 (선택)" content={
-                <SettingInput
-                  id="hashTags"
-                  placeholder="#해시태그1 #해시태그2"
-                  value={hashTags}
-                  onChange={onHashTagsChange}
-                />
-              } />
+            <ModalSetting name="해시 태그 (선택)" content={
+              <SettingInput
+                id="hashTags"
+                placeholder="#해시태그1 #해시태그2"
+                value={hashTags}
+                onChange={onHashTagsChange}
+              />
+            } />
           </RightDiv>
         </CenterDiv>
 
