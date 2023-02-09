@@ -51,7 +51,10 @@ function FileUploader(props) {
     fileUploaderRef.current.click();
   };
   const onFileUploaderChange = (event) => {
-    props?.setter(event.target.value);
+    if (props) {
+      props.setter(event.target.value);
+      props.fileSetter(event.target.files);
+    }
   };
   
   return (
