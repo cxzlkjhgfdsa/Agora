@@ -1,6 +1,5 @@
 package com.agora.server.room.util;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,46 +34,42 @@ public class RedisMessageUtil {
     private final String DEBATE_PHASE_TAG = "[DEBATEPHASE] ";
     private final String VOTE_PHASE_TAG = "[VOTEPHASE] ";
     private final String VOTE_RESULT_TAG = "[VOTERESULT] ";
-    private final String TURN_TAG = "[TURN] ";
+    private final String DEBATE_PHASE_DETAIL_TAG = "[TURN] ";
     private final String TEAM_TAG = "[TEAM] ";
     private final String IMG_CARD_INDEX_TAG = "[CARDINDEX] ";
     private final String IMG_NAME_TAG = "[CARDNAME] ";
     private final String IMG_URL_TAG = "[CARDURL] ";
 
-    public String enterMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return ENTER_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+    public String enterMessage(String userTeam, String userNickname) {
+        return ENTER_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
     }
 
-    public String leaveMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return LEAVE_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+    public String leaveMessage(String userTeam, String userNickname) {
+        return LEAVE_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
     }
 
-    public String readyMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return READY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+    public String readyMessage(String userTeam, String userNickname) {
+        return READY_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
     }
 
-    public String unreadyMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return UNREADY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+    public String unreadyMessage(String userTeam, String userNickname) {
+        return UNREADY_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
     }
 
     public String debateStartMessage() {
         return DEBATE_START_TAG + "start debate";
     }
 
-    public String phaseStartAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_START_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
+    public String phaseStartAllInOneMessage(Integer phase, Integer phaseDetail, String team, String userNickname) {
+        return PHASE_START_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + phaseDetail + " " + team + " " + userNickname;
     }
 
     public String phaseEndAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_END_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
+        return PHASE_END_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
     }
 
     public String phaseSkipAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_SKIP_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG  + phase + " " + turn + " " + team + " " + userNickname;
+        return PHASE_SKIP_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG  + phase + " " + turn + " " + team + " " + userNickname;
     }
 
     public String voteStartMessage(Integer votePhase) {
@@ -90,21 +85,5 @@ public class RedisMessageUtil {
 
     public String imgCardSetMessage(String team, Integer cardindex, String imgurl){ return IMG_CARD_SET_TAG + TEAM_TAG + IMG_CARD_INDEX_TAG+ IMG_URL_TAG  + team + " " + cardindex + " " + imgurl; }
 
-    /**
-     * 편의용 메서드
-     * 팀 태그
-     *
-     * @param userSide
-     * @return
-     */
-    private String getTeam(Integer userSide) {
-        if (userSide == 0) {
-            return "LEFT";
-        } else if (userSide == 1) {
-            return "RIGHT";
-        } else {
-            return "NOSIDE";
-        }
-    }
 
 }

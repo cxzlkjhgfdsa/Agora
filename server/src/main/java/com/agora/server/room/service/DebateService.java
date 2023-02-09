@@ -5,7 +5,7 @@ import com.agora.server.debatehistory.service.DebateHistoryService;
 import com.agora.server.file.dto.FileDto;
 import com.agora.server.file.service.FileService;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
-import com.agora.server.room.controller.dto.RequestRoomEnterDto;
+import com.agora.server.room.controller.dto.RequestRoomEnterAsDebaterDto;
 import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
 import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
@@ -67,14 +67,13 @@ public class DebateService {
      * 클라이언트에서는 현재 토론자 왼쪽, 오른쪽 팀 리스트(닉네임)으로 가지고 있으므로
      * 이 메시지를 받으면 파싱해서 토론자 닉네임을 토론자 리스트에 추가 시키면 됩니다.
      */
-    public void debaterEnter(RequestRoomEnterDto requestRoomEnterDto) {
+    public void debaterEnter(RequestRoomEnterAsDebaterDto requestRoomEnterDto) {
         Long roomId = requestRoomEnterDto.getRoomId();
         String userNickname = requestRoomEnterDto.getUserNickname();
-        Integer userSide = requestRoomEnterDto.getUserSide();
-
+        String userTeam = requestRoomEnterDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
-        String enterMessage = redisMessageUtil.enterMessage(userSide, userNickname);
+        String enterMessage = redisMessageUtil.enterMessage(userTeam, userNickname);
 
         redisPublisher.publishMessage(roomChannel, enterMessage);
     }
@@ -99,10 +98,10 @@ public class DebateService {
 
         Long roomId = requestRoomLeaveDto.getRoomId();
         String userNickname = requestRoomLeaveDto.getUserNickname();
-        Integer userSide = requestRoomLeaveDto.getUserSide();
+        String userTeam = requestRoomLeaveDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
-        String leaveMessage = redisMessageUtil.leaveMessage(userSide, userNickname);
+        String leaveMessage = redisMessageUtil.leaveMessage(userTeam, userNickname);
 
         redisPublisher.publishMessage(roomChannel, leaveMessage);
     }
@@ -122,15 +121,15 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 READY로 바꿉니다
      */
-    public void ready(RequestRoomEnterDto requestRoomEnterDto) {
+    public void ready(RequestRoomEnterAsDebaterDto requestRoomEnterDto) {
 
         Long roomId = requestRoomEnterDto.getRoomId();
         String userNickname = requestRoomEnterDto.getUserNickname();
-        Integer userSide = requestRoomEnterDto.getUserSide();
+        String userTeam = requestRoomEnterDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
 
-        String readyMessage = redisMessageUtil.readyMessage(userSide, userNickname);
+        String readyMessage = redisMessageUtil.readyMessage(userTeam, userNickname);
 
         redisPublisher.publishMessage(roomChannel, readyMessage);
 
@@ -154,15 +153,15 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 UNREADY로 바꿉니다
      */
-    public void unready(RequestRoomEnterDto requestRoomEnterDto) {
+    public void unready(RequestRoomEnterAsDebaterDto requestRoomEnterDto) {
 
         Long roomId = requestRoomEnterDto.getRoomId();
         String userNickname = requestRoomEnterDto.getUserNickname();
-        Integer userSide = requestRoomEnterDto.getUserSide();
+        String userTeam = requestRoomEnterDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
 
-        String unreadyMessage = redisMessageUtil.unreadyMessage(userSide, userNickname);
+        String unreadyMessage = redisMessageUtil.unreadyMessage(userTeam, userNickname);
 
         redisPublisher.publishMessage(roomChannel, unreadyMessage);
 
@@ -239,9 +238,6 @@ public class DebateService {
         }
 
 
-        String currentTurnKey = redisKeyUtil.currentTurnKey(roomId);
-        redisTemplate.opsForValue().set(currentTurnKey, 0);
-
     }
 
     // 여기까지가 토론 준비방에서 일어나는 상태변화입니다
@@ -276,16 +272,16 @@ public class DebateService {
         Integer phase = requestPhaseStartDto.getPhase();
 
         String phaseKey = redisKeyUtil.phaseKey(roomId);
-        String currentTurnKey = redisKeyUtil.currentTurnKey(roomId);
+        String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
         String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
         String currentSpeakingUserKey = redisKeyUtil.currentSpeakingUserKey(roomId);
         String currentSpeakingTeamKey = redisKeyUtil.currentSpeakingTeamKey(roomId);
 
-        Integer turn = (Integer) redisTemplate.opsForValue().get(currentTurnKey);
+        Integer phaseDetail = (Integer) redisTemplate.opsForValue().get(phaseDetailKey);
 
-        turn = turnChange(turn);
+        phaseDetail = phaseDetailChange(phaseDetail);
 
-        redisTemplate.opsForValue().set(currentTurnKey, turn);
+        redisTemplate.opsForValue().set(phaseDetailKey, phaseDetail);
         redisTemplate.opsForValue().set(phaseKey, phase);
         Long serverTime = System.currentTimeMillis() / 1000L;
         redisTemplate.opsForValue().set(phaseStartTimeKey, serverTime);
@@ -294,17 +290,17 @@ public class DebateService {
 
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
 
-        String phaseStartAllInOneMessage = redisMessageUtil.phaseStartAllInOneMessage(phase, turn, team, userNickname);
+        String phaseStartAllInOneMessage = redisMessageUtil.phaseStartAllInOneMessage(phase, phaseDetail, team, userNickname);
 
         redisPublisher.publishMessage(roomChannelKey, phaseStartAllInOneMessage);
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
-        Integer finalTurn = turn;
+        Integer finalPhaseDetail = phaseDetail;
         ScheduledFuture<?> future = executorService.schedule(new Runnable() {
             @Override
             public void run() {
-                String phaseEndAllInOneMessage = redisMessageUtil.phaseEndAllInOneMessage(phase, finalTurn, team, userNickname);
+                String phaseEndAllInOneMessage = redisMessageUtil.phaseEndAllInOneMessage(phase, finalPhaseDetail, team, userNickname);
                 redisPublisher.publishMessage(roomChannelKey, phaseEndAllInOneMessage);
 
                 redisTemplate.delete(currentSpeakingTeamKey);
@@ -322,7 +318,7 @@ public class DebateService {
 
         String currentSpeakingUserKey = redisKeyUtil.currentSpeakingUserKey(roomId);
         String currentSpeakingTeamKey = redisKeyUtil.currentSpeakingTeamKey(roomId);
-        String currentTurnKey = redisKeyUtil.currentTurnKey(roomId);
+        String currentTurnKey = redisKeyUtil.phaseDetailKey(roomId);
         Integer turn = (Integer) redisTemplate.opsForValue().get(currentTurnKey);
 
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
@@ -426,7 +422,7 @@ public class DebateService {
                     keyList.add(redisKeyUtil.rightUserListKey(roomId));
                     keyList.add(redisKeyUtil.currentSpeakingUserKey(roomId));
                     keyList.add(redisKeyUtil.currentSpeakingTeamKey(roomId));
-                    keyList.add(redisKeyUtil.currentTurnKey(roomId));
+                    keyList.add(redisKeyUtil.phaseDetailKey(roomId));
                     keyList.add(redisKeyUtil.voteLeftKey(roomId, 1));
                     keyList.add(redisKeyUtil.voteLeftKey(roomId, 2));
                     keyList.add(redisKeyUtil.voteLeftKey(roomId, 3));
@@ -506,7 +502,7 @@ public class DebateService {
 
     // 여기부터 편의용 메서드
 
-    private static Integer turnChange(Integer turn) {
+    private static Integer phaseDetailChange(Integer turn) {
         if (turn == 0) {
             turn = 1;
         } else if (turn == 1) {
@@ -596,5 +592,16 @@ public class DebateService {
         }
 
         return fileList;
+    }
+
+    public void cardOpen(int useridx, int cardidx, String team, Long roomId) {
+        int index = useridx * 2 + cardidx;
+        String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, index, team);
+        String openedCardUrl = (String) redisTemplate.opsForValue().get(imgCardUrlKey);
+        String openedCardListKey = redisKeyUtil.imgCardOpenedListKey(roomId,team);
+        redisTemplate.opsForList().rightPush(openedCardListKey,openedCardUrl);
+        List<Object> oOpenedCardList = redisTemplate.opsForList().range(openedCardListKey, 0, -1);
+        // 원래는 얘를 publish 해줘야 하는데 어차피 JSON으로 바꿀꺼라서 일단 킵
+        redisPublisher.publishMessage(redisChannelUtil.roomChannelKey(roomId), (String)oOpenedCardList.get(0));
     }
 }
