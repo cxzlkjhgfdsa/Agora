@@ -10,8 +10,6 @@ import UserVideoComponent from '../video/UserVideoComponent';
 import getToken from './GetToken';
 import DebaterBox from './DebaterBox';
 
-import axios from 'axios';
-
 
 class VideoComponent extends Component {
     constructor(props) {
@@ -35,10 +33,17 @@ class VideoComponent extends Component {
             
             sessionState: 0,
 
+            // SSE
+            listening: false,
+            meventSource: undefined,
+
+
             // pros data
             role: this.props.data.role,
             isReady: this.props.data.isReady,
             isStart: this.props.data.isStart,
+
+            test: this.props.test,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -57,10 +62,50 @@ class VideoComponent extends Component {
 
     componentDidMount() {
         window.addEventListener('beforeunload', this.onbeforeunload);
+
+        let eventSource = undefined;
+
+        if (!this.listening) {
+          console.log("listening", this.listening);
+
+          eventSource = new EventSource('http://70.12.247.157:8080/api/v2/room/subscribe/6')
+          this.setState({
+            meventSource: eventSource,
+          }, () => {
+            console.log("eventSource", eventSource)
+          });
+
+          eventSource.onopen = evnet => {
+            console.log("video component 연결 완료");
+          };
+
+          eventSource.onmessage = event => {
+            console.log("onmessage");
+
+            const SSEData = JSON.parse(event.data)
+
+            console.log(SSEData)
+          };
+
+          eventSource.onerror = event => {
+            console.log(event.target.readyState);
+            if (event.target.readyState === EventSource.CLOSED) {
+              console.log("eventsource closed (" + event.target.readyState + ")");
+            }
+            eventSource.close();
+          };
+          this.setState({
+            listening: true,
+          });
+        }
     }
 
     componentWillUnmount() {
         window.removeEventListener('beforeunload', this.onbeforeunload);
+        if (this.meventSource !== undefined) {
+          this.meventSource.close();
+          console.log("eventsource closed")
+        }
     }
 
     onbeforeunload(event) {
@@ -384,7 +429,6 @@ class VideoComponent extends Component {
     render() {
         const mySessionId = this.state.mySessionId;
         const myUserName = this.state.myUserName;
-        const isStart = this.state.isStart
 
         return (
             <div>
@@ -542,6 +586,9 @@ class VideoComponent extends Component {
                                     >
                                       changeSpeaker
                                     </button>
+                                </Grid>
+                                <Grid item xs={2}>
+                                  hello
                                 </Grid>
                               </Grid>
                           </ButtonDiv>

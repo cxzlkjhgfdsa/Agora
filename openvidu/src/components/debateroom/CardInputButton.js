@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid";
 // recoil
 import { SetRecoilState, useRecoilState } from "recoil";
-import { CardNumState } from "../stores/DebateRoomStates";
+import { cardNumState } from "../stores/DebateRoomStates";
 
 function CardInputButton () {
   // state
   const [img1, setImg1] = useState("");
   const [img2, setImg2] = useState("");
-  const [cardNum, setCardNum] = useRecoilState(CardNumState);
+  const [cardNum, setCardNum] = useRecoilState(cardNumState);
   // Ref
   const imgRef1 = useRef();
   const imgRef2 = useRef();

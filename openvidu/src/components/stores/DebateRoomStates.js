@@ -20,7 +20,7 @@ export const isStartState = atom({
   default: false,
 })
 
-export const CardNumState = atom({
+export const cardNumState = atom({
   key: 'cardNumState',
   default: 0,
 })
@@ -38,4 +38,10 @@ export const phaseNumState = atom({
 export const sessionNumState = atom({
   key: 'sessionNum',
   default: 0,
+})
+
+
+export const testState = atom({
+  key: 'testState',
+  default: "A",
 })

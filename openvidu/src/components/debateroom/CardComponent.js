@@ -7,6 +7,7 @@ const CardArea = styled.div`
   
   box-shadow: 1px 1px 3px #777777, -1px -1px 1px #eeeeee;
   border-radius: 12px;
+  color: white;
 
   background-color: #777777;
 `
@@ -16,10 +17,12 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `
 
-function CardComponent() {
+function CardComponent({test}) {
   return(
     <Wrapper>
-      <CardArea />
+      <CardArea>
+        {test}
+      </CardArea>
     </Wrapper>
   )
 }

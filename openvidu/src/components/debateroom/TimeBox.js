@@ -10,7 +10,7 @@ import Grid from "@mui/material/Grid";
 
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isStartState, isAllReadyState, roleState, CardNumState, readyMemberState, phaseNumState } from "../stores/DebateRoomStates";
+import { isStartState, isAllReadyState, roleState, cardNumState, readyMemberState, phaseNumState } from "../stores/DebateRoomStates";
 
 
 function TimeBox() {
@@ -18,7 +18,7 @@ function TimeBox() {
   const [isReady, setIsReady] = useState(false);
   
   // recoil state
-  const cardNum = useRecoilValue(CardNumState);
+  const cardNum = useRecoilValue(cardNumState);
   const [isStart, setIsStart] = useRecoilState(isStartState);
   const [isAllReady, setISAllReady] = useRecoilState(isAllReadyState);
   const [role, setRole] = useRecoilState(roleState);
