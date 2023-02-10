@@ -1,4 +1,9 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import styled from "styled-components";
+import customAxios from "utils/customAxios";
 
 const StyledJoinAsSpeaker = styled.div`
   // 크기 설정
@@ -49,12 +54,20 @@ const OpinionText = styled.p`
 `;
 
 function JoinAsSpeaker(props) {
+  const axios = customAxios();
+  const navigate = useNavigate();
+
+  // 다음 페이지로 전달하기 위한 참가자의 역할 setter
+  const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
+
+  const roomId = props?.roomInfo?.roomId;
   const leftOpinion = props?.roomInfo?.leftOpinion;
   const rightOpinion = props?.roomInfo?.rightOpinion;
   const leftUserList = props?.roomInfo?.leftUserList;
   const rightUserList = props?.roomInfo?.rightUserList;
 
-  const join = (opinion) => {
+  // opinion: 의견, team: LEFT or RIGHT
+  const join = useCallback(async (opinion, team) => {
     let isValid = true;
 
     const choice = window.confirm(`'${opinion}' 측 발언자로 참여 하시겠습니까?`);
@@ -80,10 +93,29 @@ function JoinAsSpeaker(props) {
 
       // 카메라와 오디오 모두 켜져 있다면,
       if (isValid) {
+        // 방 참여 Request
+        const joinData = await axios.post("/api/v2/room/enter", {
+          roomId: roomId,
+          userNickname: "NICK_DUMMY",
+          userTeam: team
+        }, null)
+          .then(({ data }) => data.body)
+          .catch(error => { console.log(error); });
         
+        if (joinData?.state !== true) {
+          alert("방 참여에 실패했습니다.");
+          return;
+        }
+
+        // Recoil State 설정
+        setDebateUserRoleState("speaker");  // 발언자로 입장
+        // Openvidu 토큰도 저장
+  
+        // 토론방 이동 Request
+        navigate("/debate/room/" + roomId);
       }
     }
-  };
+  }, []);
 
   return (
     <StyledJoinAsSpeaker>
@@ -91,7 +123,7 @@ function JoinAsSpeaker(props) {
       <OpinionButton
         className="selectLeftOpinion"
         disabled={leftUserList.length === 3}
-        onClick={() => { join(leftOpinion); }}
+        onClick={() => { join(leftOpinion, "LEFT"); }}
       >
         <OpinionText title={leftOpinion}>{leftOpinion}</OpinionText>
         <OpinionText>({leftUserList.length} / 3)</OpinionText>
@@ -101,7 +133,7 @@ function JoinAsSpeaker(props) {
       <OpinionButton
         className="selectRightOpinion"
         disabled={rightUserList.length === 3}
-        onClick={() => { join(rightOpinion); }}
+        onClick={() => { join(rightOpinion, "RIGHT"); }}
       >
         <OpinionText title={rightOpinion}>{rightOpinion}</OpinionText>
         <OpinionText>({rightUserList.length} / 3)</OpinionText>

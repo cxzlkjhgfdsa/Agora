@@ -143,35 +143,36 @@ function CreateRoomModal({ closeModalEvent }) {
       // 방 생성 Request
       const createData = await axios.post("/api/v2/room/create", sendData, null)
         .then(({ data }) => data.body)
-        .catch(error => {
-          console.log(error);
-          return null;
-        });
-        
-      if (createData === null) {
+        .catch(error => { console.log(error); });
+    
+      if (createData?.state !== true) {
         alert("방 생성에 실패했습니다.");
         return;
       }
 
       // 방 참여 Request
+      let team = null;
+      if (selectedOpinion === "주장1") {
+        team = "LEFT";
+      } else if (selectedOpinion === "주장2") {
+        team = "RIGHT";
+      }
       const joinData = await axios.post("/api/v2/room/enter", {
         roomId: createData.roomId,
         userNickname: "NICK_DUMMY",
-        userTeam: "LEFT"
+        userTeam: team 
       }, null)
         .then(({ data }) => data.body)
-        .catch(error => {
-          console.log(error);
-          return null;
-        });
+        .catch(error => { console.log(error); });
       
-      if (joinData === null) {
+      if (joinData?.state !== true) {
         alert("방 참여에 실패했습니다.");
         return;
       }
 
       // Recoil State 설정
       setDebateUserRoleState("host");  // 방장으로 입장
+       // Openvidu 토큰 저장
 
       // 토론방 이동 Request
       navigate("/debate/room/" + createData.roomId);

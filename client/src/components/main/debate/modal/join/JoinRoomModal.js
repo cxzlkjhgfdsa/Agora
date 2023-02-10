@@ -47,7 +47,9 @@ function JoinRoomModal({ closeModalEvent, roomInfo }) {
                   leftUserList: ["left1", "left2", "left3"],
                   rightUserList: ["right1"]
                 }} />} />
-            <ModalSetting className="full" name="관전하기" content={<JoinAsViewer />} />
+            <ModalSetting className="full" name="관전하기" content={
+              <JoinAsViewer />
+            } />
           </RightDiv>
         </CenterDiv>
       </Container>
