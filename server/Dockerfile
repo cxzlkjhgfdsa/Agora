@@ -24,4 +24,4 @@ FROM adoptopenjdk:11-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
 EXPOSE 8888
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "-Dredishost=${REDISHOST}", "-Dredispass=${REDISPASS}", "-Dmeeting.hostname=${MEETING_HOST}", "-Dmeeting.secret=${MEETING_SECRET}", "/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${USE_PROFILE}", "-Ddatabase.hostname=${HOST_NAME}", "-Ddatabase.schema=${SCHEMA}", "-Ddatabase.username=${USERNAME}", "-Ddatabase.password=${PASSWORD}", "-Djwt.secret=${JWT_SECRET}", "-Dredishost=${REDISHOST}", "-Dredispass=${REDISPASS}", "-Dopenvidu.hostname=${MEETING_HOST}", "-Dopenvidu.secret=${MEETING_SECRET}", "/app.jar"]
