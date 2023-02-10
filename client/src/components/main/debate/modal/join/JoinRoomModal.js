@@ -1,23 +1,32 @@
-import { useState } from "react";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { CenterDiv, Container, LeftDiv, RightDiv } from "../ModalContainer";
 import ModalSetting from "../ModalSetting";
 import WebCam from "../WebCam";
-import SelectOpinion from "./SelectOpinion";
+import JoinAsViewer from "./JoinAsViewer";
+import JoinAsSpeaker from "./JoinAsSpeaker";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
 function JoinRoomModal({ closeModalEvent, roomInfo }) {
-  const [videoRef, setVideoRef] = useState();
-
   return (
     <ModalDiv>
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle text={roomInfo?.roomName} titleSize="2.5rem" />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton onClick={closeModalEvent} />
+      <CloseButton onClick={() => {
+        // 기존 스트림 삭제
+        const srcObject = document.querySelector("video")?.srcObject;
+        if (srcObject) {
+          srcObject.getTracks().forEach(track => {
+            track.stop();
+            srcObject.removeTrack(track);
+          });
+        }
+        // Modal 종료
+        closeModalEvent();
+      }} />
 
       {/* 컨테이너 생성하여 메인 컴포넌트들 부착 */}
       <Container>
@@ -25,13 +34,22 @@ function JoinRoomModal({ closeModalEvent, roomInfo }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setVideoRef={setVideoRef} />
+              <WebCam />
             } />
           </LeftDiv>   
           {/* 토론방을 설정하는 우측 컴포넌트 */}
           <RightDiv>
-            <ModalSetting name="토론 참여하기" content={<SelectOpinion roomInfo={roomInfo} />} />
-            <ModalSetting name="관전하기" content={<h1>456</h1>} />
+            <ModalSetting className="full" name="토론 참여하기" content={
+              <JoinAsSpeaker
+                roomInfo={{
+                  leftOpinion: "계란을 넣는 것이 맞다",
+                  rightOpinion: "라면이지 무슨 말이냐",
+                  leftUserList: ["left1", "left2", "left3"],
+                  rightUserList: ["right1"]
+                }} />} />
+            <ModalSetting className="full" name="관전하기" content={
+              <JoinAsViewer />
+            } />
           </RightDiv>
         </CenterDiv>
       </Container>

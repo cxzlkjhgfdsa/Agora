@@ -7,15 +7,21 @@ import { SettingInput } from "./InputComponents";
 import FileUploader from "./FileUploader";
 import SettingComboBox from "./SettingComboBox";
 import WebCam from "../WebCam";
+import { tokenize } from "components/common/Tokenizers";
+import customAxios from "utils/customAxios";
+import { useSetRecoilState } from "recoil";
+import { debateUserRoleState } from "stores/joinDebateRoomStates";
+import { useNavigate } from "react-router-dom";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
 function CreateRoomModal({ closeModalEvent }) {
+  const axios = customAxios();
 
   const [hashTags, setHashTags] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState(null);
 
   const [debateTitle, setDebateTitle] = useState("");
   const [debateType, setDebateType] = useState("");
@@ -23,7 +29,10 @@ function CreateRoomModal({ closeModalEvent }) {
   const [rightOpinion, setRightOpinion] = useState("");
   const [selectedOpinion, setSelectedOpinion] = useState("");
   const [category, setCategory] = useState("");
-  const [onCamera, setOnCamera] = useState(false);
+
+  // 참가자의 역할을 저장할 setter
+  const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
+  const navigate = useNavigate();
 
   const onHashTagsChange = (event) => {
     setHashTags(event.target.value);
@@ -78,17 +87,96 @@ function CreateRoomModal({ closeModalEvent }) {
       isValid = false;
     }
     // 카메라, 오디오 확인
-    const tracks = await navigator.mediaDevices.getTracks();
-    tracks.forEach(track => {
-      // 카메라
-      if (track.kind === "videoinput") {
-        
-      }
-      // 오디오
-      else if (track.kind === "audioinput") {
+    const srcObject = document.querySelector("video").srcObject;
+    let onCameraTrack = false;
+    let onAudioTrack = false;
+    if (srcObject) {
+      const tracks = srcObject.getTracks();
+      tracks.forEach(track => {
+        if (track.kind === "video") {
+          onCameraTrack = true;
+        } else if (track.kind === "audio") {
+          onAudioTrack = true;
+        }
+      });
+    }
+    if (!onCameraTrack || !onAudioTrack) {
+      document.querySelector("#deviceSetting").classList.add("wrong");
+      isValid = false;
+    }
 
+    if (isValid) {
+      // 해시태그 변환
+      let hashTagsForSend = "";
+      if (hashTags.length > 0) {
+        const [_, hashTagsList] = tokenize(hashTags);
+        hashTagsForSend = hashTagsList.join(",");
       }
-    });
+
+      // 서버에 이미지를 전송해 저장하고, URL 전달받기
+      const thumbnailUrl = await axios.post("/api/v2/file/save/roomthumbnail", {
+        files: thumbnailFile
+      }, {
+        withCredentials: true
+      }).then(({ data }) => data.body.fileUrl)
+        .catch(error => {
+          console.log(error);
+          return "https://storage.googleapis.com"
+            + "/download/storage/v1/b/agora_real1/o"
+            + "/img%2Fde141bcb-9388-43b0-ae46-5a58e2bed066-basicthumbnailagora.jpg.jpg"
+            + "?generation=1675926956571193&alt=media";
+        });
+      
+      // 전달받은 URL을 포함한 다른 정보들로 방 생성 처리
+      // 데이터 취합
+      const sendData = {
+        roomName: debateTitle,
+        roomCreaterName: "NICK_DUMMY",
+        roomDebateType: (debateType === "정식 토론") ? "FORMAL" : "SHORT",
+        roomOpinionLeft: leftOpinion,
+        roomOpinionRight: rightOpinion,
+        roomHashtags: hashTagsForSend,
+        roomThumbnailUrl: thumbnailUrl,
+        roomCategory: category
+      };
+
+      // 방 생성 Request
+      const createData = await axios.post("/api/v2/room/create", sendData, null)
+        .then(({ data }) => data.body)
+        .catch(error => { console.log(error); });
+    
+      if (createData?.state !== true) {
+        alert("방 생성에 실패했습니다.");
+        return;
+      }
+
+      // 방 참여 Request
+      let team = null;
+      if (selectedOpinion === "주장1") {
+        team = "LEFT";
+      } else if (selectedOpinion === "주장2") {
+        team = "RIGHT";
+      }
+      const joinData = await axios.post("/api/v2/room/enter", {
+        roomId: createData.roomId,
+        userNickname: "NICK_DUMMY",
+        userTeam: team 
+      }, null)
+        .then(({ data }) => data.body)
+        .catch(error => { console.log(error); });
+      
+      if (joinData?.state !== true) {
+        alert("방 참여에 실패했습니다.");
+        return;
+      }
+
+      // Recoil State 설정
+      setDebateUserRoleState("host");  // 방장으로 입장
+       // Openvidu 토큰 저장
+
+      // 토론방 이동 Request
+      navigate("/debate/room/" + createData.roomId);
+    }
   };
 
   return (
@@ -96,7 +184,18 @@ function CreateRoomModal({ closeModalEvent }) {
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle text="토론방 생성하기" titleSize="2.5rem" />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton onClick={closeModalEvent} />
+      <CloseButton onClick={() => {
+        // 기존 스트림 삭제
+        const srcObject = document.querySelector("video")?.srcObject;
+        if (srcObject) {
+          srcObject.getTracks().forEach(track => {
+            track.stop();
+            srcObject.removeTrack(track);
+          });
+        }
+        // Modal 종료
+        closeModalEvent();
+      }} />
 
       {/* 컨테이너 생성하여 메인 컴포넌트들 부착 */}
       <Container>
@@ -104,11 +203,13 @@ function CreateRoomModal({ closeModalEvent }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setOnCamera={setOnCamera} />
+              <WebCam />
             } />
             <ModalSetting name="썸네일 선택" content={
-              <FileUploader getter={thumbnail} setter={setThumbnail} />
-            } />
+              <FileUploader
+                fileSetter={setThumbnailFile}
+              />}
+            />
           </LeftDiv>
           {/* 토론방을 설정하는 우측 컴포넌트 */}
           <RightDiv>
@@ -169,14 +270,14 @@ function CreateRoomModal({ closeModalEvent }) {
                   />
                 </>
               } />
-              <ModalSetting name="해시 태그 (선택)" content={
-                <SettingInput
-                  id="hashTags"
-                  placeholder="#해시태그1 #해시태그2"
-                  value={hashTags}
-                  onChange={onHashTagsChange}
-                />
-              } />
+            <ModalSetting name="해시 태그 (선택)" content={
+              <SettingInput
+                id="hashTags"
+                placeholder="#해시태그1 #해시태그2"
+                value={hashTags}
+                onChange={onHashTagsChange}
+              />
+            } />
           </RightDiv>
         </CenterDiv>
 

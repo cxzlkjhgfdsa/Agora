@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ArrowDownWhite from "assets/icons/Arrow_Down_White.png";
 
 // 콤보박스 컴포넌트
@@ -19,9 +19,9 @@ const MainButton = styled.button`
   align-items: center;
   
   // 디자인 설정
-  border: 2px solid #FFFFFF;
-  border-radius: 5px;
-  background-color: #333333;
+  border: 1px solid #161616;
+  border-radius: 10px;
+  background-color: #161616;
   &.wrong {
     border-color: #EF404A;
   }
@@ -69,7 +69,7 @@ const StyledUl = styled.ul`
   right: 0;
   z-index: 1;
 
-  border: 1px solid #FFFFFF;
+  border: 1px solid #161616;
 
   &.hide {
     display: none;
@@ -104,7 +104,7 @@ const ItemButton = styled.button`
   
   // 디자인 설정
   border: 0;
-  background-color: #333333;
+  background-color: #161616;
 
   cursor: pointer;
 `;
@@ -118,8 +118,12 @@ function WebCamComboBox(props) {
   const [selectedLabel, setSelectedLabel] = useState("");
 
   const toggleHide = () => {
-    UlRef?.current?.classList?.toggle("hide");
-    props?.toggleWrong();
+    if (UlRef) {
+      UlRef?.current?.classList?.toggle("hide");
+    }
+    if (props?.toggleWrong) {
+      props.toggleWrong();
+    }
   };
   const addSelected = () => {
     TextRef?.current?.classList?.add("selected");
@@ -129,9 +133,10 @@ function WebCamComboBox(props) {
       TextRef.current.textContent = event.target.textContent;
       addSelected();
       setSelectedLabel(event.target.textContent);
+    } else {
+      document.querySelector("#deviceSetting").classList.remove("wrong");
     }
     toggleHide();
-    props?.customEvent();
   };
   
   return (
@@ -143,9 +148,18 @@ function WebCamComboBox(props) {
       </MainButton>
       {props?.items?.length > 0
         ? <StyledUl className="hide" ref={UlRef}>
-            {props?.items?.map(item => (
+            {props?.items?.map((item, index) => (
               <StyledLi key={props.isDevice ? item.deviceId : item}>
-                <ItemButton onClick={selectOption}>
+                <ItemButton
+                  onClick={(event) => {
+                    selectOption(event);
+                    if (props?.customEvents) {
+                      props.customEvents[index](current => !current);
+                    }
+                    if (props?.setter) {
+                      props.setter(item.deviceId);
+                    }
+                  }}>
                   {props.isDevice ? item.label : item}
                 </ItemButton>
               </StyledLi>))}

@@ -19,7 +19,7 @@ const MainButton = styled.button`
   align-items: center;
   
   // 디자인 설정
-  border: 2px solid #FFFFFF;
+  border: 1px solid #FFFFFF;
   border-radius: 5px;
   background-color: #333333;
   &.wrong {
