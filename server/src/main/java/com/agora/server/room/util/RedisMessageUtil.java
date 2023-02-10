@@ -1,8 +1,20 @@
 package com.agora.server.room.util;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
+@RequiredArgsConstructor
 public class RedisMessageUtil {
 
     /**
@@ -14,6 +26,42 @@ public class RedisMessageUtil {
      *
      * 공백 기준으로 스플릿 하실 수 있게 해놨습니다
      */
+
+    @Setter
+    @JsonSerialize
+    class MyMessage{
+
+        private String userTeam;
+        private String userNickname;
+        private List<String> userTestList;
+        private Map<String, Object> userTestMap;
+
+        @JsonProperty
+        public String getUserTeam() {
+            return userTeam;
+        }
+
+        @JsonProperty
+        public String getUserNickname() {
+            return userNickname;
+        }
+
+        @JsonProperty
+        public List<String> getUserTestList() {
+            return userTestList;
+        }
+
+        @JsonProperty
+        public Map<String, Object> getUserTestMap() {
+            return userTestMap;
+        }
+
+
+
+    }
+
+    private final ObjectMapper objectMapper;
+
 
     // 이벤트 태그
     private final String DEBATE_START_TAG = "[DEBATESTART] ";
@@ -46,9 +94,32 @@ public class RedisMessageUtil {
         return LEAVE_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
     }
 
+//    public String readyMessage(Integer userSide, String userNickname) {
+//        String team = getTeam(userSide);
+//        return READY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+//    }
+
     public String readyMessage(Integer userSide, String userNickname) {
+        MyMessage myMessage = new MyMessage();
         String team = getTeam(userSide);
-        return READY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
+        myMessage.setUserTeam(team);
+        myMessage.setUserNickname(userNickname);
+        List<String> testlist = new ArrayList<>();
+        testlist.add("김영한");
+        testlist.add("로버트다우니주니어");
+        testlist.add("안침착맨");
+
+        Map<String, Object> testMap = new HashMap<>();
+        testMap.put("테스트키String","테스트벨류");
+        testMap.put("테스트키int", 3);
+        myMessage.setUserTestList(testlist);
+        myMessage.setUserTestMap(testMap);
+        try {
+            String json = objectMapper.writeValueAsString(myMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String unreadyMessage(Integer userSide, String userNickname) {
