@@ -21,10 +21,5 @@ public class SseController {
         return ResponseEntity.ok(sseEmitter);
     }
 
-//    @PostMapping(value = "sse/test")
-//    public ResponseEntity<Void> count() {
-//        publishService.publishmessage();
-//        return ResponseEntity.ok().build();
-//    }
 
 }

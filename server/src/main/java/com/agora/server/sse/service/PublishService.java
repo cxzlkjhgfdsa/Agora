@@ -20,7 +20,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class PublishService {
 
-    //    private final Map<String, SseEmitter> emitters;
     private final Map<String, List<SseEmitter>> roomEmitterMap;
 
     private final RedisMessageListenerContainer redisMessageListenerContainer;
@@ -67,19 +66,4 @@ public class PublishService {
     }
 
 
-//    public void publishmessage() {
-//        List<SseEmitter> sseEmitters = roomEmitterMap.get("6");
-//        sseEmitters.forEach(sseEmitter -> {
-//            try {
-//                sseEmitter.send(SseEmitter.event()
-//                        .name("testpublish")
-//                        .data("퍼블리시test")
-//                );
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//        });
-//
-//    }
 }
