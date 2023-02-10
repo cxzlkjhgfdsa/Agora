@@ -12,7 +12,7 @@ import customAxios from "utils/customAxios";
 // recoil
 import { useRecoilState } from "recoil";
 import { isStartState, cardNumState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState } from "stores/DebateStates";
-
+ 
 
 function DebateRoom() {
 
