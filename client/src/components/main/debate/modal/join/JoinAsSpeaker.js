@@ -55,9 +55,33 @@ function JoinAsSpeaker(props) {
   const rightUserList = props?.roomInfo?.rightUserList;
 
   const join = (opinion) => {
+    let isValid = true;
+
     const choice = window.confirm(`'${opinion}' 측 발언자로 참여 하시겠습니까?`);
     if (choice === true) {
-      alert("고고씽");
+      // 카메라, 오디오 확인
+      const srcObject = document.querySelector("video").srcObject;
+      let onCameraTrack = false;
+      let onAudioTrack = false;
+      if (srcObject) {
+        const tracks = srcObject.getTracks();
+        tracks.forEach(track => {
+          if (track.kind === "video") {
+            onCameraTrack = true;
+          } else if (track.kind === "audio") {
+            onAudioTrack = true;
+          }
+        });
+      }
+      if (!onCameraTrack || !onAudioTrack) {
+        document.querySelector("#deviceSetting").classList.add("wrong");
+        isValid = false;
+      }
+
+      // 카메라와 오디오 모두 켜져 있다면,
+      if (isValid) {
+        
+      }
     }
   };
 

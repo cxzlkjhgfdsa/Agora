@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 // 파일 업로드 컴포넌트
 const StyledFileUploader = styled.div`
@@ -52,10 +52,12 @@ function FileUploader(props) {
   };
   const onFileUploaderChange = (event) => {
     if (props) {
-      props.setter(event.target.value);
+      setImgPath(event.target.value);
       props.fileSetter(event.target.files);
     }
   };
+
+  const [imgPath, setImgPath] = useState("");
   
   return (
     <>
@@ -64,10 +66,10 @@ function FileUploader(props) {
         <SelectFileButton onClick={onFileUploaderClick}>
           파일 선택
         </SelectFileButton>
-        <StyledDescription title={props?.getter}>
-          {props?.getter === ""
+        <StyledDescription title={imgPath}>
+          {imgPath === ""
             ? "토론방의 배경 이미지를 선택합니다"
-            : props?.getter}
+            : imgPath}
         </StyledDescription>
       </StyledFileUploader>
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { CenterDiv, Container, LeftDiv, RightDiv } from "../ModalContainer";
 import ModalSetting from "../ModalSetting";
@@ -11,9 +10,6 @@ import JoinAsSpeaker from "./JoinAsSpeaker";
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
 function JoinRoomModal({ closeModalEvent, roomInfo }) {
-  const [onCamera, setOnCamera] = useState(false);
-  const [onAudio, setOnAudio] = useState(false);
-
   return (
     <ModalDiv>
       {/* 제목 이미지와 글자 넘겨주기 */}
@@ -38,7 +34,7 @@ function JoinRoomModal({ closeModalEvent, roomInfo }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setOnCamera={setOnCamera} setOnAudio={setOnAudio} />
+              <WebCam />
             } />
           </LeftDiv>   
           {/* 토론방을 설정하는 우측 컴포넌트 */}

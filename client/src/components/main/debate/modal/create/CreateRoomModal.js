@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { BottomDiv, CenterDiv, Container, LeftDiv, RightDiv } from "../ModalContainer";
 import ModalSetting from "../ModalSetting";
@@ -8,15 +8,19 @@ import FileUploader from "./FileUploader";
 import SettingComboBox from "./SettingComboBox";
 import WebCam from "../WebCam";
 import { tokenize } from "components/common/Tokenizers";
+import customAxios from "utils/customAxios";
+import { useSetRecoilState } from "recoil";
+import { debateUserRoleState } from "stores/joinDebateRoomStates";
+import { useNavigate } from "react-router-dom";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
 function CreateRoomModal({ closeModalEvent }) {
+  const axios = customAxios();
 
   const [hashTags, setHashTags] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
   const [thumbnailFile, setThumbnailFile] = useState(null);
 
   const [debateTitle, setDebateTitle] = useState("");
@@ -26,8 +30,9 @@ function CreateRoomModal({ closeModalEvent }) {
   const [selectedOpinion, setSelectedOpinion] = useState("");
   const [category, setCategory] = useState("");
 
-  const [onCamera, setOnCamera] = useState(false);
-  const [onAudio, setOnAudio] = useState(false);
+  // 참가자의 역할을 저장할 setter
+  const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
+  const navigate = useNavigate();
 
   const onHashTagsChange = (event) => {
     setHashTags(event.target.value);
@@ -108,6 +113,22 @@ function CreateRoomModal({ closeModalEvent }) {
         hashTagsForSend = hashTagsList.join(",");
       }
 
+      // 서버에 이미지를 전송해 저장하고, URL 전달받기
+      const thumbnailUrl = await axios.post("/api/v2/file/save/roomthumbnail", {
+        files: thumbnailFile
+      }, {
+        withCredentials: true
+      }).then(({ data }) => data.body.fileUrl)
+        .catch(error => {
+          console.log(error);
+          return "https://storage.googleapis.com"
+            + "/download/storage/v1/b/agora_real1/o"
+            + "/img%2Fde141bcb-9388-43b0-ae46-5a58e2bed066-basicthumbnailagora.jpg.jpg"
+            + "?generation=1675926956571193&alt=media";
+        });
+      
+      // 전달받은 URL을 포함한 다른 정보들로 방 생성 처리
+      // 데이터 취합
       const sendData = {
         roomName: debateTitle,
         roomCreaterName: "NICK_DUMMY",
@@ -115,10 +136,45 @@ function CreateRoomModal({ closeModalEvent }) {
         roomOpinionLeft: leftOpinion,
         roomOpinionRight: rightOpinion,
         roomHashtags: hashTagsForSend,
-        roomThumbnailUrl: "THUMBNAIL_DUMMY",
+        roomThumbnailUrl: thumbnailUrl,
         roomCategory: category
       };
-      console.log(sendData);
+
+      // 방 생성 Request
+      const createData = await axios.post("/api/v2/room/create", sendData, null)
+        .then(({ data }) => data.body)
+        .catch(error => {
+          console.log(error);
+          return null;
+        });
+        
+      if (createData === null) {
+        alert("방 생성에 실패했습니다.");
+        return;
+      }
+
+      // 방 참여 Request
+      const joinData = await axios.post("/api/v2/room/enter", {
+        roomId: createData.roomId,
+        userNickname: "NICK_DUMMY",
+        userTeam: "LEFT"
+      }, null)
+        .then(({ data }) => data.body)
+        .catch(error => {
+          console.log(error);
+          return null;
+        });
+      
+      if (joinData === null) {
+        alert("방 참여에 실패했습니다.");
+        return;
+      }
+
+      // Recoil State 설정
+      setDebateUserRoleState("host");  // 방장으로 입장
+
+      // 토론방 이동 Request
+      navigate("/debate/room/" + createData.roomId);
     }
   };
 
@@ -146,12 +202,10 @@ function CreateRoomModal({ closeModalEvent }) {
           {/* 캠 화면 설정, 해시 태그, 썸네일 선택 등 좌측 컴포넌트 */}
           <LeftDiv>
             <ModalSetting name="캠 화면 설정" content={
-              <WebCam setOnCamera={setOnCamera} setOnAudio={setOnAudio} />
+              <WebCam />
             } />
             <ModalSetting name="썸네일 선택" content={
               <FileUploader
-                getter={thumbnail}
-                setter={setThumbnail}
                 fileSetter={setThumbnailFile}
               />}
             />
