@@ -14,7 +14,6 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,7 +104,7 @@ public class RoomService {
         try {
 
             String userisReadyKey = redisKeyUtil.isReadyKey(roomId, userNickname);
-            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+//            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
 
             // side 0 == LEFT SIDE로 가정
             if (userTeam.equals("LEFT")) {
@@ -113,7 +112,7 @@ public class RoomService {
                 stringObjectListOperations.rightPush(leftUserListKey, userNickname);
                 stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-                stringObjectValueOperations.increment(watchCntKey);
+//                stringObjectValueOperations.increment(watchCntKey);
                 return true;
                 // side 1 == RIGHT SIDE로 가정
             } else if (userTeam.equals("RIGHT")) {
@@ -121,7 +120,7 @@ public class RoomService {
                 stringObjectListOperations.rightPush(rightUserListKey, userNickname);
                 stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-                stringObjectValueOperations.increment(watchCntKey);
+//                stringObjectValueOperations.increment(watchCntKey);
                 return true;
             }
         } catch (Exception e) {
@@ -131,22 +130,22 @@ public class RoomService {
         return false;
     }
 
-    public boolean enterRoomAsWatcher(Long roomId) {
-
-        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
-        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
-        if (isEnded.equals("TRUE")) {
-            throw new DebateEndedException("토론이 끝났습니다");
-        }
-
-        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
-
-        String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-
-        stringObjectValueOperations.increment(watchCntKey);
-
-        return false;
-    }
+//    public boolean enterRoomAsWatcher(Long roomId) {
+//
+//        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
+//        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
+//        if (isEnded.equals("TRUE")) {
+//            throw new DebateEndedException("토론이 끝났습니다");
+//        }
+//
+//        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
+//
+//        String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+//
+//        stringObjectValueOperations.increment(watchCntKey);
+//
+//        return false;
+//    }
 
 
     /**
@@ -564,7 +563,8 @@ public class RoomService {
 
 
         String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-        Integer roomWatchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
+        Integer roomWatchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey)+1;
+        redisTemplate.opsForValue().set(watchCntKey,roomWatchCnt);
         responseRoomEnterDto.setRoomWatchCnt(roomWatchCnt);
 
 
@@ -631,7 +631,7 @@ public class RoomService {
 
             responseRoomEnterDto.setRoomTimeInProgressSecond(seconds);
             responseRoomEnterDto.setRoomPhase(phase);
-            responseRoomEnterDto.setRoomPhaseDeatil(phaseDetail);
+            responseRoomEnterDto.setRoomPhaseDetail(phaseDetail);
 
             String leftImgCardOpenedListKey = redisKeyUtil.imgCardOpenedListKey(roomId, "LEFT");
             List<Object> oleftCardOpenedList = redisTemplate.opsForList().range(leftImgCardOpenedListKey, 0, -1);
@@ -663,7 +663,7 @@ public class RoomService {
 //            responseRoomEnterDto.setRoomPhaseCurrentTimeMinute(0);
 //            responseRoomEnterDto.setRoomPhaseCurrentTimeSecond(0);
             responseRoomEnterDto.setRoomPhase(0);
-            responseRoomEnterDto.setRoomPhaseDeatil(0);
+            responseRoomEnterDto.setRoomPhaseDetail(0);
             responseRoomEnterDto.setLeftOpenedCardList(new ArrayList<>());
             responseRoomEnterDto.setRightOpenedCardList(new ArrayList<>());
         }

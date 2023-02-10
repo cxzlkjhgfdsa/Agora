@@ -67,8 +67,12 @@ public class RoomController {
 
         // 기본적으로 방에 들어갈 때 필요한 정보들 넣어주기(토론자, 관전자 상관없이 필요한 정보)
         // 여기서 responseRoomEnterDto에 넣을 것 다 넣어주기
+        // 방에 일단 입장했을때의 정보 그대로 가져오고
         roomService.enterRoom(responseRoomEnterDto, requestRoomEnterDto.getRoomId());
+        // 그 다음에 redis에 있는 리스트에 넣어주고
         roomService.enterRoomAsDebater(requestRoomEnterDto.getUserNickname(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserTeam());
+        // 토론자 입장을 알려줌 그래야지 자신이 없는 리스트로 그리고 시그널을 받은 상태로 추가하기
+        // 일단은 이렇게 가고 얘기해봐서 아닌거 같으면 순서 바꾸면 됨
         debateService.debaterEnter(requestRoomEnterDto);
 
         responseRoomEnterDto.setOpenviduToken(openviduToken);
