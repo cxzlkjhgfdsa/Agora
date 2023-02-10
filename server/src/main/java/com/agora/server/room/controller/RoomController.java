@@ -36,11 +36,8 @@ public class RoomController {
         Long roomId;
         roomId = roomService.createRoom(createdRoom);
 
-        String token = openViduService.createSession(roomId);
-
         ResponseRoomCreateDto responseRoomCreateDto = new ResponseRoomCreateDto();
         responseRoomCreateDto.setRoomId(roomId);
-        responseRoomCreateDto.setToken(token);
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(responseRoomCreateDto);
