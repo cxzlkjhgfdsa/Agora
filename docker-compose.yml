@@ -23,6 +23,8 @@ services:
       JWT_SECRET: q
       REDISHOST: q
       REDISPASS: q
+      MEETING_HOST: q
+      MEETING_SECRET: q
     networks:
       - AGORA
 networks:

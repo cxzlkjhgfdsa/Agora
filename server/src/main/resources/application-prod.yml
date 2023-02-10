@@ -84,3 +84,6 @@ server:
 #  endpoint:
 #    health:
 #      show-details: always
+openvidu:
+  hostname: ${meeting.hostname}
+  secet: ${meeting.secret}
