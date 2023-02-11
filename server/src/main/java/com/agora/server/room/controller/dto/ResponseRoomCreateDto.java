@@ -8,5 +8,4 @@ import org.springframework.stereotype.Service;
 @Setter
 public class ResponseRoomCreateDto {
     private Long roomId;
-    private String token;
 }

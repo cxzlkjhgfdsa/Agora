@@ -64,8 +64,5 @@ public class ResponseRoomEnterDto {
     private String currentSpeakingUser; // check
     private String currentSpeakingTeam; // check
 
-//    private Boolean isEnter;
-//    private Boolean isUserCreater;
-
 
 }

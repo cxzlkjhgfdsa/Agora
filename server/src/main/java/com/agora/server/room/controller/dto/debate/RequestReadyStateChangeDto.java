@@ -13,8 +13,5 @@ public class RequestReadyStateChangeDto {
         private Long roomId;
         private String userNickname;
 
-        // 팀 LEFT, RIGHT
-        private String userTeam;
-
 
 }

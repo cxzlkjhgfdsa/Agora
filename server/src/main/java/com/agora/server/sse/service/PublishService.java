@@ -29,7 +29,8 @@ public class PublishService {
 
         List<SseEmitter> roomSseEmitters = roomEmitterMap.getOrDefault(roomId, new CopyOnWriteArrayList<>());
 
-        SseEmitter emitter = new SseEmitter(60 * 1000L);
+//        SseEmitter emitter = new SseEmitter(60 * 1000L);
+        SseEmitter emitter = new SseEmitter(0L);
         roomSseEmitters.add(emitter);
 
         try {

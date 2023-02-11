@@ -8,157 +8,423 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class RedisMessageUtil {
 
-    /**
-     * 태그 규칙
-     * <p>
-     * [이벤트태그] [파라미터태그1] [파라미터태그2] ... parameter1 parameter2 ...
-     * ex) [ENTER] [TEAM] [USERNICKNAME] LEFT 김영한
-     * 왼쪽팀의 김영한님이 방에 입장함을 알리는 태그
-     *
-     * 공백 기준으로 스플릿 하실 수 있게 해놨습니다
-     */
 
     @Setter
     @JsonSerialize
-    class MyMessage{
+    class PubSubMessage{
 
-        private String userTeam;
-        private String userNickname;
-        private List<String> userTestList;
-        private Map<String, Object> userTestMap;
+        // 이번이 어떤 이벤트인지
+        private String event;
+
+        // 입, 퇴장시 변경
+        private List<String> leftUserList;
+        private List<String> rightUserList;
+
+        // 관전자 수
+        private Integer roomWatchCnt;
+
+        // 페이즈 변경 시 현재 페이즈
+        private Integer roomPhase;
+        private Integer roomPhaseDetail;
+
+        // 카드 오픈시 카드 리스트
+        private List<String> leftOpenedCardList;
+        private List<String> rightOpenedCardList;
+
+        // ready, unready시 레디 유저 리스트
+        private List<String> readyUserList;
+
+        // ready, unready시 전부 레디인지 확인
+        private Boolean isAllReady;
+
+        // 투표 결과 발표 후 투표 결과 추가된 리스트 주기
+        private List<Integer> voteLeftResultsList;
+        private List<Integer> voteRightResultsList;
+
+        // 현재 발언자, 현재 발언팀
+        private String currentSpeakingUser;
+        private String currentSpeakingTeam;
 
         @JsonProperty
-        public String getUserTeam() {
-            return userTeam;
+        public String getEvent() {
+            return event;
         }
+        @JsonProperty
+        public List<String> getLeftUserList() {
+            return leftUserList;
+        }
+        @JsonProperty
+        public List<String> getRightUserList() {
+            return rightUserList;
+        }
+        @JsonProperty
+        public Integer getRoomWatchCnt() {
+            return roomWatchCnt;
+        }
+        @JsonProperty
+        public Integer getRoomPhase() {
+            return roomPhase;
+        }
+        @JsonProperty
+        public Integer getRoomPhaseDetail() {
+            return roomPhaseDetail;
+        }
+        @JsonProperty
+        public List<String> getLeftOpenedCardList() {
+            return leftOpenedCardList;
+        }
+        @JsonProperty
+        public List<String> getRightOpenedCardList() {
+            return rightOpenedCardList;
+        }
+        @JsonProperty
+        public List<String> getReadyUserList() {
+            return readyUserList;
+        }
+        @JsonProperty
+        public Boolean getAllReady() {
+            return isAllReady;
+        }
+        @JsonProperty
+        public List<Integer> getVoteLeftResultsList() {
+            return voteLeftResultsList;
+        }
+        @JsonProperty
+        public List<Integer> getVoteRightResultsList() {
+            return voteRightResultsList;
+        }
+        @JsonProperty
+        public String getCurrentSpeakingUser() {
+            return currentSpeakingUser;
+        }
+        @JsonProperty
+        public String getCurrentSpeakingTeam() {
+            return currentSpeakingTeam;
+        }
+    }
+
+    @Setter
+    @JsonSerialize
+    class EnterLeaveMessage {
+        private String event;
+
+        // 입, 퇴장시 변경되는 것
+        private List<String> leftUserList;
+        private List<String> rightUserList;
 
         @JsonProperty
-        public String getUserNickname() {
-            return userNickname;
+        public String getEvent() {
+            return event;
         }
+        @JsonProperty
+        public List<String> getLeftUserList() {
+            return leftUserList;
+        }
+        @JsonProperty
+        public List<String> getRightUserList() {
+            return rightUserList;
+        }
+
+    }
+
+    @Setter
+    @JsonSerialize
+    class ReadyUnreadyMessage {
+        private String event;
+
+        // ready, unready시 레디 유저 리스트
+        private List<String> readyUserList;
+
+        // ready, unready시 전부 레디인지 확인
+        private Boolean isAllReady;
 
         @JsonProperty
-        public List<String> getUserTestList() {
-            return userTestList;
+        public String getEvent() {
+            return event;
         }
+        @JsonProperty
+        public List<String> getReadyUserList() {
+            return readyUserList;
+        }
+        @JsonProperty
+        public Boolean getAllReady() {
+            return isAllReady;
+        }
+    }
+
+    @Setter
+    @JsonSerialize
+    class EventOnlyMessage {
+        private String event;
 
         @JsonProperty
-        public Map<String, Object> getUserTestMap() {
-            return userTestMap;
+        public String getEvent() {
+            return event;
         }
+    }
 
+    @Setter
+    @JsonSerialize
+    class SpeakPhaseMessage {
 
+        // 페이즈 변경 알려줌
+        private String event;
 
+        // 페이즈 변경 시 현재 페이즈
+        private Integer roomPhase;
+        private Integer roomPhaseDetail;
+
+        // 현재 발언자, 현재 발언팀
+        private String currentSpeakingUser;
+        private String currentSpeakingTeam;
+        @JsonProperty
+        public String getEvent() {
+            return event;
+        }
+        @JsonProperty
+        public Integer getRoomPhase() {
+            return roomPhase;
+        }
+        @JsonProperty
+        public Integer getRoomPhaseDetail() {
+            return roomPhaseDetail;
+        }
+        @JsonProperty
+        public String getCurrentSpeakingUser() {
+            return currentSpeakingUser;
+        }
+        @JsonProperty
+        public String getCurrentSpeakingTeam() {
+            return currentSpeakingTeam;
+        }
+    }
+
+    @Setter
+    @JsonSerialize
+    class VotePhaseMessage {
+        private String event;
+
+        // 페이즈 변경 시 현재 페이즈
+        private Integer roomPhase;
+        private Integer roomPhaseDetail;
+
+        @JsonProperty
+        public String getEvent() {
+            return event;
+        }
+        @JsonProperty
+        public Integer getRoomPhase() {
+            return roomPhase;
+        }
+        @JsonProperty
+        public Integer getRoomPhaseDetail() {
+            return roomPhaseDetail;
+        }
+    }
+
+    @Setter
+    @JsonSerialize
+    class VoteResultPhaseMessage {
+        private String event;
+
+        // 페이즈 변경 시 현재 페이즈
+        private Integer roomPhase;
+        private Integer roomPhaseDetail;
+        // 투표 결과 발표 후 투표 결과 추가된 리스트 주기
+        private List<Integer> voteLeftResultsList;
+        private List<Integer> voteRightResultsList;
+        @JsonProperty
+        public String getEvent() {
+            return event;
+        }
+        @JsonProperty
+        public Integer getRoomPhase() {
+            return roomPhase;
+        }
+        @JsonProperty
+        public Integer getRoomPhaseDetail() {
+            return roomPhaseDetail;
+        }
+        @JsonProperty
+        public List<Integer> getVoteLeftResultsList() {
+            return voteLeftResultsList;
+        }
+        @JsonProperty
+        public List<Integer> getVoteRightResultsList() {
+            return voteRightResultsList;
+        }
+    }
+
+    @Setter
+    @JsonSerialize
+    class CardOpenMessage {
+        private String event;
+        // 카드 오픈시 카드 리스트
+        private List<String> leftOpenedCardList;
+        private List<String> rightOpenedCardList;
+        @JsonProperty
+        public String getEvent() {
+            return event;
+        }
+        @JsonProperty
+        public List<String> getLeftOpenedCardList() {
+            return leftOpenedCardList;
+        }
+        @JsonProperty
+        public List<String> getRightOpenedCardList() {
+            return rightOpenedCardList;
+        }
     }
 
     private final ObjectMapper objectMapper;
 
+    // 이벤트
+    private final String ENTER_EVENT = "enter";
+    private final String LEAVE_EVENT = "leave";
+    private final String READY_EVENT = "ready";
+    private final String UNREADY_EVENT = "unready";
+    private final String START_DEBATE_EVENT = "startDebate";
+    private final String END_DEBATE_EVENT = "endDebate";
+    private final String START_SPEAK_EVENT = "startSpeakPhase";
+    private final String START_VOTE_EVENT = "startVotePhase";
+    private final String START_VOTE_RESULT_EVENT = "startVoteResultPhase";
+    private final String CARD_OPEN_EVENT = "cardOpen";
 
-    // 이벤트 태그
-    private final String DEBATE_START_TAG = "[DEBATESTART] ";
-    private final String DEBATE_END_TAG = "[DEBATEEND] ";
-    private final String ENTER_TAG = "[ENTER] ";
-    private final String LEAVE_TAG = "[LEAVE] ";
-    private final String READY_TAG = "[READY] ";
-    private final String UNREADY_TAG = "[UNREADY] ";
-    private final String PHASE_START_TAG = "[PHASESTART] ";
-    private final String PHASE_END_TAG = "[PHASEEND] ";
-    private final String PHASE_SKIP_TAG = "[PHASESKIP] ";
-    private final String VOTE_START_TAG = "[VOTESTART] ";
-    private final String VOTE_END_TAG = "[VOTEEND] ";
-    private final String IMG_CARD_SET_TAG = "[CARDSET] ";
 
-    // 파라미터 태그
-    private final String NICKNAME_TAG = "[NICKNAME] ";
-    private final String DEBATE_PHASE_TAG = "[DEBATEPHASE] ";
-    private final String VOTE_PHASE_TAG = "[VOTEPHASE] ";
-    private final String VOTE_RESULT_TAG = "[VOTERESULT] ";
-    private final String DEBATE_PHASE_DETAIL_TAG = "[TURN] ";
-    private final String TEAM_TAG = "[TEAM] ";
-    private final String IMG_CARD_INDEX_TAG = "[CARDINDEX] ";
-    private final String IMG_NAME_TAG = "[CARDNAME] ";
-    private final String IMG_URL_TAG = "[CARDURL] ";
-
-    public String enterMessage(String userTeam, String userNickname) {
-        return ENTER_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
+    public String enterMessage(List<String> leftUserList, List<String> rightUserList) {
+        EnterLeaveMessage enterLeaveMessage = new EnterLeaveMessage();
+        enterLeaveMessage.setEvent(ENTER_EVENT);
+        enterLeaveMessage.setLeftUserList(leftUserList);
+        enterLeaveMessage.setRightUserList(rightUserList);
+        try {
+            String json = objectMapper.writeValueAsString(enterLeaveMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String leaveMessage(String userTeam, String userNickname) {
-        return LEAVE_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
+    public String leaveMessage(List<String> leftUserList, List<String> rightUserList) {
+        EnterLeaveMessage enterLeaveMessage = new EnterLeaveMessage();
+        enterLeaveMessage.setEvent(LEAVE_EVENT);
+        enterLeaveMessage.setLeftUserList(leftUserList);
+        enterLeaveMessage.setRightUserList(rightUserList);
+        try {
+            String json = objectMapper.writeValueAsString(enterLeaveMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String readyMessage(String userTeam, String userNickname) {
-        return READY_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
+    public String readyMessage(Boolean isAllReady, List<String> readyUserList) {
+        ReadyUnreadyMessage readyUnreadyMessage = new ReadyUnreadyMessage();
+        readyUnreadyMessage.setEvent(READY_EVENT);
+        readyUnreadyMessage.setIsAllReady(isAllReady);
+        readyUnreadyMessage.setReadyUserList(readyUserList);
+        try {
+            String json = objectMapper.writeValueAsString(readyUnreadyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
-//    public String readyMessage(Integer userSide, String userNickname) {
-//        String team = getTeam(userSide);
-//        return READY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
-//    }
 
-//    public String readyMessage(Integer userSide, String userNickname) {
-//        MyMessage myMessage = new MyMessage();
-//        String team = getTeam(userSide);
-//        myMessage.setUserTeam(team);
-//        myMessage.setUserNickname(userNickname);
-//        List<String> testlist = new ArrayList<>();
-//        testlist.add("김영한");
-//        testlist.add("로버트다우니주니어");
-//        testlist.add("안침착맨");
-//
-//        Map<String, Object> testMap = new HashMap<>();
-//        testMap.put("테스트키String","테스트벨류");
-//        testMap.put("테스트키int", 3);
-//        myMessage.setUserTestList(testlist);
-//        myMessage.setUserTestMap(testMap);
-//        try {
-//            String json = objectMapper.writeValueAsString(myMessage);
-//            return json;
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-    public String unreadyMessage(String userTeam, String userNickname) {
-        return UNREADY_TAG + TEAM_TAG + NICKNAME_TAG + userTeam + " " + userNickname;
+    public String unreadyMessage(Boolean isAllReady, List<String> readyUserList) {
+        ReadyUnreadyMessage readyUnreadyMessage = new ReadyUnreadyMessage();
+        readyUnreadyMessage.setEvent(UNREADY_EVENT);
+        readyUnreadyMessage.setIsAllReady(isAllReady);
+        readyUnreadyMessage.setReadyUserList(readyUserList);
+        try {
+            String json = objectMapper.writeValueAsString(readyUnreadyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String debateStartMessage() {
-        return DEBATE_START_TAG + "start debate";
+        EventOnlyMessage eventOnlyMessage = new EventOnlyMessage();
+        eventOnlyMessage.setEvent(START_DEBATE_EVENT);
+        try {
+            String json = objectMapper.writeValueAsString(eventOnlyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String phaseStartAllInOneMessage(Integer phase, Integer phaseDetail, String team, String userNickname) {
-        return PHASE_START_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + phaseDetail + " " + team + " " + userNickname;
+    public String speakPhaseStartMessage(Integer phase, Integer phaseDetail, String team, String userNickname) {
+        SpeakPhaseMessage speakPhaseMessage = new SpeakPhaseMessage();
+        speakPhaseMessage.setEvent(START_SPEAK_EVENT);
+        speakPhaseMessage.setRoomPhase(phase);
+        speakPhaseMessage.setRoomPhaseDetail(phaseDetail);
+        speakPhaseMessage.setCurrentSpeakingTeam(team);
+        speakPhaseMessage.setCurrentSpeakingUser(userNickname);
+        try {
+            String json = objectMapper.writeValueAsString(speakPhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String phaseEndAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_END_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
+    public String votePhaseStartMessage(Integer phase, Integer phaseDetail) {
+        VotePhaseMessage votePhaseMessage = new VotePhaseMessage();
+        votePhaseMessage.setEvent(START_VOTE_EVENT);
+        votePhaseMessage.setRoomPhase(phase);
+        votePhaseMessage.setRoomPhaseDetail(phaseDetail);
+        try {
+            String json = objectMapper.writeValueAsString(votePhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String phaseSkipAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_SKIP_TAG + DEBATE_PHASE_TAG + DEBATE_PHASE_DETAIL_TAG + TEAM_TAG + NICKNAME_TAG  + phase + " " + turn + " " + team + " " + userNickname;
+    public String voteEndMessage(Integer phase, Integer phaseDetail ,List<Integer> voteLeftResultList, List<Integer> voteRightResultList) {
+        VoteResultPhaseMessage voteResultPhaseMessage = new VoteResultPhaseMessage();
+        voteResultPhaseMessage.setEvent(START_VOTE_RESULT_EVENT);
+        voteResultPhaseMessage.setRoomPhase(phase);
+        voteResultPhaseMessage.setRoomPhaseDetail(phaseDetail);
+        voteResultPhaseMessage.setVoteLeftResultsList(voteLeftResultList);
+        voteResultPhaseMessage.setVoteRightResultsList(voteRightResultList);
+        try {
+            String json = objectMapper.writeValueAsString(voteResultPhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String voteStartMessage(Integer votePhase) {
-        return VOTE_START_TAG + VOTE_PHASE_TAG + votePhase;
-    }
-
-    public String voteEndMessage(Integer votePhase, Integer voteLeftResult, Integer voteRightResult) {
-        return VOTE_END_TAG + VOTE_PHASE_TAG +VOTE_RESULT_TAG + votePhase + " " + voteLeftResult + " " + voteRightResult;
-    }
     public String debateEndMessage() {
-        return DEBATE_END_TAG + "debate ended please leave room";
+        EventOnlyMessage eventOnlyMessage = new EventOnlyMessage();
+        eventOnlyMessage.setEvent(END_DEBATE_EVENT);
+        try {
+            String json = objectMapper.writeValueAsString(eventOnlyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String imgCardSetMessage(String team, Integer cardindex, String imgurl){ return IMG_CARD_SET_TAG + TEAM_TAG + IMG_CARD_INDEX_TAG+ IMG_URL_TAG  + team + " " + cardindex + " " + imgurl; }
-
+    public String imgCardOpenMessage(List<String> leftOpenedCardList,List<String> rightOpenedCardList){
+        CardOpenMessage cardOpenMessage = new CardOpenMessage();
+        cardOpenMessage.setEvent(CARD_OPEN_EVENT);
+        cardOpenMessage.setLeftOpenedCardList(leftOpenedCardList);
+        cardOpenMessage.setRightOpenedCardList(rightOpenedCardList);
+        try {
+            String json = objectMapper.writeValueAsString(cardOpenMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

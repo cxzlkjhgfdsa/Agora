@@ -34,8 +34,9 @@ public class RoomController {
                 rcDto.getRoomOpinionLeft(),rcDto.getRoomOpinionRight(),
                 rcDto.getRoomHashtags(),rcDto.getRoomThumbnailUrl(),rcDto.getRoomCategory());
 
-        Long roomId = roomService.createRoom(createdRoom);
 
+        Long roomId = roomService.createRoom(createdRoom);
+        openViduService.createSession(roomId);
 
         ResponseRoomCreateDto responseRoomCreateDto = new ResponseRoomCreateDto();
         responseRoomCreateDto.setRoomId(roomId);
