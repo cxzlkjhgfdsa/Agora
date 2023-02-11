@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.*;
 
@@ -33,6 +34,8 @@ public class RoomService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private final RedisKeyUtil redisKeyUtil;
+
+
 
     /**
      * 방 생성
@@ -691,5 +694,6 @@ public class RoomService {
         }
 
     }
+
 }
 

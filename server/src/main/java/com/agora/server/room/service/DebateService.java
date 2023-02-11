@@ -10,7 +10,6 @@ import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
 import com.agora.server.room.controller.dto.debate.RequestReadyStateChangeDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteDto;
-import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisChannelUtil;
@@ -20,12 +19,16 @@ import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +53,7 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
+    private final Map<String, List<SseEmitter>> roomEmitterMap;
 
     /**
      * 토론자 입장 Redis Pub/Sub
@@ -371,6 +375,7 @@ public class DebateService {
             public void run() {
                 nextPhase(roomId);
                 // 여기서 토론 결과 페이즈로 넘기기
+
             }
         }, 60, TimeUnit.SECONDS);
         // 테스트용 10초 실제 60초
