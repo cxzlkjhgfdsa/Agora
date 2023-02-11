@@ -36,11 +36,9 @@ public class RoomController {
 
         Long roomId = roomService.createRoom(createdRoom);
 
-        String token = openViduService.createSession(roomId);
 
         ResponseRoomCreateDto responseRoomCreateDto = new ResponseRoomCreateDto();
         responseRoomCreateDto.setRoomId(roomId);
-        responseRoomCreateDto.setToken(token);
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(responseRoomCreateDto);
@@ -62,7 +60,7 @@ public class RoomController {
     @PostMapping("room/enter")
     public ResponseEntity<ResponseDTO> roomEnterAsDebater(@RequestBody RequestRoomEnterAsDebaterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        String openviduToken = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserRole());
+        String openviduToken = openViduService.enterSession(requestRoomEnterDto.getRoomId());
 
         ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
 
@@ -93,7 +91,7 @@ public class RoomController {
     @GetMapping("room/enter/{roomId}")
     public ResponseEntity<ResponseDTO> roomEnterAsWatcher(@PathVariable Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        String openviduToken = openViduService.enterSession(roomId, "sub");
+        String openviduToken = openViduService.enterSession(roomId);
 
         ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
 
