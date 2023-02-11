@@ -130,6 +130,32 @@ public class InitRooms {
             em.persist(dummyUser5);
             em.persist(dummyUser6);
 
+                User dummyUser7 = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "1234"
+                        , "left1creater", "20", "01023232324",
+                        "left1creater", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser8 = User.createUser(Encrypt.createEncrypt("1234"), SocialType.KAKAO, "12345"
+                        , "left2", "20", "01023232325",
+                        "left2", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser9 = User.createUser(Encrypt.createEncrypt("1235"), SocialType.NAVER, "12356"
+                        , "left3", "20", "01023232326",
+                        "left3", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser10 = User.createUser(Encrypt.createEncrypt("1236"), SocialType.GOOGLE, "12367"
+                        , "right1", "20", "01023232327",
+                        "right1", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser11 = User.createUser(Encrypt.createEncrypt("1237"), SocialType.KAKAO, "12378"
+                        , "right2", "20", "01023232328",
+                        "right2", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser12 = User.createUser(Encrypt.createEncrypt("1238"), SocialType.NAVER, "12389"
+                        , "right3", "20", "01023232329",
+                        "right3", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+
+                em.persist(dummyUser7);
+                em.persist(dummyUser8);
+                em.persist(dummyUser9);
+                em.persist(dummyUser10);
+                em.persist(dummyUser11);
+                em.persist(dummyUser12);
+
 
             Room dummyRoom = Room.createDummyRoom("배트맨 최고 감독은?", "영화좋아하는사람", DebateType.FORMAL, "크리스토퍼 놀란", "맷 리브스", "#영화,#크리스토퍼놀란,#맷리브스", "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FRkqyn%2FbtrXIohMRVP%2FrXCZVNDLEEKPwNfjBCmjvK%2Fimg.png", "영화/드라마", 203);
             Room dummyRoom2 = Room.createDummyRoom("2022년의 영화는?", "이동진", DebateType.FORMAL, "탑건:매버릭", "에브리띵 에브리웨어 올앳원스", "#영화,#2022,#탑건:매버릭,#에에올", "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F2r49z%2FbtrXInJW4Nx%2FMkuXqUZJNtfusYyWE6uUN0%2Fimg.png", "영화/드라마", 192);
