@@ -5,6 +5,7 @@ spring:
   redis:
     host: ${redishost}
     port: 6379
+    password: ${redispass}
   gcp:
     config:
       file: gcp-account-file.json
@@ -55,15 +56,14 @@ spring:
             redirect-uri: https://i8a705.p.ssafy.io/api/oauth2/callback/naver
 
           kakao:
-            client-id: 9b71df2737d70ddadb6b15f8710ccda4
+            client-id: 43afb3401ff629234879d5984661dec0
             redirect-uri: https://i8a705.p.ssafy.io/api/oauth2/callback/kakao
             client-authentication-method: POST
-            client-secret: 0my6LOAwzhYnTxQosa0zjC76fZSFvUtA
+            client-secret: dmV9BsEaNVrnZswvFwZG0N2pHBASDRPG
             authorization-grant-type: authorization_code
             scope:
               - profile_nickname
               - profile_image
-              - account_email
             client_name: kakao
 
         provider:
@@ -84,3 +84,6 @@ server:
 #  endpoint:
 #    health:
 #      show-details: always
+openvidu:
+  hostname: ${meeting.hostname}
+  secet: ${meeting.secret}
