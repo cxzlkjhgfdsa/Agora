@@ -18,7 +18,7 @@ services:
       USE_PROFILE: q
       HOST_NAME: q
       SCHEMA: q
-      USERNAME: q
+      USERNAME: qfd
       PASSWORD: q
       JWT_SECRET: q
       REDISHOST: q
