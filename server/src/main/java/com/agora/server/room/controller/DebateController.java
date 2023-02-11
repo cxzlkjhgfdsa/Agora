@@ -3,10 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterAsDebaterDto;
-import com.agora.server.room.controller.dto.debate.RequestCardOpenDto;
-import com.agora.server.room.controller.dto.debate.RequestPhaseStartDto;
-import com.agora.server.room.controller.dto.debate.RequestSkipDto;
-import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
+import com.agora.server.room.controller.dto.debate.*;
 import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +21,11 @@ public class DebateController {
 
     /**
      * 대기방에서 Ready 누르는 API
-     * @param requestRoomEnterDto
+     * @param requestReadyStateChangeDto
      */
     @PutMapping("debate/ready")
-    public ResponseEntity<ResponseDTO> changeReadyState(@RequestBody RequestRoomEnterAsDebaterDto requestRoomEnterDto){
-        debateService.ready(requestRoomEnterDto);
+    public ResponseEntity<ResponseDTO> changeReadyState(@RequestBody RequestReadyStateChangeDto requestReadyStateChangeDto){
+        debateService.ready(requestReadyStateChangeDto);
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
         responseDTO.setMessage("레디 성공");
@@ -39,11 +36,11 @@ public class DebateController {
 
     /**
      * 대기방에서 Ready 취소 누르는 API
-     * @param requestRoomEnterDto
+     * @param requestReadyStateChangeDto
      */
     @PutMapping("debate/unready")
-    public ResponseEntity<ResponseDTO> changeUnreadyState(@RequestBody RequestRoomEnterAsDebaterDto requestRoomEnterDto){
-        debateService.unready(requestRoomEnterDto);
+    public ResponseEntity<ResponseDTO> changeUnreadyState(@RequestBody RequestReadyStateChangeDto requestReadyStateChangeDto){
+        debateService.unready(requestReadyStateChangeDto);
 
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);

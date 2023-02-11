@@ -7,6 +7,7 @@ import com.agora.server.file.service.FileService;
 import com.agora.server.room.controller.dto.RequestDebateStartDto;
 import com.agora.server.room.controller.dto.RequestRoomEnterAsDebaterDto;
 import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
+import com.agora.server.room.controller.dto.debate.RequestReadyStateChangeDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
 import com.agora.server.room.exception.NotReadyException;
@@ -120,11 +121,11 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 READY로 바꿉니다
      */
-    public void ready(RequestRoomEnterAsDebaterDto requestRoomEnterDto) {
+    public void ready(RequestReadyStateChangeDto requestReadyStateChangeDto) {
 
-        Long roomId = requestRoomEnterDto.getRoomId();
-        String userNickname = requestRoomEnterDto.getUserNickname();
-        String userTeam = requestRoomEnterDto.getUserTeam();
+        Long roomId = requestReadyStateChangeDto.getRoomId();
+        String userNickname = requestReadyStateChangeDto.getUserNickname();
+        String userTeam = requestReadyStateChangeDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
 
@@ -152,11 +153,11 @@ public class DebateService {
      * 모든 클라이언트는 해당 메시지를 수신받으면
      * 해당 토론자의 토론 준비 상태를 UNREADY로 바꿉니다
      */
-    public void unready(RequestRoomEnterAsDebaterDto requestRoomEnterDto) {
+    public void unready(RequestReadyStateChangeDto requestReadyStateChangeDto) {
 
-        Long roomId = requestRoomEnterDto.getRoomId();
-        String userNickname = requestRoomEnterDto.getUserNickname();
-        String userTeam = requestRoomEnterDto.getUserTeam();
+        Long roomId = requestReadyStateChangeDto.getRoomId();
+        String userNickname = requestReadyStateChangeDto.getUserNickname();
+        String userTeam = requestReadyStateChangeDto.getUserTeam();
 
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
 
