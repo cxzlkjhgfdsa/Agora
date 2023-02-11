@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
+    private final Map<String, List<SseEmitter>> roomEmitterMap;
 
 
 
@@ -390,6 +392,7 @@ public class DebateService {
                     // 방에 입장할 때 isDebateEnded를 확인하고 true인 경우 DebateEndedException을 터뜨려 줌
                     String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
                     redisTemplate.opsForValue().set(debateEndedKey, "TRUE");
+
                 }
             }
         }, 30, TimeUnit.SECONDS);
