@@ -385,8 +385,17 @@ public class DebateService {
         String voteRightKey = redisKeyUtil.voteRightKey(roomId, currentPhase);
         Integer voteResultLeft = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
         Integer voteResultRight = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+
+        Integer voteResultLeftPercent = ((Long) Math.round((double)((voteResultLeft*10000)/(voteResultLeft+voteResultRight))/100)).intValue();
+        Integer voteResultRightPercent = 100-voteResultLeftPercent;
+
+        String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, currentPhase);
+        String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, currentPhase);
+        redisTemplate.opsForValue().set(voteLeftResulPercentKey,voteResultLeftPercent);
+        redisTemplate.opsForValue().set(voteRightResultPercentKey,voteResultRightPercent);
+
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
-        String voteEndMessage = redisMessageUtil.voteEndMessage(currentPhase, voteResultLeft, voteResultRight);
+        String voteEndMessage = redisMessageUtil.voteEndMessage(currentPhase, voteResultLeftPercent, voteResultRightPercent);
         redisPublisher.publishMessage(roomChannelKey, voteEndMessage);
 
         if (currentPhase == 3) {
@@ -459,6 +468,12 @@ public class DebateService {
                     keyList.add(redisKeyUtil.voteRightKey(roomId, 1));
                     keyList.add(redisKeyUtil.voteRightKey(roomId, 2));
                     keyList.add(redisKeyUtil.voteRightKey(roomId, 3));
+                    keyList.add(redisKeyUtil.voteLeftResulPercentKey(roomId,1));
+                    keyList.add(redisKeyUtil.voteLeftResulPercentKey(roomId,2));
+                    keyList.add(redisKeyUtil.voteLeftResulPercentKey(roomId,3));
+                    keyList.add(redisKeyUtil.voteRightResultPercentKey(roomId,1));
+                    keyList.add(redisKeyUtil.voteRightResultPercentKey(roomId,2));
+                    keyList.add(redisKeyUtil.voteRightResultPercentKey(roomId,3));
                     keyList.add(redisKeyUtil.isDebateEndedKey(roomId));
                     keyList.add(redisKeyUtil.imgCardOpenedListKey(roomId, "LEFT"));
                     keyList.add(redisKeyUtil.imgCardOpenedListKey(roomId, "RIGHT"));

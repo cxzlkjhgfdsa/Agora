@@ -579,16 +579,29 @@ public class RoomService {
 
             String phaseKey = redisKeyUtil.phaseKey(roomId);
             Integer phase = (Integer) redisTemplate.opsForValue().get(phaseKey);
+            String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
+            Integer phaseDetail = (Integer) redisTemplate.opsForValue().get(phaseDetailKey);
 
             List<Integer> voteLeftResultList = new ArrayList<>();
             List<Integer> voteRightResultList = new ArrayList<>();
-            if (phase != 0) {
-                for (int votePhase = 1; votePhase < phase; votePhase++) {
-                    String voteLeftKey = redisKeyUtil.voteLeftKey(roomId, votePhase);
-                    String voteRightKey = redisKeyUtil.voteRightKey(roomId, votePhase);
+            if (phase != 0 && phaseDetail<4) {
+                for (int votePhase = 1; votePhase < phase ; votePhase++) {
+                    String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
+                    String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
 
-                    Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
-                    Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+                    Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
+                    Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
+
+                    voteLeftResultList.add(voteLeftResult);
+                    voteRightResultList.add(voteRightResult);
+                }
+            } else if(phase != 0 && phaseDetail==4){
+                for (int votePhase = 1; votePhase <= phase ; votePhase++) {
+                    String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
+                    String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
+
+                    Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
+                    Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
 
                     voteLeftResultList.add(voteLeftResult);
                     voteRightResultList.add(voteRightResult);
@@ -601,11 +614,9 @@ public class RoomService {
 
             String currentSpeakingUserKey = redisKeyUtil.currentSpeakingUserKey(roomId);
             String currentSpeakingTeamKey = redisKeyUtil.currentSpeakingTeamKey(roomId);
-            String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
 
             String currentUserNickName = (String) redisTemplate.opsForValue().get(currentSpeakingUserKey);
             String currentUserTeam = (String) redisTemplate.opsForValue().get(currentSpeakingTeamKey);
-            Integer phaseDetail = (Integer) redisTemplate.opsForValue().get(phaseDetailKey);
 
             responseRoomEnterDto.setCurrentSpeakingUser(currentUserNickName);
             responseRoomEnterDto.setCurrentSpeakingTeam(currentUserTeam);
