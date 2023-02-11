@@ -147,43 +147,43 @@ public class RoomController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-    /**
-     * 나가는 시점에 어떤 정보를 받을 수 있는지 확인해서 변경
-     * @param requestRoomLeaveDto
-     * @return
-     * @throws OpenViduJavaClientException
-     * @throws OpenViduHttpException
-     */
-    @PostMapping("room/leave")
-    public ResponseEntity<ResponseDTO> roomLeaveAsDebater (@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
-
-        if(requestRoomLeaveDto.getType().equals("debater")){
-            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserTeam());
-        } else if(requestRoomLeaveDto.getType().equals("watcher")){
-            roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
-        }
-
-        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
-        // type의 토론자 -> debater와 관전자 -> watcher로 구분
-        switch (requestRoomLeaveDto.getType()){
-            case "debater" :
-                debateService.debaterLeave(requestRoomLeaveDto);
-                break;
-            case "watcher" :
-                break;
-        }
-
-        if(requestRoomLeaveDto.getIsUserCreater()){
-            debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
-        }
-
-        ResponseDTO responseDTO = new ResponseDTO();
-//        responseDTO.setBody(responseRoomEnterDto);
-        responseDTO.setMessage("정상적으로 퇴장하였습니다");
-        responseDTO.setStatusCode(200);
-        responseDTO.setState(true);
-        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-    }
+//    /**
+//     * 나가는 시점에 어떤 정보를 받을 수 있는지 확인해서 변경
+//     * @param requestRoomLeaveDto
+//     * @return
+//     * @throws OpenViduJavaClientException
+//     * @throws OpenViduHttpException
+//     */
+//    @PostMapping("room/leave")
+//    public ResponseEntity<ResponseDTO> roomLeaveAsDebater (@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
+//
+//        if(requestRoomLeaveDto.getType().equals("debater")){
+//            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserTeam());
+//        } else if(requestRoomLeaveDto.getType().equals("watcher")){
+//            roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
+//        }
+//
+//        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
+//        // type의 토론자 -> debater와 관전자 -> watcher로 구분
+//        switch (requestRoomLeaveDto.getType()){
+//            case "debater" :
+//                debateService.debaterLeave(requestRoomLeaveDto);
+//                break;
+//            case "watcher" :
+//                break;
+//        }
+//
+//        if(requestRoomLeaveDto.getIsUserCreater()){
+//            debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
+//        }
+//
+//        ResponseDTO responseDTO = new ResponseDTO();
+////        responseDTO.setBody(responseRoomEnterDto);
+//        responseDTO.setMessage("정상적으로 퇴장하였습니다");
+//        responseDTO.setStatusCode(200);
+//        responseDTO.setState(true);
+//        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+//    }
 
 
 
