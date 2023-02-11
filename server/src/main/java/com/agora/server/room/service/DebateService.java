@@ -9,6 +9,7 @@ import com.agora.server.room.controller.dto.RequestRoomEnterAsDebaterDto;
 import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
 import com.agora.server.room.controller.dto.debate.RequestReadyStateChangeDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
+import com.agora.server.room.controller.dto.debate.RequestVoteDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteStartDto;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.room.repository.RoomRepository;
@@ -634,5 +635,18 @@ public class DebateService {
         List<Object> oOpenedCardList = redisTemplate.opsForList().range(openedCardListKey, 0, -1);
         // 원래는 얘를 publish 해줘야 하는데 어차피 JSON으로 바꿀꺼라서 일단 킵
         redisPublisher.publishMessage(redisChannelUtil.roomChannelKey(roomId), (String) oOpenedCardList.get(0));
+    }
+
+    public void vote(RequestVoteDto requestVoteDto) {
+        String phaseKey = redisKeyUtil.phaseKey(requestVoteDto.getRoomId());
+        Integer phase = (Integer) redisTemplate.opsForValue().get(phaseKey);
+
+        if(requestVoteDto.getVoteTeam().equals("LEFT")){
+            String voteLeftKey = redisKeyUtil.voteLeftKey(requestVoteDto.getRoomId(), phase);
+            redisTemplate.opsForValue().increment(voteLeftKey);
+        }else if(requestVoteDto.getVoteTeam().equals("RIGHT")){
+            String voteRightKey = redisKeyUtil.voteRightKey(requestVoteDto.getRoomId(), phase);
+            redisTemplate.opsForValue().increment(voteRightKey);
+        }
     }
 }

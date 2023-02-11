@@ -3,6 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.openvidu.service.OpenViduService;
 import com.agora.server.room.controller.dto.*;
+import com.agora.server.room.controller.dto.debate.RequestVoteDto;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
@@ -146,6 +147,7 @@ public class RoomController {
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
+
 
 //    /**
 //     * 나가는 시점에 어떤 정보를 받을 수 있는지 확인해서 변경

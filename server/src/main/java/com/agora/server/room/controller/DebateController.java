@@ -114,4 +114,21 @@ public class DebateController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * 투표 기능
+     */
+    @PostMapping("debate/vote")
+    public ResponseEntity<ResponseDTO> vote (@RequestBody RequestVoteDto requestVoteDto) {
+
+        debateService.vote(requestVoteDto);
+
+        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setBody(responseRoomEnterDto);
+        responseDTO.setMessage("정상적으로 투표하였습니다");
+        responseDTO.setStatusCode(200);
+        responseDTO.setState(true);
+        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
+
 }
