@@ -62,7 +62,6 @@ public class SecurityConfig {
                 .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
-                // 테스트 후 redirect url 변경 필요
                 .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
@@ -78,8 +77,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://i8a705.p.ssafy.io/"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("https://i8a705.p.ssafy.io/","*"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

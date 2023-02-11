@@ -44,7 +44,7 @@ public class ResponseRoomEnterDto {
     // Integer로 하고 roomPhaseDetail을 하나 더 만들어서
     // 1-1에서 앞의 1은 roomPhase, 뒤의 1은 roomPhaseDetail로 일단 설정
     private Integer roomPhase; // check
-    private Integer roomPhaseDeatil; // check
+    private Integer roomPhaseDetail; // check
 
     // 8. 오픈된 카드 URL 리스트(왼쪽, 오른쪽)
     private List<String> leftOpenedCardList; // check

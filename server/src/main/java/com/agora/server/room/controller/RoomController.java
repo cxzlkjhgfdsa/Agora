@@ -3,6 +3,7 @@ package com.agora.server.room.controller;
 import com.agora.server.common.dto.ResponseDTO;
 import com.agora.server.openvidu.service.OpenViduService;
 import com.agora.server.room.controller.dto.*;
+import com.agora.server.room.controller.dto.debate.RequestVoteDto;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.service.DebateService;
 import com.agora.server.room.service.RoomService;
@@ -67,8 +68,12 @@ public class RoomController {
 
         // 기본적으로 방에 들어갈 때 필요한 정보들 넣어주기(토론자, 관전자 상관없이 필요한 정보)
         // 여기서 responseRoomEnterDto에 넣을 것 다 넣어주기
+        // 방에 일단 입장했을때의 정보 그대로 가져오고
         roomService.enterRoom(responseRoomEnterDto, requestRoomEnterDto.getRoomId());
+        // 그 다음에 redis에 있는 리스트에 넣어주고
         roomService.enterRoomAsDebater(requestRoomEnterDto.getUserNickname(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserTeam());
+        // 토론자 입장을 알려줌 그래야지 자신이 없는 리스트로 그리고 시그널을 받은 상태로 추가하기
+        // 일단은 이렇게 가고 얘기해봐서 아닌거 같으면 순서 바꾸면 됨
         debateService.debaterEnter(requestRoomEnterDto);
 
         responseRoomEnterDto.setOpenviduToken(openviduToken);
@@ -142,6 +147,45 @@ public class RoomController {
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
+
+
+//    /**
+//     * 나가는 시점에 어떤 정보를 받을 수 있는지 확인해서 변경
+//     * @param requestRoomLeaveDto
+//     * @return
+//     * @throws OpenViduJavaClientException
+//     * @throws OpenViduHttpException
+//     */
+//    @PostMapping("room/leave")
+//    public ResponseEntity<ResponseDTO> roomLeaveAsDebater (@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
+//
+//        if(requestRoomLeaveDto.getType().equals("debater")){
+//            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserTeam());
+//        } else if(requestRoomLeaveDto.getType().equals("watcher")){
+//            roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
+//        }
+//
+//        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
+//        // type의 토론자 -> debater와 관전자 -> watcher로 구분
+//        switch (requestRoomLeaveDto.getType()){
+//            case "debater" :
+//                debateService.debaterLeave(requestRoomLeaveDto);
+//                break;
+//            case "watcher" :
+//                break;
+//        }
+//
+//        if(requestRoomLeaveDto.getIsUserCreater()){
+//            debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
+//        }
+//
+//        ResponseDTO responseDTO = new ResponseDTO();
+////        responseDTO.setBody(responseRoomEnterDto);
+//        responseDTO.setMessage("정상적으로 퇴장하였습니다");
+//        responseDTO.setStatusCode(200);
+//        responseDTO.setState(true);
+//        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+//    }
 
 
 

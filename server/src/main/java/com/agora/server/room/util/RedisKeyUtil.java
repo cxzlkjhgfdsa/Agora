@@ -53,6 +53,15 @@ public class RedisKeyUtil {
     public String voteRightKey(Long roomId, Integer votePhase) {
         return "room:" + roomId + ":votephase:" + votePhase + ":right";
     }
+
+    public String voteLeftResulPercentKey(Long roomId, Integer votePhase) {
+        return "room:" + roomId + ":votephase:" + votePhase + ":left:resultPercent";
+    }
+
+    public String voteRightResultPercentKey(Long roomId, Integer votePhase) {
+        return "room:" + roomId + ":votephase:" + votePhase + ":right:resultPercent";
+    }
+
     public String isDebateEndedKey(Long roomId) {
         return "room:"+roomId+":isDebateEnded";
     }
