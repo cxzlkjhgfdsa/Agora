@@ -15,6 +15,7 @@ import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisChannelUtil;
 import com.agora.server.room.util.RedisKeyUtil;
 import com.agora.server.room.util.RedisMessageUtil;
+import com.agora.server.sse.service.PublishService;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +38,6 @@ public class DebateService {
 
     private final RedisPublisher redisPublisher;
 
-    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final FileService fileService;
 
@@ -53,8 +53,7 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
-    private final Map<String, List<SseEmitter>> roomEmitterMap;
-
+    private final PublishService publishService;
     /**
      * 토론자 입장 Redis Pub/Sub
      * <p>
@@ -593,6 +592,7 @@ public class DebateService {
                         redisTemplate.delete(key);
                     }
                     roomRepository.delete(roomRepository.findById(roomId).get());
+                    publishService.unsubscribe(roomId.toString());
                 }
             }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
             // 테스트 10초 실제 서비스 60초
@@ -665,6 +665,7 @@ public class DebateService {
                     redisTemplate.delete(key);
                 }
                 roomRepository.delete(roomRepository.findById(roomId).get());
+                publishService.unsubscribe(roomId.toString());
             }
         }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
         // 테스트 10초 실제 서비스 60초
