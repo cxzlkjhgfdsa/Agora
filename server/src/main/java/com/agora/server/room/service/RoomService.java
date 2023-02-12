@@ -5,7 +5,9 @@ import com.agora.server.room.domain.Room;
 import com.agora.server.room.exception.DebateEndedException;
 import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
+import com.agora.server.room.util.RedisChannelUtil;
 import com.agora.server.room.util.RedisKeyUtil;
+import com.agora.server.room.util.RedisMessageUtil;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -29,12 +32,15 @@ public class RoomService {
 
     private final RoomQueryRepository roomQueryRepository;
 
-    private final UserRepository userRepository;
+    private final RedisPublisher redisPublisher;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
     private final RedisKeyUtil redisKeyUtil;
 
+    private final RedisChannelUtil redisChannelUtil;
+
+    private final RedisMessageUtil redisMessageUtil;
 
     /**
      * 방 생성
@@ -132,37 +138,9 @@ public class RoomService {
         return false;
     }
 
-//    public boolean enterRoomAsWatcher(Long roomId) {
-//
-//        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
-//        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
-//        if (isEnded.equals("TRUE")) {
-//            throw new DebateEndedException("토론이 끝났습니다");
-//        }
-//
-//        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
-//
-//        String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-//
-//        stringObjectValueOperations.increment(watchCntKey);
-//
-//        return false;
-//    }
 
 
-    /**
-     * 토론자 토론방 퇴장
-     * 토론자가 토론방에 퇴장하면서
-     * Redis의 room:roomId:leftuserlist key의 list에서
-     * 토론자의 닉네임이 삭제 됩니다
-     * <p>
-     * Redis의 room:roomId:userNickname:isReady key도 삭제합니다
-     *
-     * @param userNickname
-     * @param roomId
-     * @param userTeam
-     * @return
-     */
+
     public boolean leaveRoomAsDebater(String userNickname, Long roomId) {
 
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
@@ -454,17 +432,23 @@ public class RoomService {
      * 10초마다 Redis의 실시간 시청자 수 정보를 가져와서
      * DB의 실시간 시청자 수 정보를 갱신합니다
      */
-//    @Scheduled(cron = "0/10 * * * * *")
-//    @Transactional
-//    public void updateViewCount() {
-//        List<Room> all = roomRepository.findAll();
-//        for (Room room : all) {
-//            Long roomId = room.getRoom_id();
-//            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-//            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
-//            room.roomWatchCntUpdate(watchCnt);
-//        }
-//    }
+    @Scheduled(cron = "0/20 * * * * *")
+    @Transactional
+    public void updateViewCount() {
+        List<Room> all = roomRepository.findAll();
+        for (Room room : all) {
+            Long roomId = room.getRoom_id();
+            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
+
+            room.roomWatchCntUpdate(watchCnt);
+
+            String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
+            String roomWatchCntUpdate = redisMessageUtil.roomWatchCntUpdate(room.getRoom_watch_cnt());
+            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
+        }
+    }
+
 
     /**
      * DB정보와 Redis정보를 합치는 편의 메서드
