@@ -2,12 +2,12 @@ import { useEffect, useState, useRef, Suspense, lazy, useCallback } from "react"
 
 import styled from "styled-components"
 
-import Header from "../../Header";
-import Spinner from "../../../components/common/Spinner"
-import LargeDebateContainer from "components/main/debate/LargeDebateContainer";
-import SmallDebateContainer from "components/main/debate/SmallDebateContainer";
-import DebateListModal from "components/main/debate/modal/showall/DebateListModal";
-import ShowAllModalContainer from "./ShowAllModalContainer";
+import LargeDebateContainer from "components/main/debate/DebateContainerLarge";
+import SmallDebateContainer from "components/main/debate/DebateContainerSmall";
+import ModalContainerShowAll from "../../../components/main/debate/ModalContainerShowAll";
+import ModalContainerJoin from "components/main/debate/ModalContainerJoin";
+import { joinModalState } from "stores/joinModalStates";
+import { useRecoilValue } from "recoil";
 // const SmallDebateContainer = lazy(() => import("../../../components/main/debate/SmallDebateContainer"));
 // const LargeDebateContainer = lazy(() => import("../../../components/main/debate/LargeDebateContainer"));
 
@@ -15,6 +15,7 @@ function DebateList() {
 
   const [isDebatingModalOpen, setIsDebatingModalOpen] = useState(false);
   const [isWaitingModalOpen, setIsWaitingModalOpen] = useState(false);
+  const getJoinModalState = useRecoilValue(joinModalState);
 
   const renderingCounts = useRef(null);
   useEffect(() => {
@@ -24,14 +25,14 @@ function DebateList() {
   const openDebatingModal = useCallback(() => {
     console.log("open debate modal");
     renderingCounts.current++;
-    console.log("render >> ", renderingCounts.current);
+    console.log("render# >> ", renderingCounts.current);
     setIsDebatingModalOpen(true);
   }, [])
 
   const openWaitingModal = useCallback(() => {
     console.log("open waiting modal");
     renderingCounts.current++;
-    console.log("render >> ", renderingCounts.current);
+    console.log("render# >> ", renderingCounts.current);
     setIsWaitingModalOpen(true);
   }, [])
 
@@ -42,21 +43,18 @@ function DebateList() {
   }, [])
 
   return (
-      // <Header></Header>
       <Wrapper>
         <LargeDebateContainer url="/api/v1/search/main/hot" position="top" />
         <SmallDebateContainer url="/api/v1/search/main/modal" position="mid" openModalEvent={openDebatingModal}/>
         <SmallDebateContainer url="/api/v1/search/main/modal" position="bottom" openModalEvent={openWaitingModal}/>
-        {/* { isDebatingModalOpen || isWaitingModalOpen
-          ? <DebateListModal 
-          closeModalEvent={closeModalEvent}
-          debateState={isDebatingModalOpen ? "debating" : "waiting"} />
-          : null} */}
-        <ShowAllModalContainer 
+
+        <ModalContainerShowAll 
           closeModalEvent={closeModalEvent} 
           isDebatingModalOpen={isDebatingModalOpen}
           isWaitingModalOpen={isWaitingModalOpen} 
           renderingCounts={renderingCounts.current} />
+
+        <ModalContainerJoin />
       </Wrapper>
   )
 }

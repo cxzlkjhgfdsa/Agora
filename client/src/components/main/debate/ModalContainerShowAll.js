@@ -1,8 +1,10 @@
 import styled, { css, keyframes } from "styled-components"
 import DebateListModal from "components/main/debate/modal/showall/DebateListModal";
-import { useState } from "react";
+import { useRef } from "react";
 
-function ShowAllModalContainer({ closeModalEvent, isDebatingModalOpen, isWaitingModalOpen, renderingCounts }) {
+function ModalContainerShowAll({ closeModalEvent, isDebatingModalOpen, isWaitingModalOpen, renderingCounts }) {
+  
+  const outside = useRef(null);
 
   if (renderingCounts === 0 || !renderingCounts) return null;
 
@@ -10,19 +12,25 @@ function ShowAllModalContainer({ closeModalEvent, isDebatingModalOpen, isWaiting
     <ModalContainer 
       isModalOpen={isDebatingModalOpen || isWaitingModalOpen}
     >
-      <Background>
+      <Background 
+        ref={outside}
+        onClick={(e) => {
+          if (e.target === outside.current) {
+            closeModalEvent()
+            console.log("bg clicked")} 
+          }}
+        >
         <DebateListModal 
           isModalOpen={isDebatingModalOpen || isWaitingModalOpen} 
           closeModalEvent={closeModalEvent} 
           debateState={isDebatingModalOpen ? "debating" : "waiting"} 
         />
-        {/* <White isModalOpen={isDebatingModalOpen || isWaitingModalOpen} ></White> */}
       </Background>
     </ModalContainer>
   )
 }
 
-export default ShowAllModalContainer;
+export default ModalContainerShowAll;
 
 const unfoldIn = keyframes`
   0% { transform: scale(0, 0.005); }
@@ -34,16 +42,6 @@ const unfoldOut = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1, 0.005); }
   100% { transform: scale(0, 0.005); }
-`
-
-const zoomIn = keyframes`
-  from { transform: scale(0); }
-  to { transform: scale(1); }
-`
-
-const zoomOut = keyframes`
-  from { transform: scale(1); }
-  to { transform: scale(0); }
 `
 
 const ModalContainer = styled.div`
@@ -63,36 +61,9 @@ const ModalContainer = styled.div`
   transform: scale(${props => props.isModalOpen ? 0 : 1});
 `
 
-const StyledDebateListModal = styled(DebateListModal)`
-  /* padding: 50px;
-  display: inline-block;
-  border-radius: 3px;
-  position: relative; */
-  display: none;
-
-  /* transform: scale(${props => props.isModalOpen ? 0 : 1});
-  animation: ${props => props.isModalOpen 
-    ? css`${zoomIn} .5s 1s` 
-    : css`${zoomOut} .5s`
-  } cubic-bezier(0.165, 0.84, 0.44, 1) forwards; */
-`
-
 const Background = styled.div`
   display: table-cell;
-  background: rgba(0, 0, 0, .8);
+  background: rgba(0, 0, 0, .9);
   text-align: center;
   vertical-align: middle; 
-`
-
-const White = styled.div`
-  width: 500px;
-  height: 500px;
-  margin-left: 300px;
-  background-color: white;
-
-  transform: scale(${props => props.isModalOpen ? 0 : 1});
-  animation: ${props => props.isModalOpen 
-    ? css`${zoomIn} .7s 1s` 
-    : css`${zoomOut} .7s`
-  } cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 `

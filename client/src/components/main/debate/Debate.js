@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef, useState, memo } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateRoomsSelectorFamily } from "stores/debateRoomStates";
 import styled from "styled-components" 
 import { Link } from "react-router-dom"; 
@@ -8,10 +8,13 @@ import People from "assets/icons/People.png";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import RoomInfo from "./RoomInfo";
+import { joinModalState } from "stores/joinModalStates";
 
 function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
-  const [debateRoom, setDebateRoom] = useRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
+  const setDebateRoom = useSetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
   const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
+
+  const setJoinModalState = useSetRecoilState(joinModalState);
 
   const { 
     roomId, 
@@ -38,6 +41,9 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
   // 호버 체크
   const [isHovered, setIsHovered] = useState(false);
 
+  // 모달
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
   // 타이머
   const interval = useRef(null);
   const [secondsState, setSecondsState] = useState(seconds);
@@ -56,63 +62,67 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
   }, [secondsState]);
 
   return (
-    <Wrapper visibleCounts={visibleCounts} viewers={viewers}>
-      <StyledLink to={`/debate/room/${roomId}`}>
-        <ThumbnailInfoWrapper
-          isHovered={isHovered}
-          itemIdx={itemIdx} 
-          visibleCounts={visibleCounts} 
-          currSlideIdx={currSlideIdx}
-          >
-          <StyledThumbnail 
+
+    <Wrapper 
+    visibleCounts={visibleCounts} 
+    viewers={viewers} 
+    >
+      <ThumbnailInfoWrapper
+        isHovered={isHovered}
+        itemIdx={itemIdx} 
+        visibleCounts={visibleCounts} 
+        currSlideIdx={currSlideIdx}
+        >
+        <StyledThumbnail 
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
-            {/* 배경 이미지 및 반투명 검은 배경 */}
-            <StyledBackgroundImage src={imageUrl} />
-            <HalfClearBlack />
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={() => setJoinModalState({ roomId: roomId, isModalOpen: true})}
+        >  
+          {/* 배경 이미지 및 반투명 검은 배경 */}
+          <StyledBackgroundImage src={imageUrl} />
+          <HalfClearBlack />
 
-            {/* 방제 */}
-            <Title type={type} title={title}>
-            {title}
-            </Title>
+          {/* 방제 */}
+          <Title type={type} title={title}>
+          {title}
+          </Title>
 
-            {/* 중앙부 대립 의견 */}
-            <Center type={type}>
-              {/* 왼쪽 의견 */}
-              <Opinion type={type} title={leftOpinion}>{leftOpinion}</Opinion>
+          {/* 중앙부 대립 의견 */}
+          <Center type={type}>
+            {/* 왼쪽 의견 */}
+            <Opinion type={type} title={leftOpinion}>{leftOpinion}</Opinion>
 
-              {/* VS */}
-              <Versus type={type}>VS</Versus>
+            {/* VS */}
+            <Versus type={type}>VS</Versus>
 
-              {/* 오른쪽 의견 */}
-              <Opinion type={type} title={rightOpinion}>{rightOpinion}</Opinion>
-            </Center>
-            
-            {/* 하단부 시청자 및 페이즈 정보 */}
-            <Footer>
-              {/* 시청자 */}
-              <FooterInfo>
-                  <ViewersIcon type={type} src={People} />
-                  <StyledFont type={type}>{viewers}</StyledFont>
-                  <StyledFont type={type}>명</StyledFont>
-              </FooterInfo>
+            {/* 오른쪽 의견 */}
+            <Opinion type={type} title={rightOpinion}>{rightOpinion}</Opinion>
+          </Center>
+          
+          {/* 하단부 시청자 및 페이즈 정보 */}
+          <Footer>
+            {/* 시청자 */}
+            <FooterInfo>
+                <ViewersIcon type={type} src={People} />
+                <StyledFont type={type}>{viewers}</StyledFont>
+                <StyledFont type={type}>명</StyledFont>
+            </FooterInfo>
 
-              {/* 페이즈 */}
-              <FooterInfo>
-                  <StyledFont type={type}>{phases}</StyledFont>
-                  <StyledFont type={type}>&nbsp;페이즈&nbsp;</StyledFont>
-                  <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
-                  <StyledFont type={type}>&nbsp;:&nbsp;</StyledFont>
-                  <StyledFont type={type}>{to_02d(secondsState)}</StyledFont>
-              </FooterInfo>
-            </Footer>
-          </StyledThumbnail>
-          {isHovered
-          ? <RoomInfo roomId={roomId} type={type}/>
-          : null}
+            {/* 페이즈 */}
+            <FooterInfo>
+                <StyledFont type={type}>{phases}</StyledFont>
+                <StyledFont type={type}>&nbsp;페이즈&nbsp;</StyledFont>
+                <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
+                <StyledFont type={type}>&nbsp;:&nbsp;</StyledFont>
+                <StyledFont type={type}>{to_02d(secondsState)}</StyledFont>
+            </FooterInfo>
+          </Footer>
+        </StyledThumbnail>
+        {isHovered
+        ? <RoomInfo roomId={roomId} type={type}/>
+        : null}
 
-        </ThumbnailInfoWrapper>
-      </StyledLink>
+      </ThumbnailInfoWrapper>
     </Wrapper>
   )
 }
@@ -132,10 +142,6 @@ const Wrapper = styled.div`
   /* border: 1px solid black; */
   border:radius: .1rem;
 `
-
-const StyledLink = styled(Link)`
-  width: 0; height: 0;
-`;
 
 const ThumbnailInfoWrapper = styled.div`
   position: relative;
