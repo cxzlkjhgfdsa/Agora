@@ -86,4 +86,4 @@ server:
 #      show-details: always
 openvidu:
   hostname: ${meeting.hostname}
-  secet: ${meeting.secret}
+  secret: ${meeting.secret}

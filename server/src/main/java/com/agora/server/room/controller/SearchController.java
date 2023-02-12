@@ -24,7 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/")
+@RequestMapping("api/v2/")
 public class SearchController {
 
     private final RoomService roomService;

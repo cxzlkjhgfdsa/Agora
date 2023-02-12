@@ -43,14 +43,14 @@ public class DebateHistoryService {
         String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
         List<Integer> voteLeftList = new ArrayList<>();
         for(int i = 1; i <= 3; i++){
-            String voteLeftKey = redisKeyUtil.voteLeftKey(roomId, i);
-            Integer voteLeftNum = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
+            String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, i);
+            Integer voteLeftNum = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
             voteLeftList.add(voteLeftNum);
         }
         List<Integer> voteRightList = new ArrayList<>();
         for(int i = 1; i <= 3; i++){
-            String voteRightKey = redisKeyUtil.voteRightKey(roomId, i);
-            Integer voteRightNum = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+            String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, i);
+            Integer voteRightNum = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
             voteRightList.add(voteRightNum);
         }
         List<String> playerWinList = new ArrayList<>();
