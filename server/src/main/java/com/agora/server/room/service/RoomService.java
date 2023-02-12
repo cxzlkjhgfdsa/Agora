@@ -98,7 +98,6 @@ public class RoomService {
      * @return
      */
     public boolean enterRoomAsDebater(String userNickname, Long roomId, String userTeam) {
-//        User user = userRepository.findById(userId).get();
 
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
@@ -112,23 +111,28 @@ public class RoomService {
         try {
 
             String userisReadyKey = redisKeyUtil.isReadyKey(roomId, userNickname);
-//            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
 
             // side 0 == LEFT SIDE로 가정
             if (userTeam.equals("LEFT")) {
                 String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+                Long size = redisTemplate.opsForList().size(leftUserListKey);
+                if(size>=3){
+                    return false;
+                }
                 stringObjectListOperations.rightPush(leftUserListKey, userNickname);
                 stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-//                stringObjectValueOperations.increment(watchCntKey);
                 return true;
                 // side 1 == RIGHT SIDE로 가정
             } else if (userTeam.equals("RIGHT")) {
                 String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+                Long size = redisTemplate.opsForList().size(rightUserListKey);
+                if(size>=3){
+                    return false;
+                }
                 stringObjectListOperations.rightPush(rightUserListKey, userNickname);
                 stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-//                stringObjectValueOperations.increment(watchCntKey);
                 return true;
             }
         } catch (Exception e) {

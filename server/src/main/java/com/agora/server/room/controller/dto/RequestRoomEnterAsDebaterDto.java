@@ -14,6 +14,6 @@ public class RequestRoomEnterAsDebaterDto {
     private String userTeam;
 
     // 방장인지 일반 토론자인지 이걸로 구분해도 될듯?
-    private String userRole;
+//    private String userRole;
 
 }
