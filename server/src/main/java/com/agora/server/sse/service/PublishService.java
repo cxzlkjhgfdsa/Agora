@@ -34,15 +34,17 @@ public class PublishService {
 
         SseEmitter emitter = new SseEmitter(0L);
 
+        if (roomRepository.findById(Long.parseLong(roomId)).isEmpty()) {
+            emitter.complete();
+            return emitter;
+        }
+
         roomSseEmitters.add(emitter);
 
         try {
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data("connected!"));
-            if(roomRepository.findById(Long.parseLong(roomId)).isEmpty()){
-                emitter.complete();
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -68,20 +70,21 @@ public class PublishService {
 
         redisMessageListenerContainer.addMessageListener(messageListener, new ChannelTopic("room:" + roomId));
 
-        roomEmitterMap.put(roomId,roomSseEmitters);
+        roomEmitterMap.put(roomId, roomSseEmitters);
         return emitter;
     }
 
-    public Integer unsubscribe(String roomId){
+    public Integer unsubscribe(String roomId) {
         List<SseEmitter> sseEmitters = roomEmitterMap.get(roomId);
         int size = sseEmitters.size();
         for (SseEmitter sseEmitter : sseEmitters) {
             try {
-               sseEmitter.complete();
+                sseEmitter.complete();
             } catch (Exception ex) {
-               sseEmitter.completeWithError(ex);
+                sseEmitter.completeWithError(ex);
             }
         }
+        sseEmitters.clear();
         return size;
     }
 
