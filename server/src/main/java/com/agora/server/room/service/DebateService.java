@@ -54,6 +54,7 @@ public class DebateService {
     private final DebateHistoryService debateHistoryService;
 
     private final PublishService publishService;
+
     /**
      * 토론자 입장 Redis Pub/Sub
      * <p>
@@ -445,7 +446,7 @@ public class DebateService {
         redisTemplate.opsForValue().set(voteRightKey, 0);
 
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
-        String voteStartMessage = redisMessageUtil.votePhaseStartMessage(currentPhase,currentPhaseDetail);
+        String voteStartMessage = redisMessageUtil.votePhaseStartMessage(currentPhase, currentPhaseDetail);
 
         redisPublisher.publishMessage(roomChannelKey, voteStartMessage);
         ScheduledFuture<?> future = executorService.schedule(new Runnable() {
@@ -468,9 +469,12 @@ public class DebateService {
         String voteRightKey = redisKeyUtil.voteRightKey(roomId, currentPhase);
         Integer voteResultLeft = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
         Integer voteResultRight = (Integer) redisTemplate.opsForValue().get(voteRightKey);
-
-        Integer voteResultLeftPercent = ((Long) Math.round((double) ((voteResultLeft * 10000) / (voteResultLeft + voteResultRight)) / 100)).intValue();
-        Integer voteResultRightPercent = 100 - voteResultLeftPercent;
+        Integer voteResultLeftPercent = 50;
+        Integer voteResultRightPercent = 50;
+        if (!(voteResultLeft == 0 && voteResultRight == 0)) {
+            voteResultLeftPercent = ((Long) Math.round((double) ((voteResultLeft * 10000) / (voteResultLeft + voteResultRight)) / 100)).intValue();
+            voteResultRightPercent = 100 - voteResultLeftPercent;
+        }
 
         String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, currentPhase);
         String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, currentPhase);
@@ -481,8 +485,8 @@ public class DebateService {
 
         List<Integer> voteLeftResultList = new ArrayList<>();
         List<Integer> voteRightResultList = new ArrayList<>();
-        if (currentPhase != 0 && currentPhaseDetail<4) {
-            for (int votePhase = 1; votePhase < currentPhase ; votePhase++) {
+        if (currentPhase != 0 && currentPhaseDetail < 4) {
+            for (int votePhase = 1; votePhase < currentPhase; votePhase++) {
                 String curVoteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
                 String curVoteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
 
@@ -492,8 +496,8 @@ public class DebateService {
                 voteLeftResultList.add(voteLeftResult);
                 voteRightResultList.add(voteRightResult);
             }
-        } else if(currentPhase != 0 && currentPhaseDetail==4){
-            for (int votePhase = 1; votePhase <= currentPhase ; votePhase++) {
+        } else if (currentPhase != 0 && currentPhaseDetail == 4) {
+            for (int votePhase = 1; votePhase <= currentPhase; votePhase++) {
                 String curVoteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
                 String curVoteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
 
@@ -768,10 +772,10 @@ public class DebateService {
         List<String> leftOpenedCardList = new ArrayList<>();
         List<String> rightOpenedCardList = new ArrayList<>();
         for (Object o : oleftOpenedCardList) {
-            leftOpenedCardList.add((String)o);
+            leftOpenedCardList.add((String) o);
         }
         for (Object o : orightOpenedCardList) {
-            rightOpenedCardList.add((String)o);
+            rightOpenedCardList.add((String) o);
         }
         String imgCardOpenMessage = redisMessageUtil.imgCardOpenMessage(leftOpenedCardList, rightOpenedCardList);
         redisPublisher.publishMessage(redisChannelUtil.roomChannelKey(roomId), imgCardOpenMessage);
