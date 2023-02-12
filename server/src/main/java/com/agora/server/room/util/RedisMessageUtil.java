@@ -28,6 +28,7 @@ public class RedisMessageUtil {
     private final String START_VOTE_EVENT = "startVotePhase";
     private final String START_VOTE_RESULT_EVENT = "startVoteResultPhase";
     private final String CARD_OPEN_EVENT = "cardOpen";
+    private final String WATCHCNT_UPDATE_EVENT = "updateWatchCnt";
 
 
     public String enterMessage(List<String> leftUserList, List<String> rightUserList) {
@@ -161,5 +162,18 @@ public class RedisMessageUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public String roomWatchCntUpdate(Integer roomWatchCnt){
+        WatchCntUpdateMessage watchCntUpdateMessage = new WatchCntUpdateMessage();
+        watchCntUpdateMessage.setEvent(WATCHCNT_UPDATE_EVENT);
+        watchCntUpdateMessage.setRoomWatchCnt(roomWatchCnt);
+        try {
+            String json = objectMapper.writeValueAsString(watchCntUpdateMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
