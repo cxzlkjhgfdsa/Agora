@@ -21,7 +21,7 @@ const TitleDiv = styled.div`
   font-size: 36px;
   color: #333333;
 
-  margin-top: 40px;
+  margin-top: 10px;
   letter-spacing: -1.5px;
 
   
@@ -63,4 +63,26 @@ const OnAirDiv = styled.div`
   &.isStart-root {
     background-color: #EF404A;
   }
+`
+const Title = styled.div`
+`
+
+// 스킵 버튼
+const SkipButton = styled.div`
+  color: #F6C026;
+  width: 120px;
+
+  font-size: 20px;
+
+  border-radius: 8px;
+  border: 2px solid #F6C026;
+
+
+  cursor: pointer;
+
+  // 드래그 방지
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
 `
