@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v2")
+@RequestMapping("api/v1")
 public class RoomController {
 
     private final RoomService roomService;
@@ -24,23 +24,22 @@ public class RoomController {
 
     /**
      * 방을 생성
+     *
      * @param rcDto
      * @return roomId와 방이 정상적으로 생성되었다는 메세지 리턴
      */
     @PostMapping("room/create")
     public ResponseEntity<ResponseDTO> roomCreate(@RequestBody RequestRoomCreateDto rcDto) throws OpenViduJavaClientException, OpenViduHttpException {
-        Room createdRoom = Room.createRoom(rcDto.getRoomName(),rcDto.getRoomCreaterName(),rcDto.getRoomDebateType(),
-                rcDto.getRoomOpinionLeft(),rcDto.getRoomOpinionRight(),
-                rcDto.getRoomHashtags(),rcDto.getRoomThumbnailUrl(),rcDto.getRoomCategory());
+        Room createdRoom = Room.createRoom(rcDto.getRoomName(), rcDto.getRoomCreaterName(), rcDto.getRoomDebateType(),
+                rcDto.getRoomOpinionLeft(), rcDto.getRoomOpinionRight(),
+                rcDto.getRoomHashtags(), rcDto.getRoomThumbnailUrl(), rcDto.getRoomCategory());
 
-        Long roomId;
-        roomId = roomService.createRoom(createdRoom);
 
-        String token = openViduService.createSession(roomId);
+        Long roomId = roomService.createRoom(createdRoom);
+        openViduService.createSession(roomId);
 
         ResponseRoomCreateDto responseRoomCreateDto = new ResponseRoomCreateDto();
         responseRoomCreateDto.setRoomId(roomId);
-        responseRoomCreateDto.setToken(token);
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(responseRoomCreateDto);
@@ -50,56 +49,52 @@ public class RoomController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-    /**
-     * 추후 추가
-     * roomstate == false 방에 입장하기로 room/enter 요청을 보냈는데
-     * 그 사이에 roomstate == true로 바뀌면 에러 던지기
-     *
-     * 입장하려는 진영 토론자 수가 3명 꽉차있으면 에러 던지기
-     */
     @PostMapping("room/enter")
-    public ResponseEntity<ResponseDTO> roomEnter(@RequestBody RequestRoomEnterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<ResponseDTO> checkBeforeEnterIntoOpenviduPage(@RequestBody RequestRoomEnterAsDebaterDto requestRoomEnterDto) throws OpenViduJavaClientException, OpenViduHttpException {
 
-//        String token = openViduService.enterSession(requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getType());
+        ResponseRoomEnterAbleDto responseRoomEnterAbleDto = new ResponseRoomEnterAbleDto();
+        ResponseDTO responseDTO = new ResponseDTO();
 
-        ResponseRoomEnterBeforeStartDto responseRoomEnterBeforeStartDto = new ResponseRoomEnterBeforeStartDto();
-        ResponseRoomEnterAfterStartDto responseRoomEnterAfterStartDto = new ResponseRoomEnterAfterStartDto();
-
-        // 없어도 될 듯?
-        boolean isEntered = true;
-
-        if(requestRoomEnterDto.getRoomState()==false){
-            switch (requestRoomEnterDto.getType()){
-                case "debater":
-                    roomService.enterRoomAsDebater(requestRoomEnterDto.getUserNickname(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserSide());
-                    // Redis Pub/Sub에서 입장 메시지 송신하는 부분
-                    // type의 토론자 -> debater와 관전자 -> watcher로 구분
-                    // debater의 경우에만 메시지 송신
-                    debateService.debaterEnter(requestRoomEnterDto);
-                    break;
-                case "watcher":
-                    roomService.enterRoomAsWatcher(requestRoomEnterDto.getRoomId());
-                    break;
-            }
-            roomService.setRoomCurrentStatusBeforeStart(requestRoomEnterDto, responseRoomEnterBeforeStartDto);
-            responseRoomEnterBeforeStartDto.setIsEnter(isEntered);
-//            responseRoomEnterBeforeStartDto.setToken(token);
-        } else if(requestRoomEnterDto.getRoomState()==true){
-
-            roomService.enterRoomAsWatcher(requestRoomEnterDto.getRoomId());
-            roomService.setRoomCurrentStatusAfterStart(requestRoomEnterDto, responseRoomEnterAfterStartDto);
-
-            responseRoomEnterAfterStartDto.setIsEnter(isEntered);
-//            responseRoomEnterAfterStartDto.setToken(token);
+        boolean isRoomEnterAble = roomService.enterRoomAsDebater(requestRoomEnterDto.getUserNickname(), requestRoomEnterDto.getRoomId(), requestRoomEnterDto.getUserTeam());
+        if(isRoomEnterAble){
+            debateService.debaterEnter(requestRoomEnterDto);
+            responseRoomEnterAbleDto.setIsEnterAble(isRoomEnterAble);
+            responseRoomEnterAbleDto.setRoomId(requestRoomEnterDto.getRoomId());
+            responseDTO.setBody(responseRoomEnterAbleDto);
+            responseDTO.setMessage("오픈비두 페이지로 이동합니다");
+            responseDTO.setStatusCode(202);
+            responseDTO.setState(true);
+            return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+        } else{
+            responseRoomEnterAbleDto.setIsEnterAble(isRoomEnterAble);
+            responseDTO.setBody(responseRoomEnterAbleDto);
+            responseDTO.setMessage("방에 입장할 수 없습니다");
+            responseDTO.setStatusCode(400);
+            responseDTO.setState(false);
+            return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * 관전자로 방 입장
+     * GetMapping으로 roomId만 주면 방 정보 반환
+     */
+    @GetMapping("room/enter/{roomId}")
+    public ResponseEntity<ResponseDTO> roomEnterAndGetRoomEnterDto(@PathVariable Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        String openviduToken = openViduService.enterSession(roomId);
+
+        ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
+
+        // 기본적으로 방에 들어갈 때 필요한 정보들 넣어주기(토론자, 관전자 상관없이 필요한 정보)
+        // 여기서 responseRoomEnterDto에 넣을 것 다 넣어주기
+        roomService.enterRoom(responseRoomEnterDto, roomId);
+
+        responseRoomEnterDto.setOpenviduToken(openviduToken);
 
 
         ResponseDTO responseDTO = new ResponseDTO();
-        if(requestRoomEnterDto.getRoomState()==false){
-            responseDTO.setBody(responseRoomEnterBeforeStartDto);
-        } else if(requestRoomEnterDto.getRoomState()==true){
-            responseDTO.setBody(responseRoomEnterAfterStartDto);
-        }
+        responseDTO.setBody(responseRoomEnterDto);
         responseDTO.setMessage("정상적으로 입장하였습니다");
         responseDTO.setStatusCode(200);
         responseDTO.setState(true);
@@ -107,32 +102,28 @@ public class RoomController {
     }
 
     /**
-     * 방 나가기 api
-     * Redis Pub/Sub 테스트용으로 틀만 만들어놨습니다.
-     * 자유롭게 수정하세요
+     * 일반적인 퇴장
+     * 토론자와 관전자를 구분?
+     * 어차피 토론 시작하고 나서는 토론자 안 내보낼 꺼니까
+     * 그냥 전부 일반 퇴장으로
+     * <p>
+     * 대기방에서만 토론자 퇴장 처리
      */
     @PostMapping("room/leave")
-    public ResponseEntity<ResponseDTO> roomLeave (@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<ResponseDTO> roomLeave(@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        if(requestRoomLeaveDto.getType().equals("debater")){
-            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserSide());
-        } else if(requestRoomLeaveDto.getType().equals("watcher")){
+        if (requestRoomLeaveDto.getUserNickname().equals("")) {
             roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
-        }
-
-        // Redis Pub/Sub에서 퇴장 메시지 송신하는 부분
-        // type의 토론자 -> debater와 관전자 -> watcher로 구분
-        switch (requestRoomLeaveDto.getType()){
-            case "debater" :
+        } else {
+            boolean isCreaterLeaved = roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId());
+            if (isCreaterLeaved) {
                 debateService.debaterLeave(requestRoomLeaveDto);
-                break;
-            case "watcher" :
-                break;
+                debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
+            } else {
+                debateService.debaterLeave(requestRoomLeaveDto);
+            }
         }
 
-        if(requestRoomLeaveDto.getIsUserCreater()){
-            debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
-        }
 
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
@@ -141,7 +132,6 @@ public class RoomController {
         responseDTO.setState(true);
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
-
 
 
 }
