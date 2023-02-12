@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -53,6 +55,10 @@ public class User {
     private String user_nickname;
 
     @Column(length = 200)
+    @ApiModelProperty(value = "user photo name", example = "프로필 이미지 이름")
+    private String user_photo_name;
+
+    @Column(length = 200)
     @ApiModelProperty(value = "user photo", example = "프로필 이미지 경로")
     private String user_photo;
 
@@ -63,7 +69,9 @@ public class User {
     private Encrypt encrypt;
 
 
-    public static User createUser(Encrypt encrypt, SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo) {
+
+
+    public static User createUser(Encrypt encrypt, SocialType user_social_type, String user_social_id, String user_name, String user_age, String user_phone, String user_nickname, String user_photo_name, String user_photo) {
         User user = new User();
         user.encrypt = encrypt;
         user.user_social_type = user_social_type;
@@ -72,6 +80,7 @@ public class User {
         user.user_age = user_age;
         user.user_phone = user_phone;
         user.user_nickname = user_nickname;
+        user.user_photo_name = user_photo_name;
         user.user_photo = user_photo;
         return user;
     }
@@ -88,6 +97,15 @@ public class User {
     public void addCategories(UserCategory userCategory) {
         // 카테고리 추가 하기 위한 add
         this.categories.add(userCategory);
+    }
+
+    public void changeUserPhoto(String user_photo_name, String user_photo){
+        this.user_photo_name = user_photo_name;
+        this.user_photo = user_photo;
+    }
+
+    public void setUserCategories(List<UserCategory> userCategories){
+        this.categories = userCategories;
     }
 
 }
