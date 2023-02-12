@@ -23,7 +23,7 @@ public class OpenViduService {
      * @throws OpenViduJavaClientException
      * @throws OpenViduHttpException
      */
-    public String createSession(Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
+    public void createSession(Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
         Session session = openVidu.createSession();
         Session findSession = openViduSessions.get(roomId);
         if(findSession!=null){
@@ -32,33 +32,22 @@ public class OpenViduService {
         }
 
         openViduSessions.put(roomId, session);
-        OpenViduRole role = OpenViduRole.PUBLISHER;  // 방 생성자는 = 발언자기 때문에 PUBLISHER
-        String Token = craeteToken(session, role);
 
-        return Token;
     }
 
     /**
      * 방에 들어가기위한 세션을 얻는 메소드
      * @param roomId
-     * @param type
      * @return
      */
-    public String enterSession(Long roomId, String type) throws OpenViduJavaClientException, OpenViduHttpException {
-        OpenViduRole role;
-        if(type.equals("pub")){
-            role = OpenViduRole.PUBLISHER;
-        }else if(type.equals("sub")){
-            role = OpenViduRole.SUBSCRIBER;
-        }else{
-            throw new AgoraOpenViduException("존재할 수 없는 타입입니다");
-        }
+    public String enterSession(Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
+
 
         Session session = openViduSessions.get(roomId);
         if(session == null){
             throw new AgoraOpenViduException("존재하지 않는 방입니다");
         }
-        String Token = craeteToken(session, role);
+        String Token = craeteToken(session);
 
         return Token;
     }
@@ -66,21 +55,20 @@ public class OpenViduService {
     /**
      * OpenVidu Server 입장을 위한 토큰 발급
      * @param session
-     * @param role
      * @return
      * @throws OpenViduJavaClientException
      * @throws OpenViduHttpException
      */
-    private String craeteToken(Session session, OpenViduRole role) throws OpenViduJavaClientException, OpenViduHttpException {
+    private String craeteToken(Session session) throws OpenViduJavaClientException, OpenViduHttpException {
 
         ConnectionProperties connectionProperties =
                 new ConnectionProperties.Builder()
-                .role(role)
-                .type(ConnectionType.WEBRTC).build();
+                        .type(ConnectionType.WEBRTC).build();
 
         String Token = session.createConnection(connectionProperties).getToken();
         return Token;
     }
 
-    
+
+
 }
