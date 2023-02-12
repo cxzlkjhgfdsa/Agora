@@ -7,3 +7,10 @@ export const joinModalState = atom({
     isModalOpen: false,
   }
 });
+
+export const createModalState = atom({
+  key: "createModalState",
+  default: {
+    isModalOpen: false,
+  }
+})

@@ -1,17 +1,17 @@
 import styled, { css, keyframes } from "styled-components"
-import JoinRoomModal from "./modal/join/JoinRoomModal";
+import CreateRoomModal from "./modal/create/CreateRoomModal";
 import { useState, useEffect } from "react";
-import { joinModalState } from "stores/ModalStates";
+import { createModalState } from "stores/ModalStates";
 import { useRecoilValue } from "recoil";
 
-function ModalContainerJoin() {
+function ModalContainerCreate() {
 
-  const getJoinModalState = useRecoilValue(joinModalState)
+  const getCreateModalState = useRecoilValue(createModalState)
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     let timeoutId;
-    if (getJoinModalState.isModalOpen) {
+    if (getCreateModalState.isModalOpen) {
       setVisible(true);
     } else {
       timeoutId = setTimeout(() => {setVisible(false)}, 500)
@@ -22,26 +22,27 @@ function ModalContainerJoin() {
         clearTimeout(timeoutId);
       }
     }
-  }, [getJoinModalState])
+  }, [getCreateModalState])
 
 
   if (!visible) return null;
 
+  console.log("create modal is visible")
+
   return (
     <ModalContainer 
-      isModalOpen={getJoinModalState.isModalOpen}
+      isModalOpen={getCreateModalState.isModalOpen}
     >
       <Background>
-        <JoinRoomModal
-          roomId={getJoinModalState.roomId}
-          isModalOpen={getJoinModalState.isModalOpen}
+        <CreateRoomModal
+          isModalOpen={getCreateModalState.isModalOpen}
         />
       </Background>
     </ModalContainer>
   )
 }
 
-export default ModalContainerJoin;
+export default ModalContainerCreate;
 
 const ModalContainer = styled.div`
   position: fixed;

@@ -6,7 +6,8 @@ import LargeDebateContainer from "components/main/debate/DebateContainerLarge";
 import SmallDebateContainer from "components/main/debate/DebateContainerSmall";
 import ModalContainerShowAll from "../../../components/main/debate/ModalContainerShowAll";
 import ModalContainerJoin from "components/main/debate/ModalContainerJoin";
-import { joinModalState } from "stores/joinModalStates";
+import ModalContainerCreate from "components/main/debate/ModalContainerCreate";
+import { joinModalState } from "stores/ModalStates";
 import { useRecoilValue } from "recoil";
 // const SmallDebateContainer = lazy(() => import("../../../components/main/debate/SmallDebateContainer"));
 // const LargeDebateContainer = lazy(() => import("../../../components/main/debate/LargeDebateContainer"));
@@ -15,7 +16,6 @@ function DebateList() {
 
   const [isDebatingModalOpen, setIsDebatingModalOpen] = useState(false);
   const [isWaitingModalOpen, setIsWaitingModalOpen] = useState(false);
-  const getJoinModalState = useRecoilValue(joinModalState);
 
   const renderingCounts = useRef(null);
   useEffect(() => {
@@ -55,6 +55,9 @@ function DebateList() {
           renderingCounts={renderingCounts.current} />
 
         <ModalContainerJoin />
+
+        <ModalContainerCreate />
+
       </Wrapper>
   )
 }

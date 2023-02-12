@@ -9,9 +9,10 @@ import SettingComboBox from "./SettingComboBox";
 import WebCam from "../WebCam";
 import { tokenize } from "components/common/Tokenizers";
 import customAxios from "utils/customAxios";
-import { useSetRecoilState } from "recoil";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import { useNavigate } from "react-router-dom";
+import { createModalState } from "stores/ModalStates";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -19,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 */
 function CreateRoomModal({ closeModalEvent }) {
   const axios = customAxios();
+
+  const resetCreateModalState = useResetRecoilState(createModalState)
 
   const [hashTags, setHashTags] = useState("");
   const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -194,7 +197,7 @@ function CreateRoomModal({ closeModalEvent }) {
           });
         }
         // Modal 종료
-        closeModalEvent();
+        resetCreateModalState();
       }} />
 
       {/* 컨테이너 생성하여 메인 컴포넌트들 부착 */}

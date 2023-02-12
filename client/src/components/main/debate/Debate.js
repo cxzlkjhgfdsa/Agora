@@ -8,7 +8,7 @@ import People from "assets/icons/People.png";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import RoomInfo from "./RoomInfo";
-import { joinModalState } from "stores/joinModalStates";
+import { joinModalState } from "stores/ModalStates";
 
 function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
   const setDebateRoom = useSetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));

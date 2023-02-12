@@ -7,7 +7,7 @@ import JoinAsSpeaker from "./JoinAsSpeaker";
 import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import styled, { css, keyframes } from "styled-components";
-import { joinModalState } from "stores/joinModalStates";
+import { joinModalState } from "stores/ModalStates";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
