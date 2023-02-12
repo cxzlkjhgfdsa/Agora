@@ -1,12 +1,15 @@
 import ProgressBar from "components/main/signup/progressbar/ProgressBar";
+import Title from "components/main/signup/title/Title";
+import SignUp from "components/main/signup/Input/SignupInput";
+
+
 function SignUpInput() {
   
 	return (
 		<div>
 			<ProgressBar />
-			<h1>
-				This is SignUpInput
-			</h1>
+			<Title />
+			<SignUp />
 		</div>
 	)
   }

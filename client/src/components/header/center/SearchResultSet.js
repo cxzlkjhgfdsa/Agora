@@ -18,7 +18,7 @@ function SearchResultSet({ searchType, maxContents, contents }) {
       {data.map((item, index) => (
         <SearchContent key={item + index} content={item} />
       ))}
-      {data.length === 0 && <NoContents />}
+      {data.length === 0 ? <NoContents /> : null}
     </StyledSearchResultSet>
   );
 }
