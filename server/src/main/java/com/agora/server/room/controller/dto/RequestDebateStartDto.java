@@ -12,9 +12,9 @@ public class RequestDebateStartDto {
 
     private Long roomId;
 
-    private List<String> leftUserList;
-    private List<String> rightUserList;
-    private List<Boolean> leftUserIsReady;
-    private List<Boolean> rightUserIsReady;
+//    private List<String> leftUserList;
+//    private List<String> rightUserList;
+//    private List<Boolean> leftUserIsReady;
+//    private List<Boolean> rightUserIsReady;
 
 }
