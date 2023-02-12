@@ -66,16 +66,6 @@ public class DebateController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-//    @PutMapping("debate/phasestart")
-//    public ResponseEntity<ResponseDTO> phaseStart(@RequestBody RequestPhaseStartDto requestPhaseStartDto){
-//        debateService.nextPhase(requestPhaseStartDto.getRoomId());
-//        ResponseDTO responseDTO = new ResponseDTO();
-////        responseDTO.setBody(responseRoomEnterDto);
-//        responseDTO.setMessage("정상적으로 다음 페이즈 시작했습니다");
-//        responseDTO.setStatusCode(200);
-//        responseDTO.setState(true);
-//        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-//    }
 
     @PutMapping("debate/phaseskip")
     public ResponseEntity<ResponseDTO> phaseSkip(@RequestBody RequestSkipDto requestSkipDto){
@@ -88,20 +78,6 @@ public class DebateController {
         return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
     }
 
-//    @PutMapping("debate/votestart")
-//    public ResponseEntity<ResponseDTO> voteStart(@RequestBody RequestVoteStartDto requestVoteStartDto){
-//        debateService.votePhase(requestVoteStartDto.);
-//        if(requestVoteStartDto.getVotePhase()==3){
-//
-////            debateHistoryService
-//        }
-//        ResponseDTO responseDTO = new ResponseDTO();
-////        responseDTO.setBody(responseRoomEnterDto);
-//        responseDTO.setMessage(requestVoteStartDto.getVotePhase()+"페이즈 투표 시작합니다");
-//        responseDTO.setStatusCode(200);
-//        responseDTO.setState(true);
-//        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
-//    }
 
     @PostMapping("debate/cardopen")
     public ResponseEntity<ResponseDTO> cardOpen(@RequestBody RequestCardOpenDto requestCardOpenDto){

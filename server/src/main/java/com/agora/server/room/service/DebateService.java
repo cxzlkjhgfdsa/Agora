@@ -114,11 +114,9 @@ public class DebateService {
     public void debaterLeave(RequestRoomLeaveDto requestRoomLeaveDto) {
 
         Long roomId = requestRoomLeaveDto.getRoomId();
-        String userNickname = requestRoomLeaveDto.getUserNickname();
-        String userTeam = requestRoomLeaveDto.getUserTeam();
 
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
-        String rightUserListKey = redisKeyUtil.leftUserListKey(roomId);
+        String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
         List<Object> oleftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
         List<Object> orightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
         List<String> leftUserList = new ArrayList<>();
@@ -654,7 +652,7 @@ public class DebateService {
                 String debateEndMessage = redisMessageUtil.debateEndMessage();
                 redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
             }
-        }, 20, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
         scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
 
         ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
