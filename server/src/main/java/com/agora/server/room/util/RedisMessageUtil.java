@@ -82,11 +82,13 @@ public class RedisMessageUtil {
         }
     }
 
-    public String debateStartMessage() {
-        EventOnlyMessage eventOnlyMessage = new EventOnlyMessage();
-        eventOnlyMessage.setEvent(START_DEBATE_EVENT);
+    public String debateStartMessage(Integer phase, Integer phaseDetail) {
+        DebateStartMessage debateStartMessage = new DebateStartMessage();
+        debateStartMessage.setEvent(START_DEBATE_EVENT);
+        debateStartMessage.setRoomPhase(phase);
+        debateStartMessage.setRoomPhaseDetail(phaseDetail);
         try {
-            String json = objectMapper.writeValueAsString(eventOnlyMessage);
+            String json = objectMapper.writeValueAsString(debateStartMessage);
             return json;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

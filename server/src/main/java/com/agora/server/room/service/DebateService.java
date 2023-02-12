@@ -308,12 +308,29 @@ public class DebateService {
             redisTemplate.delete(userisReady);
         }
 
+        String phaseKey = redisKeyUtil.phaseKey(roomId);
+        String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
+
+        redisTemplate.opsForValue().set(phaseKey, 1);
+        redisTemplate.opsForValue().set(phaseDetailKey, 0);
 
         // 토론 시작 -> 메시지 날리고(JSON으로 변환) -> 다음 페이즈 시작
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
-        String debateStartMessage = redisMessageUtil.debateStartMessage();
+        String debateStartMessage = redisMessageUtil.debateStartMessage(1,0);
         redisPublisher.publishMessage(roomChannel, debateStartMessage);
-        nextPhase(requestDebateStartDto.getRoomId());
+
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+
+        ScheduledFuture<?> future = executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                nextPhase(requestDebateStartDto.getRoomId());
+            }
+        }, 5, TimeUnit.SECONDS);
+        // 테스트용 5초, 실제 서비스 10초
+        scheduledFutures.put(roomId + "_startWaitPhase", future);
+
 
     }
 
@@ -334,9 +351,6 @@ public class DebateService {
         Integer currentPhase = previousPhase;
         Integer currentPhaseDetail = previousPhaseDetail + 1;
 
-        if (previousPhase == 0) {
-            currentPhase = 1;
-        }
         if (currentPhaseDetail == 5) {
             currentPhaseDetail = 1;
             currentPhase++;
