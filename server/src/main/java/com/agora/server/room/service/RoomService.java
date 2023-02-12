@@ -36,7 +36,6 @@ public class RoomService {
     private final RedisKeyUtil redisKeyUtil;
 
 
-
     /**
      * 방 생성
      * 방 생성과 동시에 불변 값들은 DB에
@@ -164,36 +163,44 @@ public class RoomService {
      * @param userTeam
      * @return
      */
-    public boolean leaveRoomAsDebater(String userNickname, Long roomId, String userTeam) {
+    public boolean leaveRoomAsDebater(String userNickname, Long roomId) {
 
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
 
+
         try {
             String userisReadyKey = redisKeyUtil.isReadyKey(roomId, userNickname);
-
-            // side 0 == LEFT SIDE로 가정
-            if (userTeam.equals("LEFT")) {
-                String leftUserList = redisKeyUtil.leftUserListKey(roomId);
-                stringObjectListOperations.remove(leftUserList, 0, userNickname);
-                redisTemplate.delete(userisReadyKey);
-
-                String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-                stringObjectValueOperations.decrement(watchCntKey);
-                return true;
-                // side 1 == RIGHT SIDE로 가정
-            } else if (userTeam.equals("RIGHT")) {
-                String rightUserList = redisKeyUtil.rightUserListKey(roomId);
-                stringObjectListOperations.remove(rightUserList, 0, userNickname);
-                redisTemplate.delete(userisReadyKey);
-
-                String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-                stringObjectValueOperations.decrement(watchCntKey);
-                return true;
+            String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+            List<Object> oleftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
+            for (Object o : oleftUserList) {
+                String curUser = (String) o;
+                if (curUser.equals(userNickname)) {
+                    stringObjectListOperations.remove(leftUserListKey, 0, userNickname);
+                }
             }
+            String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+            List<Object> orightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
+            for (Object o : orightUserList) {
+                String curUser = (String) o;
+                if (curUser.equals(userNickname)) {
+                    stringObjectListOperations.remove(rightUserListKey, 0, userNickname);
+                }
+            }
+
+            redisTemplate.delete(userisReadyKey);
+            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+            stringObjectValueOperations.decrement(watchCntKey);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
+
+        Room room = roomRepository.findById(roomId).get();
+        if (room.getRoom_creater_name().equals(userNickname)) {
+            return true;
+        }
+
         return false;
     }
 
@@ -587,8 +594,8 @@ public class RoomService {
 
             List<Integer> voteLeftResultList = new ArrayList<>();
             List<Integer> voteRightResultList = new ArrayList<>();
-            if (phase != 0 && phaseDetail<4) {
-                for (int votePhase = 1; votePhase < phase ; votePhase++) {
+            if (phase != 0 && phaseDetail < 4) {
+                for (int votePhase = 1; votePhase < phase; votePhase++) {
                     String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
                     String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
 
@@ -598,8 +605,8 @@ public class RoomService {
                     voteLeftResultList.add(voteLeftResult);
                     voteRightResultList.add(voteRightResult);
                 }
-            } else if(phase != 0 && phaseDetail==4){
-                for (int votePhase = 1; votePhase <= phase ; votePhase++) {
+            } else if (phase != 0 && phaseDetail == 4) {
+                for (int votePhase = 1; votePhase <= phase; votePhase++) {
                     String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
                     String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
 
@@ -643,7 +650,7 @@ public class RoomService {
                     phaseRemainSecond = 10 - phaseTimeDifference.intValue();
                     break;
             }
-            if(phaseRemainSecond<0){
+            if (phaseRemainSecond < 0) {
                 phaseRemainSecond = 0;
             }
 
