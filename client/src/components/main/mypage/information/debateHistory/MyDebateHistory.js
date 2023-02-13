@@ -3,13 +3,12 @@ import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 import DebateHistory from "./DebateHistory";
-import MyPageTitle from "./MyPageTitle";
+import MyPageTitle from "../MyPageTitle";
 
-const DebateHistoryWrapper = styled.div`
-  // 크기 설정
-  width: 60%;
-  padding: 0 20%;
-  // margin: 48px 0 0 0;
+const NoDebateHistory = styled.p`
+  font-size: 2rem;
+  letter-spacing: -0.05rem;
+  textAlign: center;
 `;
 
 function MyDebateHistory() {
@@ -22,37 +21,12 @@ function MyDebateHistory() {
       roomName: "라면에 계란을 계란에 라면을?",
       leftOpinion: "라면에 겨란을!",
       rightOpinion: "겨란에 라면을!",
-      leftVotes: [57, 56, 49],
-      rightVotes: [43, 44, 51]
-    },{
-      roomId: 123456,
-      roomName: "라면에 계란을 계란에 라면을?",
-      leftOpinion: "라면에 겨란을!",
-      rightOpinion: "겨란에 라면을!",
-      leftVotes: [57, 56, 49],
-      rightVotes: [43, 44, 51]
-    },{
-      roomId: 123456,
-      roomName: "라면에 계란을 계란에 라면을?",
-      leftOpinion: "라면에 겨란을!",
-      rightOpinion: "겨란에 라면을!",
-      leftVotes: [57, 56, 49],
-      rightVotes: [43, 44, 51]
-    },{
-      roomId: 123456,
-      roomName: "라면에 계란을 계란에 라면을?",
-      leftOpinion: "라면에 겨란을!",
-      rightOpinion: "겨란에 라면을!",
-      leftVotes: [57, 56, 49],
-      rightVotes: [43, 44, 51]
-    },{
-      roomId: 123456,
-      roomName: "라면에 계란을 계란에 라면을?",
-      leftOpinion: "라면에 겨란을!",
-      rightOpinion: "겨란에 라면을!",
-      leftVotes: [57, 56, 49],
-      rightVotes: [43, 44, 51]
-    }]);
+      leftVoteList: [57, 56, 49],
+      rightVoteList: [43, 44, 51],
+      userTeam: "LEFT",
+      "total_player_result": "WIN"
+    }
+  ]);
 
   // 무한스크롤 감지용 Ref
   const [scrollRef, inView] = useInView();
@@ -101,15 +75,13 @@ function MyDebateHistory() {
   return (<>
     <MyPageTitle text="토론 기록" />
     {histories.map((item, index) => (
-      <DebateHistoryWrapper key={item + index}>
-        <DebateHistory content={item} />
-      </DebateHistoryWrapper>
+      <DebateHistory key={index} content={item} />
     ))}
     {histories.length === 0
       ? (
-        <p style={{ fontSize: "2rem", letterSpacing: "-0.05rem", textAlign: "center" }}>
-          토론 기록이 없습니다.
-        </p>)
+        <NoDebateHistory>
+          토론 기록이 없습니다
+        </NoDebateHistory>)
       : null}
     {loading || isEnd
       ? null

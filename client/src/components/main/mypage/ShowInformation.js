@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { showPageState } from "stores/myPageStates";
-import MyDebateHistory from "./information/MyDebateHistory";
-import MyInfo from "./information/MyInfo";
+import MyDebateHistory from "./information/debateHistory/MyDebateHistory";
+import MyInfo from "./information/personal/MyInfo";
 
 function ShowInformation() {
   const showPage = useRecoilValue(showPageState);

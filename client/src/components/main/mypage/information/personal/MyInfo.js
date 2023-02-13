@@ -4,7 +4,7 @@ import ModifyButton from "./ModifyButton";
 import MyCategoryForm from "./MyCategoryForm";
 import MyInfoData from "./MyInfoData";
 import MyInputForm from "./MyInputForm";
-import MyPageTitle from "./MyPageTitle";
+import MyPageTitle from "../MyPageTitle";
 import MyProfileImage from "./MyProfileImage";
 
 const MyInfoForm = styled.div`

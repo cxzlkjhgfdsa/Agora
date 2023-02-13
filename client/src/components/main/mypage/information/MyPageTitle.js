@@ -6,7 +6,8 @@ const StyledTitle = styled.p`
   width: 100%;
 
   // 패딩 및 마진 초기화
-  margin: 24px 0;
+  margin: 0;
+  padding: 24px 0;
 
   // 글꼴 설정
   font-size: 3rem;

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import styled from "styled-components";
 
 const StyledMyProfileImage = styled.div`
