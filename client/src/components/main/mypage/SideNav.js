@@ -39,18 +39,18 @@ const StyledLi = styled.li`
   &.to-right-underline:after{
     content: "";
     position: absolute;
-    left: 20%;
+    left: 25%;
     bottom: -5px;
     width: 0px;
-    height: 2px;
+    height: 3px;
     margin: 5px 0 0;
     transition: all 0.2s ease-in-out;
     transition-duration: 0.3s;
     opacity: 0;
-    background-color: #999999;
+    background-color: #F6C026;
   }
   &.to-right-underline:hover:after{
-    width: 60%;
+    width: 50%;
     opacity: 1;
   }
 `;
