@@ -6,11 +6,11 @@ import lombok.Data;
 public class RequestPhaseStartDto {
 
     private Long roomId;
-    private String userNickname;
+//    private String userNickname;
 
-    private Integer phase;
+//    private Integer phase;
 
     // 왼쪽진영 LEFT, 오른쪽 진영 RIGHT
-    private String team;
+//    private String team;
 
 }
