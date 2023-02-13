@@ -52,7 +52,7 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
-    private final Map<String, List<SseEmitter>> roomEmitterMap;
+        private final Map<String, List<SseEmitter>> roomEmitterMap;
 
 
 

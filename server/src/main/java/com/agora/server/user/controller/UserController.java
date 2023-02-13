@@ -14,6 +14,7 @@ import com.agora.server.user.controller.dto.request.LoginRequestDto;
 import com.agora.server.user.controller.dto.request.RequestCertificateByPhoneNumber;
 import com.agora.server.user.controller.dto.request.RequestJoinDto;
 import com.agora.server.user.controller.dto.response.LoginResponseDto;
+import com.agora.server.user.controller.dto.response.UserInfoResponseDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import com.agora.server.user.service.UserService;
@@ -160,12 +161,25 @@ public class UserController {
      * @return
      */
     @GetMapping("get/userinfo")
-    public ResponseEntity<ResponseDTO> getUserInfo(@AuthenticationPrincipal UserAuthenticateInfo userInfo){
+    public ResponseEntity<ResponseDTO> getUserInfo(@AuthenticationPrincipal UserAuthenticateInfo userInfo) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
 
-        String userId = userInfo.getUserId();
-        Optional<User> findUser = userRepository.findById(UUID.fromString(userId));
-        
+        UUID userId = UUID.fromString(userInfo.getUserId());   //실제 사용
+        Optional<User> findUser = userRepository.findById(userId);  // uids -> 테스트용
+
+        if(findUser.isPresent()){
+            User user = findUser.get();
+            UserInfoResponseDto userInfoDto = userService.getUserInfo(user);
+            responseDTO.setBody(userInfoDto);
+            responseDTO.setMessage("조회가 정상적으로 완료되었습니다");
+            responseDTO.setStatusCode(200);
+            responseDTO.setState(true);
+
+        }else{
+            responseDTO.setMessage("존재하지 않는 유저입니다");
+            responseDTO.setState(false);
+        }
+
         // 추후 responseDto 만들어서 반환
 
         return ResponseEntity.ok(responseDTO);
@@ -183,9 +197,8 @@ public class UserController {
         ResponseDTO responseDTO = new ResponseDTO();
 
         String userId = userInfo.getUserId();
-        //String userId = editRequestDto.getUser_id();;   // 테스트를 위해 editRequestDto에서 userId를 담아서 왔음 -> 실제 상황에서는 AccessToken으로 userId를 찾게됨
 
-        userService.editUserInfo(userId, editRequestDto); // 변경감지는 transactional 안에서만 일어나기 때문에 서비스에서 실행해야함
+        userService.editUserInfo(userId, editRequestDto);
 
         responseDTO.setMessage("수정이 정상적으로 완료되었습니다");
 
