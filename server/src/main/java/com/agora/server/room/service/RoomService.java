@@ -553,7 +553,7 @@ public class RoomService {
         }
         responseRoomEnterDto.setReadyUserList(readyUserList);
 
-        if (readyUserList.size() == 6) {
+        if (readyUserList.size() == 5) {
             responseRoomEnterDto.setIsAllReady(true);
         } else {
             responseRoomEnterDto.setIsAllReady(false);
