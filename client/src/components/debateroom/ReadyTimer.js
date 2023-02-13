@@ -6,7 +6,7 @@ function ReadyTimer() {
   return(
     <div>
       <Grid container>
-        <Grid item xs={6}>
+        <Grid item xs={6}> 
           <CountdownDiv className="nickname-root">
             000s
             <NicknameDiv>
