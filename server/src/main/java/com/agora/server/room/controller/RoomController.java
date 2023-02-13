@@ -82,7 +82,7 @@ public class RoomController {
     @GetMapping("room/enter/{roomId}")
     public ResponseEntity<ResponseDTO> roomEnterAndGetRoomEnterDto(@PathVariable Long roomId) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        String openviduToken = openViduService.enterSession(roomId);
+//        String openviduToken = openViduService.enterSession(roomId);
 
         ResponseRoomEnterDto responseRoomEnterDto = new ResponseRoomEnterDto();
 
@@ -90,7 +90,8 @@ public class RoomController {
         // 여기서 responseRoomEnterDto에 넣을 것 다 넣어주기
         roomService.enterRoom(responseRoomEnterDto, roomId);
 
-        responseRoomEnterDto.setOpenviduToken(openviduToken);
+//        responseRoomEnterDto.setOpenviduToken(openviduToken);
+        responseRoomEnterDto.setOpenviduToken("");
 
 
         ResponseDTO responseDTO = new ResponseDTO();
