@@ -13,9 +13,10 @@ api.interceptors.request.use(
             sessionStorage.getItem("user_info")
         )?.accessToken;
         
-        // Authorization 헤더에 토큰 추가
+        // Authorization 헤더에 토큰 추가 및 credential 설정
         if (accessToken) {
-            config["Authorization"] = "Bearer " + accessToken;
+            config.headers["Authorization"] = "Bearer " + accessToken;
+            config.withCredentials = true;
         }
         return config;
     }
