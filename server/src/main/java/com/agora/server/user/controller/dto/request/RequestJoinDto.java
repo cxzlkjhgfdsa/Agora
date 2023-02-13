@@ -15,6 +15,8 @@ public class RequestJoinDto {
     private String user_nickname;
     private String user_phone;
     private String user_photo;
+
+    private String user_photo_name;
     private SocialType user_social_type;
     private String user_social_id;
     private List<Long> categories;
