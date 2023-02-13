@@ -13,8 +13,7 @@ const ProgressBarBox = styled.div`
   background-color: #F6C026;
 
   // 애니메이션 적용
-  animation: ${ Expand } 0.5s 0.01s ease 1 forwards;
-  transition: all 1s
+  animation: ${ Expand } 0.5s 1ms ease 1 forwards;
 `
 
 function ProgressBar() {

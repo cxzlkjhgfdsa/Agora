@@ -18,24 +18,34 @@ import Welcome from "pages/main/Welcome";
 import DebateList from "pages/main/debate/DebateList";
 import DebateRoom from "pages/main/debate/DebateRoom";
 import MyPage from "pages/main/MyPage";
+import ScrollToTop from "components/common/ScrollToTop";
+import LoginRedirectHandler from "components/login/LoginRedirectHandler";
+import SearchRoom from "pages/main/debate/SearchRoom";
+import TestPage from "pages/TestPage";
+import TestMoadlPage from "pages/TestModalPage";
+
 
 function App() {
   return (
     <RecoilRoot>
       <GlobalStyle />
       <BrowserRouter>
+        <ScrollToTop />
         <Header />
         <main>
           <Routes>
             <Route path="/" element={<Welcome />} />
+            <Route path="/user/login/redirect-handler" element={<LoginRedirectHandler />} />
             <Route path="/user/login" element={<Login />} />
-            <Route path="/user/signup/SNS" element={<SignUpSNS />} />
+            <Route path="/user/signup/SNS" element={<Login />} />
             <Route path="/user/signup/input" element={<SignUpInput />} />
             <Route path="/user/signup/category" element={<SignUpCategory />} />
             <Route path="/user/signup/complete" element={<SignUpComplete />} />
             <Route path="/user/mypage" element={<MyPage />} />
             <Route path="/debate/list" element={<DebateList />} />
             <Route path="/debate/room/:roomId" element={<DebateRoom />} />
+            <Route path="/debate/search" element={<SearchRoom />} />
+            <Route path="/test-page" element={<TestMoadlPage />} />
           </Routes>
         </main>
       </BrowserRouter>

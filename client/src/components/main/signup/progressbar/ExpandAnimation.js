@@ -24,7 +24,7 @@ const Expand3 = keyframes`
     width: 66.6vw;
   }
   to {
-    width: 90vw;
+    width: 100vw;
   }
 `
 function Expand() {
