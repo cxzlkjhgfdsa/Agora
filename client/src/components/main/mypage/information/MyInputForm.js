@@ -9,6 +9,9 @@ const StyledMyInputForm = styled.input`
   // 글꼴 설정
   font-size: 1.5rem;
   letter-spacing: -0.05rem;
+  
+  border: 1px solid #DCDCDC;
+  border-radius: 10px;
 `;
 
 function MyInputForm({ dataId, value, setValue }) {
