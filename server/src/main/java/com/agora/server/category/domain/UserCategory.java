@@ -30,4 +30,8 @@ public class UserCategory {
         userCategory.category = category;
         return userCategory;
     }
+
+    public void setCategory(Category category){
+        this.category = category;
+    }
 }

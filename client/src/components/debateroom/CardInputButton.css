@@ -1,0 +1,54 @@
+* {
+    font-family: 'Inter', san-serif !important;
+    letter-spacing: -0.5px;
+}
+
+.card-input {
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.card-input input[type="file"] {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+
+.card-input label {
+    color: #bbbbbb;
+    font-size: inherit;
+
+    background-color: #eeeeee;
+    width: calc(80px + 2vw);
+    height: calc(80px + 2vw);
+    cursor: pointer;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border: 2px solid #bbbbbb;
+    border-radius: 3px;
+}
+
+.card-input label:hover{
+    animation-duration: 0.3s;
+    animation-name: labelhover;
+    animation-fill-mode: forwards;
+}
+
+@keyframes labelhover {
+    
+    to {
+        background-color: #bbbbbb;
+        color: #eeeeee
+    }
+}
