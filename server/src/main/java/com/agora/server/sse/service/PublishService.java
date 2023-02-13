@@ -63,8 +63,7 @@ public class PublishService {
             String roomMessage = message.toString();
             try {
                 emitter.send(SseEmitter.event().data(roomMessage));
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
             }
         });
 
