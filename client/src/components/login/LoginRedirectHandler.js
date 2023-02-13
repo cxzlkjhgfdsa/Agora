@@ -63,7 +63,7 @@ function LoginRedirectHandler() {
         }
 
         getAccessTokenWithUserInfos().then(() => navigate("/debate/list"));
-    }, [setUserInfo, axios, navigate, userId]);
+    }, []);
 
     return (
         <ErrorBoundary>
