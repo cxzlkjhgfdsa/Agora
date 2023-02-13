@@ -436,22 +436,22 @@ public class RoomService {
      * 10초마다 Redis의 실시간 시청자 수 정보를 가져와서
      * DB의 실시간 시청자 수 정보를 갱신합니다
      */
-    @Scheduled(cron = "0/20 * * * * *")
-    @Transactional
-    public void updateViewCount() {
-        List<Room> all = roomRepository.findAll();
-        for (Room room : all) {
-            Long roomId = room.getRoom_id();
-            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
-
-            room.roomWatchCntUpdate(watchCnt);
-
-            String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
-            String roomWatchCntUpdate = redisMessageUtil.roomWatchCntUpdate(room.getRoom_watch_cnt());
-            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
-        }
-    }
+//    @Scheduled(cron = "0/20 * * * * *")
+//    @Transactional
+//    public void updateViewCount() {
+//        List<Room> all = roomRepository.findAll();
+//        for (Room room : all) {
+//            Long roomId = room.getRoom_id();
+//            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+//            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
+//
+//            room.roomWatchCntUpdate(watchCnt);
+//
+//            String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
+//            String roomWatchCntUpdate = redisMessageUtil.roomWatchCntUpdate(room.getRoom_watch_cnt());
+//            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
+//        }
+//    }
 
 
     /**
@@ -627,6 +627,12 @@ public class RoomService {
             Integer phaseRemainSecond = 0;
             // 1,2 토론 페이즈 180초 투표 페이즈 60초 결과 페이즈 10초
             switch (phaseDetail) {
+                case 0:
+                    if(phase==1){
+                        phaseRemainSecond = 10 - phaseTimeDifference.intValue();
+                        break;
+                    }
+                    break;
                 case 1:
                 case 2:
                     phaseRemainSecond = 180 - phaseTimeDifference.intValue();
