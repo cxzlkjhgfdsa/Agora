@@ -183,7 +183,7 @@ public class DebateService {
         }
 
         Boolean isAllReady = false;
-        if (readyUserList.size() == 6) {
+        if (readyUserList.size() == 5) {
             isAllReady = true;
         }
 
@@ -320,12 +320,16 @@ public class DebateService {
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
+        String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
+        Long serverTime = System.currentTimeMillis() / 1000L;
+        redisTemplate.opsForValue().set(phaseStartTimeKey, serverTime);
+
         ScheduledFuture<?> future = executorService.schedule(new Runnable() {
             @Override
             public void run() {
                 nextPhase(requestDebateStartDto.getRoomId());
             }
-        }, 5, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
         // 테스트용 5초, 실제 서비스 10초
         scheduledFutures.put(roomId + "_startWaitPhase", future);
 
@@ -468,7 +472,7 @@ public class DebateService {
                 // 여기서 토론 결과 페이즈로 넘기기
 
             }
-        }, 60, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
         // 테스트용 10초 실제 60초
         scheduledFutures.put(roomId + "_vote", future);
 
@@ -560,7 +564,7 @@ public class DebateService {
                     redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
                 }
             }, 10, TimeUnit.SECONDS);
-            // 테스트 10초 실제 서비스 60초
+            // 실제서비스 60초
             scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
 
             ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
