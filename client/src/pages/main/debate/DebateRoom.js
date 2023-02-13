@@ -51,6 +51,9 @@ function DebateRoom() {
     const [voteRightResult, setVoteRightResult] = useRecoilState(voteRightResultState);
     const [role, setRole] = useRecoilState(debateUserRoleState);
 
+    // 임시 데이터
+    const [nickname, setNickname] = useState("");
+
     // // listening
     const [listening, setListening] = useState(false);
     const [meventSource, msetEventSource] = useState(undefined);
@@ -90,94 +93,73 @@ function DebateRoom() {
             console.log(error)
             })
         }
-    get();
-    // SSE 연결
-    let eventSource = undefined;        
-        eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${roomId}`)
-        msetEventSource(eventSource);
-        console.log("eventSource", eventSource);
-
-        eventSource.onopen = event => {
-            console.log("main 연결완료");
-        };
-
-        eventSource.onmessage = event => {
-            console.log("onmessage");
-
-            const data = JSON.parse(event.data)
-            // SSE 수신 데이터 처리
-            console.log(data);
-            // 1. ready 신호 처리
-            if (data.event === "ready") {
-            setReadyUserList(data.readyUserList);
-            if (data.allReady) {
-                setIsAllReady(true);
-            }
+        get();
+        // SSE 연결
+        let eventSource = undefined;        
+        if(!listening) {
+            const baseURL = process.env.REACT_APP_SERVER_BASE_URL
+            console.log("listening", listening);
+      
+            eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${roomId}`)
+            msetEventSource(eventSource);
+            console.log("eventSource", eventSource);
+      
+            eventSource.onopen = event => {
+                console.log("main 연결완료");
             };
-            // 2. start 신호 처리
-            if (data.event === "startDebate") {
-            setIsStart(true);
-            setPhaseNum(data.roomPhase);
-            setPhaseDetail(data.roomPhaseDetail);
-            setTimer(10);         
+      
+            eventSource.onmessage = event => {
+              console.log("onmessage");
+      
+              const data = JSON.parse(event.data)
+              // SSE 수신 데이터 처리
+              console.log(data);
+              // 1. ready 신호 처리
+              if (data.event === "ready") {
+                setReadyUserList(data.readyUserList);
+                if (data.allReady) {
+                  setIsAllReady(true);
+                }
+              };
+              // 2. phase 신호 처리
+              // 2.1.
+              if (data.event === "startDebate") {
+                setIsStart(true);
+                setPhaseNum(data.roomPhase);
+                setPhaseDetail(data.roomPhaseDetail);
+                setTimer(10);         
+              };
+              if (data.event === "startSpeakPhase") {
+                setPhaseNum(data.roomPhase);
+                setPhaseDetail(data.roomPhaseDetail);
+                // timer 처리  
+                setTimer(180);
+              }
+              // 2.1. vote 신호 처리
+              if (data.event === "startVotePhase") {
+                setPhaseNum(data.roomPhase);
+                setPhaseDetail(data.roomPhaseDetail);
+                // timer 처리
+                setTimer(60);          
+              }
+      
+      
             };
-            if (data.event === "startSpeakPhase") {
-            setPhaseNum(data.roomPhase);
-            setPhaseDetail(data.roomPhaseDetail);
-            // timer 처리  
-            setTimer(180);
-            }
-            // 3. enter 신호 처리
-
-
-        };
-
-        eventSource.onerror = event => {
-            console.log(event.target.readyState);
-            if (event.target.readyState === EventSource.CLOSED) {
-            console.log("eventsource closed (" + event.target.readyState + ")");
-            }
-            get();
-            // SSE 연결
-            let eventSource = undefined;
-
-            if (!listening) {
-                const baseURL = process.env.REACT_APP_SERVER_BASE_URL;
-                console.log("listening", listening);
-
-                eventSource = new EventSource(`${baseURL}/api/v2/room/subscribe/${roomId}`);
-                msetEventSource(eventSource);
-                console.log("eventSource", eventSource);
-
-                eventSource.onopen = event => {
-                    console.log("main 연결완료");
-                };
-
-                eventSource.onmessage = event => {
-                    console.log("onmessage");
-
-                    const data = JSON.parse(event.data);
-                    // SSE 수신 데이터 처리
-                    // 다음 코드 ~
-
-                    console.log(data);
-                };
-
-                eventSource.onerror = event => {
-                    console.log(event.target.readyState);
-                    if (event.target.readyState === EventSource.CLOSED) {
-                        console.log("eventsource closed (" + event.target.readyState + ")");
-                    }
-                    eventSource.close();
-                };
-                setListening(true);
-            }
-            return () => {
-                eventSource.close();
-                console.log("eventsource closed");
+      
+            eventSource.onerror = event => {
+              console.log(event.target.readyState);
+              if (event.target.readyState === EventSource.CLOSED) {
+                console.log("eventsource closed (" + event.target.readyState + ")");
+              }
+              eventSource.close();
             };
-        }
-    }, []);
+            setListening(true);  
+          }
+          return () => {
+            eventSource.close();
+            console.log("eventsource closed")
+          };
+        }, [])
 
     useEffect(() => {
         console.log(roomToken);
@@ -276,10 +258,10 @@ function DebateRoom() {
                         <Grid item xs={6}>
                             <DebaterBox data={leftUserList} sessionNum={phaseNum} />
                         </Grid>
-                    <Grid item xs={6}>
-                    <DebaterBox data={rightUserList} sessionNum={phaseNum} />
+                        <Grid item xs={6}>
+                            <DebaterBox data={rightUserList} sessionNum={phaseNum} />
+                        </Grid>
                     </Grid>
-                </Grid>
                 </Grid>
                 <Grid item xs={12} md={5} lg={4}>
                     <Grid container spacing={3}>
