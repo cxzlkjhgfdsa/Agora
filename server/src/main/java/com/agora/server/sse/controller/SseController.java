@@ -17,7 +17,6 @@ public class SseController {
     @GetMapping(value = "room/subscribe/{roomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectRoom(@PathVariable String roomId) {
         SseEmitter sseEmitter = publishService.subscribe(roomId);
-        System.out.println("요청옴");
         return ResponseEntity.ok(sseEmitter);
     }
 
