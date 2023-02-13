@@ -58,7 +58,7 @@ const MemberDiv = styled.div`
   width: 100%;
   height: 60px;
 
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
 
   display: flex;
@@ -69,7 +69,7 @@ const MemberDiv = styled.div`
 `
 
 const NicknameDiv = styled.div`
-  width: 50%;
+  width: 90%;
   height: 100%;
 
   display: flex;

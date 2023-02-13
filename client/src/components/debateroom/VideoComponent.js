@@ -471,12 +471,12 @@ class VideoComponent extends Component {
             </Grid>
           </div>
         ) : null}
-        {/* <Tempbutton onClick={this.changePhaseNum}>
+        <Tempbutton onClick={this.changePhaseNum}>
           phaseNum:{this.state.phaseNum}
         </Tempbutton>
         <Tempbutton onClick={this.changePhaseDetail}>
           phaseDetail:{this.state.phaseDetail}
-        </Tempbutton> */}
+        </Tempbutton>
       </div>
     )
   }

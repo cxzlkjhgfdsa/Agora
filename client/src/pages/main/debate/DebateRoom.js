@@ -18,6 +18,7 @@ import customAxios from "utils/customAxios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
+import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import getToken from "components/debateroom/GetToken";
  
 
@@ -25,8 +26,8 @@ function DebateRoom() {
 
   // state
   const { roomId } = useParams();
-  // const userInfo = useRecoilValue(userInfoState);
-  // const nickName = userInfo?.userNickname;
+  const userInfo = useRecoilValue(userInfoState);
+  // const nickname = userInfo?.userNickname;
   const [currentSpeakingTeam, setCurrentSpeakingTeam] = useState("");
   const [currentSpeakingUser, setCurrentSpeakingUser] = useState("");
   const [isAllReady, setIsAllReady] = useState(false)
@@ -37,7 +38,7 @@ function DebateRoom() {
   const [readyUserList, setReadyUserList] = useRecoilState(readyUserListState);
   const [master, setMaster] = useState("");
   // const [roomName, setRoomName] = useState("");
-  // const [roomToken, setRoomToken] = useState(undefined);
+  const [roomToken, setRoomToken] = useState(undefined);
   const [phaseNum, setPhaseNum] = useRecoilState(phaseNumberState);
   const [phaseDetail, setPhaseDetail] = useRecoilState(phaseDetailState);
   const [rightOpinion, setRightOpinion] = useState("");
@@ -48,102 +49,101 @@ function DebateRoom() {
   const [watchNum, setWatchNum] = useState(0);
   const [voteLeftResult, setVoteLeftResult] = useRecoilState(voteLeftResultState);
   const [voteRightResult, setVoteRightResult] = useRecoilState(voteRightResultState);
-  // role recoil 추가할 것!
-  const [role, setRole] = useState("viewer");
-
+  const [role, setRole] = useRecoilState(debateUserRoleState);
+  
   // // listening
-  // const [listening, setListening] = useState(false);
-  // const [meventSource, msetEventSource] = useState(undefined);
-
+  const [listening, setListening] = useState(false);
+  const [meventSource, msetEventSource] = useState(undefined);
+  
   // 임시 데이터
   const [roomName, setRoomName] = useState("여기는 제목입니다.");
-  const [roomToken, setRoomToken] = useState(undefined);
   const [nickname, setNickname] = useState("")
-
-  useEffect(() => {
-   getToken(roomId).then(token => {
-    setRoomToken(token);
-   })
-  }, [])
+  // const [role, setRole] = useState("viewer");
+  
+  // useEffect(() => {
+  //  getToken(roomId).then(token => {
+  //   setRoomToken(token);
+  //  })
+  // }, [])
 
   useEffect(() => {
     console.log(roomToken)
   }, [roomToken])
 
-  // useEffect(() => {
-  //   // 초기 데이터 받기
-  //   async function get() {
-  //     const axios = customAxios();
-  //     axios
-  //       .get(`/api/v2/room/enter/${roomId}`)
-  //       .then(response => {
-  //         const data = response.data.body
-  //         setCurrentSpeakingTeam(data.currentSpeakingTeam);
-  //         setCurrentSpeakingUser(data.currentSpeakingUser);
-  //         setIsAllReady(data.isAllReady);
-  //         setLeftCardList(data.leftOpenedCardList);
-  //         setLeftUserList(data.leftUserList);
-  //         setRoomToken(data.openviduToken);
-  //         setReadyUserList(data.readyUserList);
-  //         setRightCardList(data.rightOpenedCardList);
-  //         setRightUserList(data.rightUserList);
-  //         setMaster(data.roomCreaterName);
-  //         setRoomName(data.roomName);
-  //         setRightOpinion(data.roomOpinionRight);
-  //         setLeftOpinion(data.roomOpinionLeft);
-  //         setPhase(data.roomPhase);
-  //         setPhaseDetail(data.roomPhaseDetail);
-  //         setTimer(data.roomPhaseRemainSecond);
-  //         setIsStart(data.roomPhase);
-  //         setCounter(data.roomTimeInProgressSecond);
-  //         setWatchNum(data.roomWatchCnt);
-  //         setVoteLeftResult(data.voteLeftResultsList);
-  //         setVoteRightResult(data.voteRightResultsList);
-  //       })
-  //       .catch(error => {
-  //         console.log(error)
-  //       })
-  //   }
-  //   // get();
-  //   // SSE 연결
-  //   let eventSource = undefined;
+  useEffect(() => {
+    // 초기 데이터 받기
+    async function get() {
+      const axios = customAxios();
+      axios
+        .get(`/api/v2/room/enter/${roomId}`)
+        .then(response => {
+          const data = response.data.body
+          setCurrentSpeakingTeam(data.currentSpeakingTeam);
+          setCurrentSpeakingUser(data.currentSpeakingUser);
+          setIsAllReady(data.isAllReady);
+          setLeftCardList(data.leftOpenedCardList);
+          setLeftUserList(data.leftUserList);
+          setRoomToken(data.openviduToken);
+          setReadyUserList(data.readyUserList);
+          setRightCardList(data.rightOpenedCardList);
+          setRightUserList(data.rightUserList);
+          setMaster(data.roomCreaterName);
+          setRoomName(data.roomName);
+          setRightOpinion(data.roomOpinionRight);
+          setLeftOpinion(data.roomOpinionLeft);
+          setPhaseNum(data.roomPhase);
+          setPhaseDetail(data.roomPhaseDetail);
+          setTimer(data.roomPhaseRemainSecond);
+          setIsStart(data.roomPhase);
+          setCounter(data.roomTimeInProgressSecond);
+          setWatchNum(data.roomWatchCnt);
+          setVoteLeftResult(data.voteLeftResultsList);
+          setVoteRightResult(data.voteRightResultsList);
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+    get();
+    // SSE 연결
+    let eventSource = undefined;
 
-  //   if(!listening) {
-  //     const baseURL = process.env.REACT_APP_SERVER_BASE_URL
-  //     console.log("listening", listening);
+    if(!listening) {
+      const baseURL = process.env.REACT_APP_SERVER_BASE_URL
+      console.log("listening", listening);
 
-  //     eventSource = new EventSource(`${baseURL}/api/v2/room/subscribe/${roomId}`)
-  //     msetEventSource(eventSource);
-  //     console.log("eventSource", eventSource);
+      eventSource = new EventSource(`${baseURL}/api/v2/room/subscribe/${roomId}`)
+      msetEventSource(eventSource);
+      console.log("eventSource", eventSource);
 
-  //     eventSource.onopen = event => {
-  //         console.log("main 연결완료");
-  //     };
+      eventSource.onopen = event => {
+          console.log("main 연결완료");
+      };
 
-  //     eventSource.onmessage = event => {
-  //       console.log("onmessage");
+      eventSource.onmessage = event => {
+        console.log("onmessage");
 
-  //       const data = JSON.parse(event.data)
-  //       // SSE 수신 데이터 처리
-  //       // 다음 코드 ~
+        const data = JSON.parse(event.data)
+        // SSE 수신 데이터 처리
+        // 다음 코드 ~
 
-  //       console.log(data)
-  //     };
+        console.log(data)
+      };
 
-  //     eventSource.onerror = event => {
-  //       console.log(event.target.readyState);
-  //       if (event.target.readyState === EventSource.CLOSED) {
-  //         console.log("eventsource closed (" + event.target.readyState + ")");
-  //       }
-  //       eventSource.close();
-  //     };
-  //     setListening(true);  
-  //   }
-  //   return () => {
-  //     eventSource.close();
-  //     console.log("eventsource closed")
-  //   };
-  // }, [])
+      eventSource.onerror = event => {
+        console.log(event.target.readyState);
+        if (event.target.readyState === EventSource.CLOSED) {
+          console.log("eventsource closed (" + event.target.readyState + ")");
+        }
+        eventSource.close();
+      };
+      setListening(true);  
+    }
+    return () => {
+      eventSource.close();
+      console.log("eventsource closed")
+    };
+  }, [])
 
   // temp button to control session
   const handleStart = () => {
@@ -214,10 +214,8 @@ function DebateRoom() {
     role: role,
     phaseNum: phaseNum,
     phaseDetail: phaseDetail,
-    // leftOpinion: leftOpinion,
-    // rightOpinion: rightOpinion,
-    leftOpinion: "A 쪽 주장입니다",
-    rightOpinion: "B 쪽 주장입니다",
+    leftOpinion: leftOpinion,
+    rightOpinion: rightOpinion,
     leftUser: leftUserList,
     rightUser: rightUserList,
   };
