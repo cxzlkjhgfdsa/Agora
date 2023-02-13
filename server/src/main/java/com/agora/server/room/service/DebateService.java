@@ -183,7 +183,7 @@ public class DebateService {
         }
 
         Boolean isAllReady = false;
-        if (readyUserList.size() == 6) {
+        if (readyUserList.size() == 5) {
             isAllReady = true;
         }
 
@@ -472,7 +472,7 @@ public class DebateService {
                 // 여기서 토론 결과 페이즈로 넘기기
 
             }
-        }, 60, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
         // 테스트용 10초 실제 60초
         scheduledFutures.put(roomId + "_vote", future);
 
@@ -563,7 +563,7 @@ public class DebateService {
                     String debateEndMessage = redisMessageUtil.debateEndMessage();
                     redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
                 }
-            }, 60, TimeUnit.SECONDS);
+            }, 10, TimeUnit.SECONDS);
             // 실제서비스 60초
             scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
 
@@ -614,7 +614,7 @@ public class DebateService {
                     roomRepository.delete(roomRepository.findById(roomId).get());
                     publishService.unsubscribe(roomId.toString());
                 }
-            }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 60, TimeUnit.SECONDS);
+            }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
             // 테스트 10초 실제 서비스 60초
             scheduledFutures.put(roomId + "_removeRoomInfo", futureRemoveRoomInfos);
 

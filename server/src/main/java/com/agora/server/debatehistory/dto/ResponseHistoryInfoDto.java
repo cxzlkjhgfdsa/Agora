@@ -1,6 +1,7 @@
 package com.agora.server.debatehistory.dto;
 
 import com.agora.server.debatehistory.domain.DebateHistory;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,6 @@ public class ResponseHistoryInfoDto {
     private String leftOpinion;
     private String rightOpinion;
 
-    // 왼쪽팀 0 오른쪽팀 1
     private String userTeam;
 
     private List<Integer> leftVoteList;
@@ -30,33 +30,42 @@ public class ResponseHistoryInfoDto {
     private String category;
 
 
-    public ResponseHistoryInfoDto(DebateHistory debateHistory) {
-        this.roomName = debateHistory.getRoom_name();
-        this.leftOpinion = debateHistory.getLeft_opinion();
-        this.rightOpinion = debateHistory.getRight_opinion();
-        this.userTeam = debateHistory.getUser_team();
+    @QueryProjection
+    public ResponseHistoryInfoDto(String roomName, String leftOpinion, String rightOpinion, String userTeam,
+                                  Integer phase1LeftVote, Integer phase2LeftVote, Integer phase3LeftVote,
+                                  Integer phase1RightVote, Integer phase2RightVote, Integer phase3RightVote,
+                                  String phase1PlayerResult, String phase2PlayerResult, String phase3PlayerResult,
+                                  String totalPlayerResult,
+                                  String leftPlayer1Nickname, String leftPlayer2Nickname, String leftPlayer3Nickname,
+                                  String rightPlayer1Nickname, String rightPlayer2Nickname, String rightPlayer3Nickname,
+                                  String category
+    ) {
+        this.roomName = roomName;
+        this.leftOpinion = leftOpinion;
+        this.rightOpinion = rightOpinion;
+        this.userTeam = userTeam;
         this.leftVoteList = new ArrayList<>();
-        this.leftVoteList.add(debateHistory.getPhase1_left_vote());
-        this.leftVoteList.add(debateHistory.getPhase2_left_vote());
-        this.leftVoteList.add(debateHistory.getPhase3_left_vote());
+        this.leftVoteList.add(phase1LeftVote);
+        this.leftVoteList.add(phase2LeftVote);
+        this.leftVoteList.add(phase3LeftVote);
         this.rightVoteList = new ArrayList<>();
-        this.rightVoteList.add(debateHistory.getPhase1_right_vote());
-        this.rightVoteList.add(debateHistory.getPhase2_right_vote());
-        this.rightVoteList.add(debateHistory.getPhase3_right_vote());
+        this.rightVoteList.add(phase1RightVote);
+        this.rightVoteList.add(phase2RightVote);
+        this.rightVoteList.add(phase3RightVote);
         this.playerResultList = new ArrayList<>();
-        this.playerResultList.add(debateHistory.getPhase1_player_result());
-        this.playerResultList.add(debateHistory.getPhase2_player_result());
-        this.playerResultList.add(debateHistory.getPhase3_player_result());
-        this.total_player_result = debateHistory.getTotal_player_result();
+        this.playerResultList.add(phase1PlayerResult);
+        this.playerResultList.add(phase2PlayerResult);
+        this.playerResultList.add(phase3PlayerResult);
+        this.total_player_result = totalPlayerResult;
         this.leftPlayerList = new ArrayList<>();
-        this.leftPlayerList.add(debateHistory.getLeft_player1_nickname());
-        this.leftPlayerList.add(debateHistory.getLeft_player2_nickname());
-        this.leftPlayerList.add(debateHistory.getLeft_player3_nickname());
+        this.leftPlayerList.add(leftPlayer1Nickname);
+        this.leftPlayerList.add(leftPlayer2Nickname);
+        this.leftPlayerList.add(leftPlayer3Nickname);
         this.rightPlayerList = new ArrayList<>();
-        this.rightPlayerList.add(debateHistory.getRight_player1_nickname());
-        this.rightPlayerList.add(debateHistory.getRight_player2_nickname());
-        this.rightPlayerList.add(debateHistory.getRight_player3_nickname());
-        this.category = debateHistory.getCategory();
+        this.rightPlayerList.add(rightPlayer1Nickname);
+        this.rightPlayerList.add(rightPlayer2Nickname);
+        this.rightPlayerList.add(rightPlayer3Nickname);
+        this.category = category;
     }
 
 }
