@@ -1,6 +1,8 @@
 package com.agora.server.debatehistory.service;
 
 import com.agora.server.debatehistory.domain.DebateHistory;
+import com.agora.server.debatehistory.dto.ResponseHistoryInfoDto;
+import com.agora.server.debatehistory.repository.DebateHistoryQueryRepository;
 import com.agora.server.debatehistory.repository.DebateHistoryRepository;
 import com.agora.server.room.domain.Room;
 import com.agora.server.room.repository.RoomRepository;
@@ -8,6 +10,8 @@ import com.agora.server.room.util.RedisKeyUtil;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.parameters.P;
@@ -27,14 +31,16 @@ public class DebateHistoryService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final DebateHistoryRepository debateHistoryRepository;
+    private final DebateHistoryQueryRepository debateHistoryQueryRepository;
 
     @Transactional
     public void saveHistory(DebateHistory debateHistory) {
         debateHistoryRepository.save(debateHistory);
     }
 
-    public List<DebateHistory> findByUserId(String userId) {
-       return debateHistoryRepository.findByUser_id(userId);
+    public Page<ResponseHistoryInfoDto> findByUserId(String userId, Pageable pageable) {
+       Page<ResponseHistoryInfoDto> pageByRoomnamePages = debateHistoryQueryRepository.findAllByUserIdPages(userId, pageable);
+      return pageByRoomnamePages;
     }
 
     public DebateHistory createDebateHistory(Long roomId,String userNickname,String userTeam){
@@ -43,14 +49,14 @@ public class DebateHistoryService {
         String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
         List<Integer> voteLeftList = new ArrayList<>();
         for(int i = 1; i <= 3; i++){
-            String voteLeftKey = redisKeyUtil.voteLeftKey(roomId, i);
-            Integer voteLeftNum = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
+            String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, i);
+            Integer voteLeftNum = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
             voteLeftList.add(voteLeftNum);
         }
         List<Integer> voteRightList = new ArrayList<>();
         for(int i = 1; i <= 3; i++){
-            String voteRightKey = redisKeyUtil.voteRightKey(roomId, i);
-            Integer voteRightNum = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+            String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, i);
+            Integer voteRightNum = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
             voteRightList.add(voteRightNum);
         }
         List<String> playerWinList = new ArrayList<>();
