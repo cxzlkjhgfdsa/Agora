@@ -53,7 +53,10 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
+    private final Map<String, List<SseEmitter>> roomEmitterMap;
+
     private final PublishService publishService;
+
 
     /**
      * 토론자 입장 Redis Pub/Sub
