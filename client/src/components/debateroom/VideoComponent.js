@@ -170,6 +170,31 @@ class VideoComponent extends Component {
             console.warn(exception);
         });
 
+        // reconnection events
+        // Signaling plane breaks
+        mySession.on('reconnecting', () => console.warn('Oops! Trying to reconnect to the session'));
+        mySession.on('reconnected', () => console.log('Hurray! You successfully reconnected to the session'));
+        mySession.on('sessionDisconnected', (event) => {
+            if (event.reason === 'networkDisconnect') {
+                console.warn('Dang-it... You lost your connection to the session');
+            } else {
+                // Disconnected from the session for other reason than a network drop
+            }
+        });
+        // Media plane breaks
+        mySession.on('exception', (event) => {
+          if (event.name === 'ICE_CONNECTION_FAILED') {
+            var stream = event.origin;
+            console.warn('Stream ' + stream.streamId + ' broke!');
+            console.warn('Reconnection process automatically started');
+          }
+          if (event.name === 'ICE_CONNECTION_DISCONNECTED') {
+            var stream = event.origin;
+            console.warn('Stream ' + stream.streamId + ' disconnected!');
+            console.warn('Giving it some time to be restored. If not possible, reconnection process will start');
+          }
+        });      
+
         // --- 4) Connect to the session with a valid user token ---
         // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
         // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname

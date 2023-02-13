@@ -3,12 +3,14 @@ import styled from "styled-components";
 import Grid from "@mui/material/Grid";
 
 // recoil
-import { useRecoilValue } from "recoil";
-import { phaseNumberState, phaseDetailState, leftUserListState, rightUserListState } from "stores/DebateStates";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { phaseNumberState, phaseDetailState, leftUserListState, rightUserListState, counterState, timerState } from "stores/DebateStates";
 
 function Timer() {
-  const [count, setCount] = useState(0);
-  const [timer, setTimer] = useState(180);
+  // const [count, setCount] = useState(0);
+  // const [timer, setTimer] = useState(180);
+  const [count, setCount] = useRecoilState(counterState);
+  const [timer, setTimer] = useRecoilState(timerState);
   const phaseNum = useRecoilValue(phaseNumberState);
   const phaseDetail = useRecoilValue(phaseDetailState);
   const leftUserList = useRecoilValue(leftUserListState);
@@ -33,10 +35,10 @@ function Timer() {
     }
   },[])
 
-  useEffect(() => {
-    const newTimer = phaseDetail===1 ? 180 : phaseDetail===2 ? 180 : phaseDetail===3 ? 60 : 10
-    setTimer(newTimer)
-  }, [phaseDetail])
+  // useEffect(() => {
+  //   const newTimer = phaseDetail===1 ? 180 : phaseDetail===2 ? 180 : phaseDetail===3 ? 60 : 10
+  //   setTimer(newTimer)
+  // }, [phaseDetail])
 
   return(
     <div>

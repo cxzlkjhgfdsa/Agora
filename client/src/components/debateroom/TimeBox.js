@@ -14,27 +14,25 @@ import customAxios from "utils/customAxios";
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isStartState, readyUserListState, phaseDetailState, phaseNumberState, cardNumState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
-import { userInfoState } from "stores/userInfoState";
-// roleState 추가할 것!
 
 
-function TimeBox({isAllReady, roomId, role}) {
+
+function TimeBox({isAllReady, roomId, role, nickname}) {
   // state
   const [isReady, setIsReady] = useState(false);
   
   // recoil state
   const cardNum = useRecoilValue(cardNumState);
-  const userInfo = useRecoilValue(userInfoState);
   const voteLeftResult = useRecoilValue(voteLeftResultState);
   const voteRightResult = useRecoilValue(voteRightResultState);
   const [isStart, setIsStart] = useRecoilState(isStartState);
   const [phaseDetail, setPhaseDetail] = useRecoilState(phaseDetailState);
+  
 
 
   // toggle ready state
   const toggleReady = () => {
 
-    const nickname = userInfo.userNickname;
     setIsReady(true);
 
     // send a user data who clicks the ready button
@@ -92,7 +90,7 @@ function TimeBox({isAllReady, roomId, role}) {
               <Grid item xs={4}>
                 <CardNumDiv>
                   <TitleDiv>
-                    카드 등록
+                    카드 등록 {nickname}
                   </TitleDiv>
                   <div>
                     {cardNum}/2장

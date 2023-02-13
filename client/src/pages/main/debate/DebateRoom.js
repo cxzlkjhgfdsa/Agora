@@ -16,10 +16,11 @@ import customAxios from "utils/customAxios";
 
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
+import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import getToken from "components/debateroom/GetToken";
+import axios from "axios";
  
 
 function DebateRoom() {
@@ -37,14 +38,14 @@ function DebateRoom() {
   const [rightUserList, setRightUserList] = useRecoilState(rightUserListState);
   const [readyUserList, setReadyUserList] = useRecoilState(readyUserListState);
   const [master, setMaster] = useState("");
-  // const [roomName, setRoomName] = useState("");
+  const [roomName, setRoomName] = useState("");
   const [roomToken, setRoomToken] = useState(undefined);
   const [phaseNum, setPhaseNum] = useRecoilState(phaseNumberState);
   const [phaseDetail, setPhaseDetail] = useRecoilState(phaseDetailState);
   const [rightOpinion, setRightOpinion] = useState("");
   const [leftOpinion, setLeftOpinion] = useState("");
-  const [timer, setTimer] = useState(0);
-  const [counter, setCounter] = useState(0);
+  const [timer, setTimer] = useRecoilState(timerState);
+  const [counter, setCounter] = useRecoilState(counterState);
   const [isStart, setIsStart] = useRecoilState(isStartState);
   const [watchNum, setWatchNum] = useState(0);
   const [voteLeftResult, setVoteLeftResult] = useRecoilState(voteLeftResultState);
@@ -56,7 +57,7 @@ function DebateRoom() {
   const [meventSource, msetEventSource] = useState(undefined);
   
   // 임시 데이터
-  const [roomName, setRoomName] = useState("여기는 제목입니다.");
+  // const [roomName, setRoomName] = useState("여기는 제목입니다.");
   const [nickname, setNickname] = useState("")
   // const [role, setRole] = useState("viewer");
   
@@ -75,7 +76,7 @@ function DebateRoom() {
     async function get() {
       const axios = customAxios();
       axios
-        .get(`/api/v2/room/enter/${roomId}`)
+        .get(`/v2/room/enter/${roomId}`)
         .then(response => {
           const data = response.data.body
           setCurrentSpeakingTeam(data.currentSpeakingTeam);
@@ -112,7 +113,7 @@ function DebateRoom() {
       const baseURL = process.env.REACT_APP_SERVER_BASE_URL
       console.log("listening", listening);
 
-      eventSource = new EventSource(`${baseURL}/api/v2/room/subscribe/${roomId}`)
+      eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${roomId}`)
       msetEventSource(eventSource);
       console.log("eventSource", eventSource);
 
@@ -125,9 +126,30 @@ function DebateRoom() {
 
         const data = JSON.parse(event.data)
         // SSE 수신 데이터 처리
-        // 다음 코드 ~
+        console.log(data);
+        // 1. ready 신호 처리
+        if (data.event === "ready") {
+          setReadyUserList(data.readyUserList);
+          if (data.allReady) {
+            setIsAllReady(true);
+          }
+        };
+        // 2. start 신호 처리
+        if (data.event === "startDebate") {
+          setIsStart(true);
+          setPhaseNum(data.roomPhase);
+          setPhaseDetail(data.roomPhaseDetail);
+          setTimer(10);         
+        };
+        if (data.event === "startSpeakPhase") {
+          setPhaseNum(data.roomPhase);
+          setPhaseDetail(data.roomPhaseDetail);
+          // timer 처리  
+          setTimer(180);
+        }
+        // 3. enter 신호 처리
 
-        console.log(data)
+
       };
 
       eventSource.onerror = event => {
@@ -251,7 +273,7 @@ function DebateRoom() {
         <Grid item xs={12} md={5} lg={4}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} />
+              <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
             </Grid>
             <Grid item xs={12}>
               <CardComponent role={role} />

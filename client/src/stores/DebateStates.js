@@ -82,3 +82,14 @@ export const voteRightResultState = atom({
   key: 'voteRightResult',
   default: [],
 })
+
+// 남은 시간 확인
+export const timerState = atom({
+  key: 'timerState',
+  default: 0,
+})
+
+export const counterState = atom({
+  key: 'counterState',
+  default: 0,
+})
