@@ -10,7 +10,6 @@ import Header from "./pages/Header";
 
 // Main Pages
 import Login from "pages/main/Login";
-import SignUpSNS from "pages/main/signup/SignUpSNS";
 import SignUpInput from "pages/main/signup/SignUpInput";
 import SignUpCategory from "pages/main/signup/SignUpCategory";
 import SignUpComplete from "pages/main/signup/SignUpComplete";
