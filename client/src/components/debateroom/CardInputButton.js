@@ -1,14 +1,16 @@
 import styled, { keyframes } from "styled-components";
 import "./CardInputButton.css"
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 // mui
 import Grid from "@mui/material/Grid";
 // recoil
-import { SetRecoilState, useRecoilState } from "recoil";
-import { cardNumState, firstCardState, secondCardState } from "stores/DebateStates";
+import { useRecoilState } from "recoil";
+import { cardNumState, firstCardFileState, firstCardState, secondCardFileState, secondCardState } from "stores/DebateStates";
 
 function CardInputButton ({isReady}) {
   // state
+  const [img1File, setImg1File] = useRecoilState(firstCardFileState);
+  const [img2File, setImg2File] = useRecoilState(secondCardFileState);
   const [img1, setImg1] = useRecoilState(firstCardState);
   const [img2, setImg2] = useRecoilState(secondCardState);
   const [cardNum, setCardNum] = useRecoilState(cardNumState);
@@ -31,6 +33,8 @@ function CardInputButton ({isReady}) {
           setImg1(reader1.result);
           setCardNum(cardNum + 1);
         };
+        // 파일 State 저장
+        setImg1File(file1);
         break;
       case 'card-input2':
         const file2 = imgRef2.current.files[0];
@@ -40,9 +44,12 @@ function CardInputButton ({isReady}) {
           setImg2(reader2.result);
           setCardNum(cardNum + 1);
         };
+        // 파일 State 저장
+        setImg2File(file2);
         break;
     }
   }
+  
   // onClick => reset image
   const resetImg1 = () => {
     // 준비 완료 시 이미지가 바뀌지 않도록 핸들러 종료
@@ -52,6 +59,7 @@ function CardInputButton ({isReady}) {
     imgRef1.current.value = "";
     setImg1("");
     setCardNum(cardNum - 1);
+    setImg1File("");
   };
   const resetImg2 = () => {
     // 준비 완료 시 이미지가 바뀌지 않도록 핸들러 종료
@@ -61,6 +69,7 @@ function CardInputButton ({isReady}) {
     imgRef2.current.value = "";
     setImg2("");
     setCardNum(cardNum - 1);
+    setImg2File("");
   };
 
   return(
