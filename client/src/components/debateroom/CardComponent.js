@@ -69,7 +69,9 @@ function CardComponent({role, roomId, nickname}) {
   }
 
   const handleCard = (e) => {
-    console.log(e.target.id)
+    document.querySelector(`img#${e.target.id}`)?.classList.toggle("expanded");
+    console.log(document.querySelector(`img#${e.target.id}`));
+    
   }
 
   const firstMyCard = cardNum === 2 ? firstCard : firstCard ? firstCard : secondCard ? secondCard : ""
@@ -100,8 +102,8 @@ function CardComponent({role, roomId, nickname}) {
         <div className="scrollBar">
           {numList.map((num) => {
             return(
-              <CardCropping key={num} id={num} onClick={handleCard}>
-                <CardImage src={leftCardList[num]} />
+              <CardCropping key={num} id={"lImage" + num} onClick={handleCard}>
+                <CardImage id={"lImage" + num} src={leftCardList[num]} />
               </CardCropping>
             )
           })}
@@ -112,8 +114,8 @@ function CardComponent({role, roomId, nickname}) {
         <div className="scrollBar">
           {numList.map((num) => {
             return(
-              <CardCropping key={num}>
-                <CardImage src={rightCardList[num]} />
+              <CardCropping key={num} id={"rImage" + num} onClick={handleCard}>
+                <CardImage id={"rImage" + num} src={rightCardList[num]} />
               </CardCropping>
             )
           })}
@@ -223,4 +225,16 @@ const CardImage = styled.img`
   height: auto;
 
   margin-left: calc(50% - 75px);
+
+  &.expanded {
+    min-width: 1280px;
+    width: 60%;
+    margin: 0;
+
+    position: fixed;
+    top: 100px;
+    left: 20%;
+    z-index: 100;
+    transition: 0.5s;
+  }
 `
