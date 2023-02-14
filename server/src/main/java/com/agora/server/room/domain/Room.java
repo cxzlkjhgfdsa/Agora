@@ -41,7 +41,7 @@ public class    Room {
 
     // 방 시작 시간 -> 최신순용, 토론 페이즈 시작시간은 -> redis
     @Column
-    private LocalDateTime room_start_time;
+    private Long room_start_time;
 
     @Column
     private String room_thumbnail_url;
@@ -63,7 +63,7 @@ public class    Room {
         room.room_hashtags = room_hashtags;
         room.room_thumbnail_url = room_thumbnail_url;
         room.room_category = room_category;
-        room.room_start_time = LocalDateTime.now();
+        room.room_start_time = System.currentTimeMillis();
         room.room_watch_cnt = 0;
         return room;
     }
@@ -80,7 +80,7 @@ public class    Room {
         room.room_thumbnail_url = room_thumbnail_url;
         room.room_category = room_category;
         room.room_watch_cnt = room_watch_cnt;
-        room.room_start_time = LocalDateTime.now();
+        room.room_start_time = System.currentTimeMillis();
         return room;
     }
 
