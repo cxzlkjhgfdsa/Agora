@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import Grid from '@mui/material/Grid';
 import styled from 'styled-components';
+import customAxios from 'utils/customAxios';
 
 // 자식 component import
 import './VideoComponent.css';
+import SkipButton from './SkipButton';
 import UserVideoComponent from 'components/video/UserVideoComponent';
 
 class VideoComponent extends Component {
@@ -142,6 +144,11 @@ class VideoComponent extends Component {
     else {
       this.joinListenerSession();
     }
+    // 4. Set speaker camera
+    setTimeout(() => {
+      this.handleSpeaker();
+      this.toggleSpeaker();
+    }, 500);
   };
 
   // 토론이 끝날 때,
@@ -154,6 +161,7 @@ class VideoComponent extends Component {
       console.log("eventsource closed")
     }
   }
+  
   // 초기화 코드
   onbeforeunload(event) {
     this.leaveSession();
@@ -363,17 +371,6 @@ class VideoComponent extends Component {
 
     if (mySession) {
       mySession.disconnect();
-      // 나갈 때 api 요청
-      // axios({
-      //   method: 'get',
-      //   url: 'http://70.12.247.157:8080/api/v1/search/mian/hot5',
-      // })
-      // .then((response) => {
-      //   console.log(response)
-      // })
-      // .catch((error) => {
-      //   console.log(error)
-      // })
     }
 
     // Empty all properties...
@@ -501,6 +498,11 @@ class VideoComponent extends Component {
                         <div>
                           <SpeakingDiv>발언중</SpeakingDiv>
                           <SpeakingWrapper/>
+                          {this.state.nickname === this.getNicknameTag(this.state.leftStreamManager)
+                            ? (
+                              <SkipButton roomId={this.state.roomId} />
+                            ) 
+                            : null}
                         </div>
                       )
                       : null
@@ -524,6 +526,11 @@ class VideoComponent extends Component {
                         <div>
                           <SpeakingDiv>발언중</SpeakingDiv>
                           <SpeakingWrapper/>
+                          {this.state.nickname === this.getNicknameTag(this.state.rightStreamManager)
+                            ? (
+                              <SkipButton roomId={this.state.roomId} />
+                            ) 
+                            : null}
                         </div>
                       )
                       : null
