@@ -7,6 +7,7 @@ import customAxios from "utils/customAxios";
 import { useRecoilValue } from "recoil";
 import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState, cardNumState } from "stores/DebateStates";
 import { leftUserListState, rightUserListState, phaseNumberState, phaseDetailState } from "stores/DebateStates";
+import { userInfoState } from "stores/userInfoState";
 
 function CardComponent({role, roomId, nickname}) {
 
@@ -25,13 +26,14 @@ function CardComponent({role, roomId, nickname}) {
   const rightUserList = useRecoilValue(rightUserListState);  // 우측 주장 사용자
   const phaseNumber = useRecoilValue(phaseNumberState);  // 현재 페이즈
   const phaseDetail = useRecoilValue(phaseDetailState);  // 현재 페이즈 내에서 진행상황
-  const userNickname = JSON.parse(sessionStorage.getItem("user_info"))?.userNickname;  // 현재 사용자 닉네임
+  const userInfo = useRecoilValue(userInfoState);  // 현재 사용자 닉네임
   const handleMyCard = (e) => {
     // 카드 오픈 시 현재 본인의 차례인지 확인
     // 1. 현재 페이즈에서 누구의 발언 상황도 아니라면 종료
     if (phaseDetail !== 1 && phaseDetail !== 2) {
       return;
     }
+    
     // 2. 현재 페이즈, 현재 페이즈의 진행상황에서 누구의 차례인지 확인
     let curSpeaker = "";
     if (phaseDetail === 1) {  // 왼쪽 팀 차례일 경우
@@ -39,9 +41,9 @@ function CardComponent({role, roomId, nickname}) {
     } else if (phaseDetail === 2) {  // 오른쪽 팀 차례일 경우
       curSpeaker = rightUserList[phaseNumber - 1];
     }
-    
+
     // 3. 현재 이미지를 누른 사용자의 차례가 아니라면 종료
-    if (curSpeaker !== userNickname) {
+    if (curSpeaker !== userInfo?.userNickname) {
       return;
     }
 
@@ -53,11 +55,11 @@ function CardComponent({role, roomId, nickname}) {
       cardIdx = 1;
     }
 
-    // 카드 오픈 요청
+    // 4. 카드 오픈 요청
     const axios = customAxios();
     axios.post("/v2/debate/cardopen", {
       roomId: roomId,
-      userNickname: userNickname,
+      userNickname: userInfo?.userNickname,
       cardIdx: cardIdx
     }).then(({ data }) => {
       console.log(data);
