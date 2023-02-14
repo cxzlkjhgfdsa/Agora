@@ -33,7 +33,6 @@ public class ResponseRoomInfoDto {
     private Integer roomPhaseCurrentTimeMinute;
     private Integer roomPhaseCurrentTimeSecond;
 
-    private LocalDateTime roomStartTime;
 
     private String roomThumbnailUrl;
 
@@ -46,7 +45,7 @@ public class ResponseRoomInfoDto {
 
 
     @QueryProjection
-    public ResponseRoomInfoDto(Long roomId, String roomName, String roomCreaterName, DebateType roomDebateType, String roomOpinionLeft, String roomOpinionRight, String roomHashtags, Integer roomWatchCnt, LocalDateTime roomStartTime, String roomThumbnailUrl, String roomCategory, Boolean roomState) {
+    public ResponseRoomInfoDto(Long roomId, String roomName, String roomCreaterName, DebateType roomDebateType, String roomOpinionLeft, String roomOpinionRight, String roomHashtags, Integer roomWatchCnt, String roomThumbnailUrl, String roomCategory, Boolean roomState) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.roomCreaterName = roomCreaterName;
@@ -55,7 +54,6 @@ public class ResponseRoomInfoDto {
         this.roomOpinionRight = roomOpinionRight;
         this.roomHashtags = roomHashtags;
         this.roomWatchCnt = roomWatchCnt;
-        this.roomStartTime = roomStartTime;
         this.roomThumbnailUrl = roomThumbnailUrl;
         this.roomCategory = roomCategory;
         this.roomState = roomState;
