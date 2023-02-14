@@ -8,8 +8,8 @@ import lombok.Setter;
 public class RequestCardOpenDto {
 
     private Long roomId;
-    private Integer userIdx;
+    private String userNickname;
     private Integer cardIdx;
-    private String userTeam;
+//    private String userTeam;
 
 }

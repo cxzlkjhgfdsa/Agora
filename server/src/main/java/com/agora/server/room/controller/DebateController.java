@@ -81,7 +81,7 @@ public class DebateController {
 
     @PostMapping("debate/cardopen")
     public ResponseEntity<ResponseDTO> cardOpen(@RequestBody RequestCardOpenDto requestCardOpenDto){
-        debateService.cardOpen(requestCardOpenDto.getUserIdx(), requestCardOpenDto.getCardIdx(), requestCardOpenDto.getUserTeam(), requestCardOpenDto.getRoomId());
+        debateService.cardOpen(requestCardOpenDto.getUserNickname(), requestCardOpenDto.getCardIdx(), requestCardOpenDto.getRoomId());
         ResponseDTO responseDTO = new ResponseDTO();
 //        responseDTO.setBody(responseRoomEnterDto);
         responseDTO.setMessage("카드 오픈되었습니다");
