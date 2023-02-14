@@ -16,7 +16,7 @@ import customAxios from "utils/customAxios";
 
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState } from "stores/DebateStates";
+import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState, firstCardFileState, secondCardFileState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import getToken from "components/debateroom/GetToken";
@@ -55,9 +55,16 @@ function DebateRoom() {
   // // listening
   const [listening, setListening] = useState(false);
   const [meventSource, msetEventSource] = useState(undefined);
+
+  // 이미지 파일 State
+  const img1File = useRecoilValue(firstCardFileState);
+  const img2File = useRecoilValue(secondCardFileState);
   
   // 임시 데이터
   const [nickname, setNickname] = useState("anonymous")
+
+  // Post Flag
+  const [postFlag, setPostFlag] = useState(false);
   
   // useEffect(() => {
   //  getToken(roomId).then(token => {
@@ -148,6 +155,9 @@ function DebateRoom() {
           setPhaseNum(data.roomPhase);
           setPhaseDetail(data.roomPhaseDetail);
           setTimer(10);         
+
+          // Post Flag를 True로 바꿔 서버로 근거자료 전송
+          setPostFlag(true);
         };
         if (data.event === "startSpeakPhase") {
           setPhaseNum(data.roomPhase);
@@ -199,6 +209,35 @@ function DebateRoom() {
       console.log("eventsource closed")
     };
   }, [])
+
+  useEffect(() => {
+    if (postFlag) {
+      // FormData 생성
+      const formData = new FormData();
+      formData.append("roomId", roomId);
+      formData.append("userNickname", nickname);
+      if (img1File instanceof File) {  // 첫 번째 파일 데이터 삽입
+        formData.append("files", img1File);
+      }
+      if (img2File instanceof File) {  // 두 번째 파일 데이터 삽입
+        formData.append("files", img2File);
+      }
+      
+      customAxios().post("/v2/file/save/card",
+        formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+        }).then(({ data }) => {
+        console.log(data);
+      }).catch(error => {
+        console.log(error);
+      });
+      
+      // 다시 False로 변경해 다시 실행될 수 있도록 설정
+      setPostFlag(false);
+    }
+  }, [postFlag]);
 
   // temp button to control session
   const handleStart = () => {
