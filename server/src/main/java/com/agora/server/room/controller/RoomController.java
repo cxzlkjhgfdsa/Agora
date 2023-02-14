@@ -111,7 +111,6 @@ public class RoomController {
      */
     @PostMapping("room/leave")
     public ResponseEntity<ResponseDTO> roomLeave(@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
-        System.out.println("leavesession"+requestRoomLeaveDto.getRoomId()+" "+requestRoomLeaveDto.getUserNickname());
         String userRole = debateService.getUserRole(requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserNickname());
         if(userRole.equals("watcher")){
             roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
