@@ -1,5 +1,6 @@
 package com.agora.server.sse.controller;
 
+import com.agora.server.room.service.RoomService;
 import com.agora.server.sse.service.PublishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -16,8 +17,8 @@ public class SseController {
 
     @GetMapping(value = "room/subscribe/{roomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectRoom(@PathVariable String roomId) {
-        SseEmitter sseEmitter = publishService.subscribe(roomId);
-        return ResponseEntity.ok(sseEmitter);
+            SseEmitter sseEmitter = publishService.subscribe(roomId);
+            return ResponseEntity.ok(sseEmitter);
     }
 
 
