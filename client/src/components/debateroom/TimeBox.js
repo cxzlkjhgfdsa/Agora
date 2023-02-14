@@ -38,7 +38,7 @@ function TimeBox({isAllReady, roomId, role, nickname}) {
     // send a user data who clicks the ready button
     const axios = customAxios()
     axios
-      .put(`/api/v2/debate/ready`, {
+      .put(`/v2/debate/ready`, {
         "userNickname" : nickname,
         "roomId": roomId
       })
@@ -55,7 +55,7 @@ function TimeBox({isAllReady, roomId, role, nickname}) {
     if (isAllReady) {
       const axios = customAxios();
       axios
-        .put(`/api/v2/debate/start`, {
+        .put(`/v2/debate/start`, {
           "roomId" : roomId,
         })
         .then(response => {

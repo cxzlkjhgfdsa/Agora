@@ -2,6 +2,7 @@
 .scrollBar { 
   white-space: nowrap;
   overflow-x: scroll;
+  overflow-y: visible;
   margin-left: 10px;
   margin-right: 10px;
 }

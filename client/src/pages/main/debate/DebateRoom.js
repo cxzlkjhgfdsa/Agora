@@ -57,9 +57,7 @@ function DebateRoom() {
   const [meventSource, msetEventSource] = useState(undefined);
   
   // 임시 데이터
-  // const [roomName, setRoomName] = useState("여기는 제목입니다.");
-  const [nickname, setNickname] = useState("")
-  // const [role, setRole] = useState("viewer");
+  const [nickname, setNickname] = useState("anonymous")
   
   // useEffect(() => {
   //  getToken(roomId).then(token => {
@@ -69,7 +67,8 @@ function DebateRoom() {
 
   useEffect(() => {
     console.log(roomToken)
-  }, [roomToken])
+    console.log(isStart)
+  }, [roomToken, isStart])
 
   useEffect(() => {
     // 초기 데이터 받기
@@ -95,18 +94,25 @@ function DebateRoom() {
           setPhaseNum(data.roomPhase);
           setPhaseDetail(data.roomPhaseDetail);
           setTimer(data.roomPhaseRemainSecond);
-          setIsStart(data.roomPhase);
           setCounter(data.roomTimeInProgressSecond);
           setWatchNum(data.roomWatchCnt);
           setVoteLeftResult(data.voteLeftResultsList);
           setVoteRightResult(data.voteRightResultsList);
+          // setIsStart(data.roomState);
+          return data.roomState
+        })
+        .then(roomState => {
+          const setRoomState = (state) => {
+            setIsStart(state);
+          };
+          setTimeout(setRoomState, 2000, roomState);
         })
         .catch(error => {
-          console.log(error)
+          console.log(error);
         })
     }
     get();
-    // SSE 연결
+    // SSE 연결 
     let eventSource = undefined;
 
     if(!listening) {
@@ -131,10 +137,12 @@ function DebateRoom() {
         if (data.event === "ready") {
           setReadyUserList(data.readyUserList);
           if (data.allReady) {
+            // 시작 신호가 오면 card를 axios post
             setIsAllReady(true);
           }
         };
-        // 2. start 신호 처리
+        // 2. phase 신호 처리
+        // 2.1. debate phase 신호 처리
         if (data.event === "startDebate") {
           setIsStart(true);
           setPhaseNum(data.roomPhase);
@@ -147,9 +155,34 @@ function DebateRoom() {
           // timer 처리  
           setTimer(180);
         }
+        // 2.2. vote phase 신호 처리
+        if (data.event === "startVotePhase") {
+          setPhaseNum(data.roomPhase);
+          setPhaseDetail(data.roomPhaseDetail);
+          // timer 처리
+          setTimer(60);          
+        }
+        // 2.2. vote result phase 신호 처리
+        if (data.event === "startVoteResultPhase") {
+          setPhaseNum(data.roomPhase);
+          setPhaseDetail(data.roomPhaseDetail);
+          // timer 처리
+          setTimer(10);
+          // 투표 결과 처리
+          setVoteLeftResult(data.voteLeftResultsList);
+          setVoteRightResult(data.voteRightResultsList);
+        }
+
         // 3. enter 신호 처리
-
-
+        if (data.event === "enter") {
+          setLeftUserList(data.leftUserList);
+          setRightUserList(data.rightUserList);
+        }
+        // 4. cardOpen 신호 처리
+        if (data.event === "cardOpen") {
+          setLeftCardList(data.leftOpenedCardList);
+          setRightCardList(data.rightOpenedCardList);
+        }
       };
 
       eventSource.onerror = event => {
@@ -240,11 +273,12 @@ function DebateRoom() {
     rightOpinion: rightOpinion,
     leftUser: leftUserList,
     rightUser: rightUserList,
+    roomId: roomId,
   };
 
   return (
     <Container maxWidth="xl">
-      <HeadTitle isStart={isStart} title={roomName} />
+      <HeadTitle isStart={isStart} title={roomName} watchNum={watchNum} />
       <Grid container spacing={4}>
         <Grid item xs={12} md={7} lg={8}>
           {!isStart
@@ -276,12 +310,11 @@ function DebateRoom() {
               <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
             </Grid>
             <Grid item xs={12}>
-              <CardComponent role={role} />
+              <CardComponent role={role} roomId={roomId} nickname={nickname} />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-
       <Grid container>
         <Grid item xs={12}>
           시작 전 준비사항
@@ -296,7 +329,7 @@ function DebateRoom() {
           <button onClick={handleIsAllReady}>is all ready</button>
         </Grid>
         <Grid item xs={3}>
-          <input onChange={handleNickname} />
+          <input onChange={handleNickname} value={nickname} />
         </Grid>
         <Grid item xs={12}>
           역할 정하기

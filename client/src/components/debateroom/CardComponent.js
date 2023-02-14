@@ -1,48 +1,65 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import "./CardComponent.css"
 import { useState } from "react";
 import customAxios from "utils/customAxios";
 
 // recoil
 import { useRecoilValue } from "recoil";
-import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState } from "stores/DebateStates";
+import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState, cardNumState } from "stores/DebateStates";
 
-function CardComponent({role}) {
+function CardComponent({role, roomId, nickname}) {
 
   const firstCard = useRecoilValue(firstCardState);
   const secondCard = useRecoilValue(secondCardState);
   const leftCardList = useRecoilValue(leftCardListState);
   const rightCardList = useRecoilValue(rightCardListState);
   const isStart = useRecoilValue(isStartState);
+  const cardNum = useRecoilValue(cardNumState);
   const numList = [0, 1, 2, 3, 4, 5];
 
   const [selectCard, setSelectCard] = useState(undefined);
 
   const handleMyCard = (e) => {
     console.log(e.target.id)
+    const cardIdx = e.target.id === "first" ? 0 : 1
     const axios = customAxios();
+    axios
+      .post('/v2/debate/cardopen', {
+        "roomId" : roomId,
+        "userNickname" : nickname,
+        "cardIdx" : cardIdx,
+      })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   const handleCard = (e) => {
     console.log(e.target.id)
   }
 
+  const firstMyCard = cardNum === 2 ? firstCard : firstCard ? firstCard : secondCard ? secondCard : ""
+  const secondMyCard = cardNum === 2 ? secondCard : ""
+
   return(
     <Wrapper>
       <CardArea>
-        {role !== "viewer" 
+        {(role !== "viewer")
         ? (
           <div>
             <Title>
               나의 카드 <Subtitle>참가자들에게 내 카드를 제출합니다</Subtitle>
             </Title>
             <div className="scrollBar">
-              <CardCropping  onClick={handleMyCard} id="first">
-                <CardImage src={firstCard} />
+              <CardCropping className="myCard-root">
+                <CardImage src={firstMyCard} onClick={handleMyCard} id="first" />
               </CardCropping>
-              <CardCropping value="second">
-                <CardImage src={secondCard} />
-              </CardCropping>
+              <CardCropping className="myCard-root">
+                <CardImage src={secondMyCard} onClick={handleMyCard} id="second" />
+              </CardCropping >
             </div>
           </div>
         ) : null }
@@ -109,14 +126,36 @@ const Subtitle = styled.span`
   font-weight: normal;
   color: white;
 `
+const appearAnime = keyframes`
+  to {
+    opacity : 1;
+  }
+`
+
+const darkenAnime = keyframes`
+  to {
+    opacity : 0.35;
+  }
+`
+
+const DarkenDiv = styled.div`
+  background-color: black;
+  opacity: 0;
+  height: 110px;
+  width: 110px;
+`
+
+const TextButtonDiv = styled.div`
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+`
 
 const CardCropping = styled.div`
   display: inline-block;
 
   position: relative;
   overflow: hidden;
-
-  cursor: pointer;
 
   width: 110px;
   height: 110px;
@@ -125,10 +164,29 @@ const CardCropping = styled.div`
   margin-left: 10px;
   margin-bottom: 5px;
   background-color: #eeeeee;
+
+  transition: all ease 0.3s;
+
+  // 내 카드 control
+  &.myCard-root {
+    background-color: #777777
+  }
+
+  &:hover {
+    ${DarkenDiv} {
+      animation: ${ darkenAnime } 0.3s 0.01s ease 1 forwards;
+    }
+    ${TextButtonDiv} {
+      animation: ${ appearAnime } 0.3s 0.01s ease 1 forwards;
+    }
+  }
 `
+
 
 const CardImage = styled.img`
   position: absoulte;
+  
+  cursor: pointer;
 
   width: 150px;
   height: auto;
