@@ -91,7 +91,6 @@ public class RoomController {
         roomService.enterRoom(responseRoomEnterDto, roomId);
 
         responseRoomEnterDto.setOpenviduToken(openviduToken);
-//        responseRoomEnterDto.setOpenviduToken("");
 
 
         ResponseDTO responseDTO = new ResponseDTO();
