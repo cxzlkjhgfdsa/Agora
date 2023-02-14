@@ -108,22 +108,28 @@ public class UserController {
 
         if (Ouser.isPresent()) {
             // 유저 정상적으로 찾았을 시
-            User user = Ouser.get();
-            String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
-            String refreshToken = tokenProvider.createRefreshToken();
+            if(Ouser.get().getReport_count()<50) {
+                User user = Ouser.get();
+                String acessToken = tokenProvider.createAccessToken(user.getUser_id(), user.getUser_social_type());
+                String refreshToken = tokenProvider.createRefreshToken();
 
-            userService.saveRefreshToken(user.getUser_id(), refreshToken);
+                userService.saveRefreshToken(user.getUser_id(), refreshToken);
 
-            LoginResponseDto loginResponseDto = new LoginResponseDto();
-            loginResponseDto.setUserId(user.getUser_id());
-            loginResponseDto.setUserNickname(user.getUser_nickname());
-            loginResponseDto.setUserPhoto(user.getUser_photo());
-            loginResponseDto.setSocialType(user.getUser_social_type());
-            loginResponseDto.setAccessToken(acessToken);
-            responseDTO.setBody(loginResponseDto);
-            responseDTO.setState(true);
-            responseDTO.setStatusCode(200);
-            responseDTO.setMessage("login success");
+                LoginResponseDto loginResponseDto = new LoginResponseDto();
+                loginResponseDto.setUserId(user.getUser_id());
+                loginResponseDto.setUserNickname(user.getUser_nickname());
+                loginResponseDto.setUserPhoto(user.getUser_photo());
+                loginResponseDto.setSocialType(user.getUser_social_type());
+                loginResponseDto.setAccessToken(acessToken);
+                responseDTO.setBody(loginResponseDto);
+                responseDTO.setState(true);
+                responseDTO.setStatusCode(200);
+                responseDTO.setMessage("login success");
+            }else{
+                responseDTO.setState(false);
+                responseDTO.setStatusCode(200);
+                responseDTO.setMessage("너 벤");
+            }
         } else {
             // 잘못된 접근
             log.error("잘못된 접근");
