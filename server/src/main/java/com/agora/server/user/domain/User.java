@@ -61,7 +61,7 @@ public class User {
     @ApiModelProperty(value = "report_count", example = "신고 당한 횟수")
     private int report_count;
 
-    @Column(length = 200)
+    @Column(length = 500)
     @ApiModelProperty(value = "user photo", example = "프로필 이미지 경로")
     private String user_photo;
 
