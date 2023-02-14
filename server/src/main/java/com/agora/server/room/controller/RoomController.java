@@ -111,15 +111,16 @@ public class RoomController {
      */
     @PostMapping("room/leave")
     public ResponseEntity<ResponseDTO> roomLeave(@RequestBody RequestRoomLeaveDto requestRoomLeaveDto) throws OpenViduJavaClientException, OpenViduHttpException {
-
-        if (requestRoomLeaveDto.getUserNickname().equals("")) {
+        System.out.println("leavesession"+requestRoomLeaveDto.getRoomId()+" "+requestRoomLeaveDto.getUserNickname());
+        String userRole = debateService.getUserRole(requestRoomLeaveDto.getRoomId(), requestRoomLeaveDto.getUserNickname());
+        if(userRole.equals("watcher")){
             roomService.leaveRoomAsWatcher(requestRoomLeaveDto.getRoomId());
         } else {
-            boolean isCreaterLeaved = roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId());
-            if (isCreaterLeaved) {
+            roomService.leaveRoomAsDebater(requestRoomLeaveDto.getUserNickname(), requestRoomLeaveDto.getRoomId());
+            if (userRole.equals("creater")) {
                 debateService.debaterLeave(requestRoomLeaveDto);
                 debateService.debateEndCreaterLeave(requestRoomLeaveDto.getRoomId());
-            } else {
+            } else if(userRole.equals("debater")) {
                 debateService.debaterLeave(requestRoomLeaveDto);
             }
         }
