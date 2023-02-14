@@ -49,10 +49,20 @@ function CardComponent({role, roomId, nickname}) {
 
     // 오픈할 카드 번호
     let cardIdx = null;
+    // 카드 오픈 중복 검사를 위해 현재 측이 제출한 카드 리스트 가져오기
+    const cardListForOverlapCheck = (phaseDetail === 1) ? leftCardList : rightCardList;
     if (e.target.id === "first") {
       cardIdx = 0;
+      // 오픈할 카드가 이미 오픈된 카드라면 그만두기
+      if (cardListForOverlapCheck.includes(firstMyCard)) {
+        return;
+      }
     } else if (e.target.id === "second") {
       cardIdx = 1;
+      // 오픈할 카드가 이미 오픈된 카드라면 그만두기
+      if (cardListForOverlapCheck.includes(secondMyCard)) {
+        return;
+      }
     }
 
     // 4. 카드 오픈 요청
