@@ -58,6 +58,9 @@ public class User {
     @ApiModelProperty(value = "user photo name", example = "프로필 이미지 이름")
     private String user_photo_name;
 
+    @ApiModelProperty(value = "report_count", example = "신고 당한 횟수")
+    private int report_count;
+
     @Column(length = 200)
     @ApiModelProperty(value = "user photo", example = "프로필 이미지 경로")
     private String user_photo;
@@ -67,6 +70,7 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Encrypt encrypt;
+
 
 
 
@@ -92,6 +96,10 @@ public class User {
         user.user_nickname = nickname;
         user.user_photo = profile;
         return user;
+    }
+
+    public void  addReportCnt(){
+        this.report_count++;
     }
 
     public void addCategories(UserCategory userCategory) {
