@@ -40,7 +40,6 @@ public class Report {
         report.reporting_user_id = reporting_id;
         report.reported_user_id = reported_id;
         report.report_content = content;
-
         return report;
     }
 }
