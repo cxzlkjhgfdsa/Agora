@@ -70,8 +70,6 @@ function CardComponent({role, roomId, nickname}) {
 
   const handleCard = (e) => {
     document.querySelector(`img#${e.target.id}`)?.classList.toggle("expanded");
-    console.log(document.querySelector(`img#${e.target.id}`));
-    
   }
 
   const firstMyCard = cardNum === 2 ? firstCard : firstCard ? firstCard : secondCard ? secondCard : ""
@@ -228,12 +226,12 @@ const CardImage = styled.img`
 
   &.expanded {
     min-width: 1280px;
-    width: 60%;
+    width: 80%;
     margin: 0;
 
     position: fixed;
-    top: 100px;
-    left: 20%;
+    top: 3%;
+    left: 10%;
     z-index: 100;
     transition: 0.5s;
   }
