@@ -112,7 +112,7 @@ AGORA 서비스를 통해 사용자들은 쉽게 토론을 접근할 수 있어,
 
 ## Project Structure
 
-![agora_structure2 0](https://user-images.githubusercontent.com/55802893/216476527-623c166c-3ed7-49c5-9063-86ee8ac3e63b.png)
+![agora_project_structure-페이지-2 drawio](https://user-images.githubusercontent.com/55802893/218713900-517e1ac5-a876-47ca-9a50-16334700cbca.png)
 
 ## Member
 

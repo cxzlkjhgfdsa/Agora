@@ -98,7 +98,7 @@ public class User {
         return user;
     }
 
-    public void  addReportCnt(){
+    public void addReportCnt(){
         this.report_count++;
     }
 
