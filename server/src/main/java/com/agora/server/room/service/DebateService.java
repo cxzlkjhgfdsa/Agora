@@ -10,6 +10,7 @@ import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
 import com.agora.server.room.controller.dto.debate.RequestReadyStateChangeDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteDto;
+import com.agora.server.room.domain.Room;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisChannelUtil;
@@ -18,7 +19,9 @@ import com.agora.server.room.util.RedisMessageUtil;
 import com.agora.server.sse.service.PublishService;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -644,7 +647,7 @@ public class DebateService {
         // 방에 입장할 때 isDebateEnded를 확인하고 true인 경우 DebateEndedException을 터뜨려 줌
         // 토론이 끝난 후에는 방장이 나가도 방이 안터지게
         String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
-        if(((String)redisTemplate.opsForValue().get(debateEndedKey)).equals("TRUE")){
+        if (((String) redisTemplate.opsForValue().get(debateEndedKey)).equals("TRUE")) {
             return;
         }
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
@@ -797,7 +800,7 @@ public class DebateService {
                 team = "RIGHT";
             }
         }
-        if(team.equals("")){
+        if (team.equals("")) {
             return;
         }
 
@@ -836,4 +839,33 @@ public class DebateService {
             redisTemplate.opsForValue().increment(voteRightKey);
         }
     }
+
+    public String getUserRole(Long roomId, String userNickname) {
+        Room room = roomRepository.findById(roomId).get();
+
+        if (room.getRoom_creater_name().equals(userNickname)) {
+            return "creater";
+        }
+
+        String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+        List<Object> oleftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
+        for (Object o : oleftUserList) {
+            String curUser = (String) o;
+            if (curUser.equals(userNickname)) {
+                return "debater";
+            }
+        }
+        String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+        List<Object> orightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
+        for (Object o : orightUserList) {
+            String curUser = (String) o;
+            if (curUser.equals(userNickname)) {
+                return "debater";
+            }
+        }
+
+        return "watcher";
+    }
+
+
 }
