@@ -1,5 +1,3 @@
-import { RecoilRoot } from "recoil";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Global Style
@@ -20,13 +18,11 @@ import MyPage from "pages/main/MyPage";
 import ScrollToTop from "components/common/ScrollToTop";
 import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 import SearchRoom from "pages/main/debate/SearchRoom";
-import TestPage from "pages/TestPage";
 import TestMoadlPage from "pages/TestModalPage";
-
 
 function App() {
   return (
-    <RecoilRoot>
+    <>
       <GlobalStyle />
       <BrowserRouter>
         <ScrollToTop />
@@ -48,7 +44,7 @@ function App() {
           </Routes>
         </main>
       </BrowserRouter>
-      </RecoilRoot>
+    </>
   );
 }
 

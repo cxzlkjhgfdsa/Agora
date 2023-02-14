@@ -2,11 +2,9 @@ import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-import customAxios from "../../utils/customAxios";
 import Spinner from "../common/Spinner";
 
 import { userInfoState } from "../../stores/userInfoState";
-import ErrorBoundary from "./ErrorBoundary";
 import { useUserInfo } from "utils/hooks/useUserInfo";
 
 /* 
@@ -32,9 +30,10 @@ function LoginRedirectHandler() {
 
     data.isLoggedIn = true;
     setUserInfo(data);
-    
+
     navigate("/debate/list");
 
+    
     // useEffect(() => {
     //     async function getAccessTokenWithUserInfos() {
     //         try {

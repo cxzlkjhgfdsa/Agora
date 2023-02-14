@@ -44,9 +44,9 @@ function DebateList() {
 
   return (
       <Wrapper>
-        <LargeDebateContainer url="/api/v1/search/main/hot" position="top" />
-        <SmallDebateContainer url="/api/v1/search/main/modal" position="mid" openModalEvent={openDebatingModal}/>
-        <SmallDebateContainer url="/api/v1/search/main/modal" position="bottom" openModalEvent={openWaitingModal}/>
+        <LargeDebateContainer url="/api/v2/search/main/hot" position="top" />
+        <SmallDebateContainer url="/api/v2/search/main/modal" position="mid" openModalEvent={openDebatingModal}/>
+        <SmallDebateContainer url="/api/v2/search/main/modal" position="bottom" openModalEvent={openWaitingModal}/>
 
         <ModalContainerShowAll 
           closeModalEvent={closeModalEvent} 
