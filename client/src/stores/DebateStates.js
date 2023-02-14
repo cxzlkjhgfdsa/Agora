@@ -17,11 +17,19 @@ export const firstCardState = atom({
   key: 'firstCardState',
   default: "",
 })
+export const firstCardFileState = atom({
+  key: "FirstCardFileState",
+  default: "",
+});
 
 export const secondCardState = atom({
   key: 'secondCardState',
   default: "",
 })
+export const secondCardFileState = atom({
+  key: "SecondCardFileState",
+  default: "",
+});
 
 // 왼쪽 카드 요소 
 export const leftCardListState = atom({
