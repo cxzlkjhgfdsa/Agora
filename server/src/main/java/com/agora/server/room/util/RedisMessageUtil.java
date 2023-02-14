@@ -19,7 +19,7 @@ public class RedisMessageUtil {
 
     // 이벤트
     private final String ENTER_EVENT = "enter";
-    private final String LEAVE_EVENT = "leave";
+    private final String LEAVE_EVENT = "enter";
     private final String READY_EVENT = "ready";
     private final String UNREADY_EVENT = "unready";
     private final String START_DEBATE_EVENT = "startDebate";
