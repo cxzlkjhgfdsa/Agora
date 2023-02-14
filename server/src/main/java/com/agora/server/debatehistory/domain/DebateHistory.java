@@ -26,10 +26,13 @@ public class DebateHistory {
 
     @Column(length = 100)
     private String room_name;
+    @Column(length = 50)
     private String left_opinion;
+    @Column(length = 50)
     private String right_opinion;
 
     // 왼쪽팀 0 오른쪽팀 1
+    @Column(length = 10)
     private String user_team;
 
     // 일단 저장은 투표 수로 하고 요청할 때 가공해서 승패로 보여주기
@@ -40,18 +43,25 @@ public class DebateHistory {
     private Integer phase2_right_vote;
     private Integer phase3_left_vote;
     private Integer phase3_right_vote;
-
+    @Column(length = 50)
     private String phase1_player_result;
+    @Column(length = 50)
     private String phase2_player_result;
+    @Column(length = 50)
     private String phase3_player_result;
+    @Column(length = 50)
     private String total_player_result;
-
+    @Column(length = 30)
     private String left_player1_nickname;
+    @Column(length = 30)
     private String left_player2_nickname;
+    @Column(length = 30)
     private String left_player3_nickname;
-
+    @Column(length = 30)
     private String right_player1_nickname;
+    @Column(length = 30)
     private String right_player2_nickname;
+    @Column(length = 30)
     private String right_player3_nickname;
 
     @Column(length = 30)
