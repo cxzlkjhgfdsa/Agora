@@ -6,6 +6,7 @@ import customAxios from "utils/customAxios";
 // recoil
 import { useRecoilValue } from "recoil";
 import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState, cardNumState } from "stores/DebateStates";
+import { leftUserListState, rightUserListState, phaseNumberState, phaseDetailState } from "stores/DebateStates";
 
 function CardComponent({role, roomId, nickname}) {
 
@@ -19,22 +20,50 @@ function CardComponent({role, roomId, nickname}) {
 
   const [selectCard, setSelectCard] = useState(undefined);
 
+  // 카드 오픈 시 차례를 확인하기 위한 State
+  const leftUserList = useRecoilValue(leftUserListState);  // 좌측 주장 사용자
+  const rightUserList = useRecoilValue(rightUserListState);  // 우측 주장 사용자
+  const phaseNumber = useRecoilValue(phaseNumberState);  // 현재 페이즈
+  const phaseDetail = useRecoilValue(phaseDetailState);  // 현재 페이즈 내에서 진행상황
+  const userNickname = JSON.parse(sessionStorage.getItem("user_info"))?.userNickname;  // 현재 사용자 닉네임
   const handleMyCard = (e) => {
-    console.log(e.target.id)
-    const cardIdx = e.target.id === "first" ? 0 : 1
+    // 카드 오픈 시 현재 본인의 차례인지 확인
+    // 1. 현재 페이즈에서 누구의 발언 상황도 아니라면 종료
+    if (phaseDetail !== 1 && phaseDetail !== 2) {
+      return;
+    }
+    // 2. 현재 페이즈, 현재 페이즈의 진행상황에서 누구의 차례인지 확인
+    let curSpeaker = "";
+    if (phaseDetail === 1) {  // 왼쪽 팀 차례일 경우
+      curSpeaker = leftUserList[phaseNumber - 1];
+    } else if (phaseDetail === 2) {  // 오른쪽 팀 차례일 경우
+      curSpeaker = rightUserList[phaseNumber - 1];
+    }
+    
+    // 3. 현재 이미지를 누른 사용자의 차례가 아니라면 종료
+    if (curSpeaker !== userNickname) {
+      return;
+    }
+
+    // 오픈할 카드 번호
+    let cardIdx = null;
+    if (e.target.id === "first") {
+      cardIdx = 0;
+    } else if (e.target.id === "second") {
+      cardIdx = 1;
+    }
+
+    // 카드 오픈 요청
     const axios = customAxios();
-    axios
-      .post('/v2/debate/cardopen', {
-        "roomId" : roomId,
-        "userNickname" : nickname,
-        "cardIdx" : cardIdx,
-      })
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    axios.post("/v2/debate/cardopen", {
+      roomId: roomId,
+      userNickname: userNickname,
+      cardIdx: cardIdx
+    }).then(({ data }) => {
+      console.log(data);
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
   const handleCard = (e) => {
