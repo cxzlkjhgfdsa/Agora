@@ -5,10 +5,10 @@ import com.agora.server.room.domain.Room;
 import com.agora.server.room.exception.DebateEndedException;
 import com.agora.server.room.repository.RoomQueryRepository;
 import com.agora.server.room.repository.RoomRepository;
+import com.agora.server.room.util.RedisChannelUtil;
 import com.agora.server.room.util.RedisKeyUtil;
-import com.agora.server.user.domain.User;
+import com.agora.server.room.util.RedisMessageUtil;
 import com.agora.server.user.repository.UserRepository;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.*;
 
@@ -31,11 +32,15 @@ public class RoomService {
 
     private final RoomQueryRepository roomQueryRepository;
 
-    private final UserRepository userRepository;
+    private final RedisPublisher redisPublisher;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
     private final RedisKeyUtil redisKeyUtil;
+
+    private final RedisChannelUtil redisChannelUtil;
+
+    private final RedisMessageUtil redisMessageUtil;
 
     /**
      * 방 생성
@@ -53,17 +58,24 @@ public class RoomService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         // 토론 방 페이즈 방 생성시는 0
-        String phaseKey= redisKeyUtil.phaseKey(roomId);
+        String phaseKey = redisKeyUtil.phaseKey(roomId);
+        // 토론 방 페이즈 디테일 방 생성시는 0
+        String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
         // 토론 방 페이즈의 시작 시간 방 생성시는 0
         String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
+        // 토론 방 전체 시작 시간
+        String debateStartTime = redisKeyUtil.debateStartTimeKey(roomId);
         // 토론 방의 시청자 수 방 생성시는 0
         String watchCntKey = redisKeyUtil.watchCntKey(roomId);
         // 토론이 끝났는지 확인하는 키 시작은 false
         String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
 
+
         // 저장
         valueOperations.set(phaseKey, 0);
+        valueOperations.set(phaseDetailKey, 0);
         valueOperations.set(phaseStartTimeKey, 0);
+        valueOperations.set(debateStartTime, 0);
         valueOperations.set(watchCntKey, 0);
         valueOperations.set(debateEndedKey, "FALSE");
 
@@ -82,111 +94,95 @@ public class RoomService {
      *
      * @param userNickname
      * @param roomId
-     * @param side
+     * @param userTeam
      * @return
      */
-    public boolean enterRoomAsDebater(String userNickname, Long roomId, Integer side) {
-//        User user = userRepository.findById(userId).get();
+    public boolean enterRoomAsDebater(String userNickname, Long roomId, String userTeam) {
 
         ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
         ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
 
         String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
         String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
-        if(isEnded.equals("TRUE")){
-           throw new DebateEndedException("토론이 끝났습니다");
-        }
-
-        try {
-
-            String userisReadyKey = redisKeyUtil.isReadyKey(roomId,userNickname);
-            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-
-            // side 0 == LEFT SIDE로 가정
-            if (side == 0) {
-                String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
-                stringObjectListOperations.rightPush(leftUserListKey, userNickname);
-                stringObjectValueOperations.set(userisReadyKey, "FALSE");
-
-                stringObjectValueOperations.increment(watchCntKey);
-                return true;
-                // side 1 == RIGHT SIDE로 가정
-            } else if (side == 1) {
-                String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
-                stringObjectListOperations.rightPush(rightUserListKey, userNickname);
-                stringObjectValueOperations.set(userisReadyKey, "FALSE");
-
-                stringObjectValueOperations.increment(watchCntKey);
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-
-        return false;
-    }
-
-    public boolean enterRoomAsWatcher(Long roomId) {
-
-        String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
-        String isEnded = (String) redisTemplate.opsForValue().get(debateEndedKey);
-        if(isEnded.equals("TRUE")){
+        if (isEnded.equals("TRUE")) {
             throw new DebateEndedException("토론이 끝났습니다");
         }
 
-        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
-
-        String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-
-        stringObjectValueOperations.increment(watchCntKey);
-
-        return false;
-    }
-
-
-    /**
-     * 토론자 토론방 퇴장
-     * 토론자가 토론방에 퇴장하면서
-     * Redis의 room:roomId:leftuserlist key의 list에서
-     * 토론자의 닉네임이 삭제 됩니다
-     * <p>
-     * Redis의 room:roomId:userNickname:isReady key도 삭제합니다
-     *
-     * @param userNickname
-     * @param roomId
-     * @param side
-     * @return
-     */
-    public boolean leaveRoomAsDebater(String userNickname, Long roomId, Integer side) {
-
-        ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
-        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
-
         try {
-            String userisReadyKey = redisKeyUtil.isReadyKey(roomId,userNickname);
+
+            String userisReadyKey = redisKeyUtil.isReadyKey(roomId, userNickname);
 
             // side 0 == LEFT SIDE로 가정
-            if (side == 0) {
-                String leftUserList = redisKeyUtil.leftUserListKey(roomId);
-                stringObjectListOperations.remove(leftUserList, 0, userNickname);
-                redisTemplate.delete(userisReadyKey);
+            if (userTeam.equals("LEFT")) {
+                String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+                Long size = redisTemplate.opsForList().size(leftUserListKey);
+                if(size>=3){
+                    return false;
+                }
+                stringObjectListOperations.rightPush(leftUserListKey, userNickname);
+                stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-                String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-                stringObjectValueOperations.decrement(watchCntKey);
                 return true;
                 // side 1 == RIGHT SIDE로 가정
-            } else if (side == 1) {
-                String rightUserList = redisKeyUtil.rightUserListKey(roomId);
-                stringObjectListOperations.remove(rightUserList, 0, userNickname);
-                redisTemplate.delete(userisReadyKey);
+            } else if (userTeam.equals("RIGHT")) {
+                String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+                Long size = redisTemplate.opsForList().size(rightUserListKey);
+                if(size>=3){
+                    return false;
+                }
+                stringObjectListOperations.rightPush(rightUserListKey, userNickname);
+                stringObjectValueOperations.set(userisReadyKey, "FALSE");
 
-                String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-                stringObjectValueOperations.decrement(watchCntKey);
                 return true;
             }
         } catch (Exception e) {
             return false;
         }
+
+        return false;
+    }
+
+
+
+
+    public boolean leaveRoomAsDebater(String userNickname, Long roomId) {
+
+        ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
+        ValueOperations<String, Object> stringObjectValueOperations = redisTemplate.opsForValue();
+
+
+        try {
+            String userisReadyKey = redisKeyUtil.isReadyKey(roomId, userNickname);
+            String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+            List<Object> oleftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
+            for (Object o : oleftUserList) {
+                String curUser = (String) o;
+                if (curUser.equals(userNickname)) {
+                    stringObjectListOperations.remove(leftUserListKey, 0, userNickname);
+                }
+            }
+            String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+            List<Object> orightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
+            for (Object o : orightUserList) {
+                String curUser = (String) o;
+                if (curUser.equals(userNickname)) {
+                    stringObjectListOperations.remove(rightUserListKey, 0, userNickname);
+                }
+            }
+
+            redisTemplate.delete(userisReadyKey);
+            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+            stringObjectValueOperations.decrement(watchCntKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        Room room = roomRepository.findById(roomId).get();
+        if (room.getRoom_creater_name().equals(userNickname)) {
+            return true;
+        }
+
         return false;
     }
 
@@ -440,7 +436,7 @@ public class RoomService {
      * 10초마다 Redis의 실시간 시청자 수 정보를 가져와서
      * DB의 실시간 시청자 수 정보를 갱신합니다
      */
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0/20 * * * * *")
     @Transactional
     public void updateViewCount() {
         List<Room> all = roomRepository.findAll();
@@ -448,9 +444,15 @@ public class RoomService {
             Long roomId = room.getRoom_id();
             String watchCntKey = redisKeyUtil.watchCntKey(roomId);
             Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
+
             room.roomWatchCntUpdate(watchCnt);
+
+            String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
+            String roomWatchCntUpdate = redisMessageUtil.roomWatchCntUpdate(room.getRoom_watch_cnt());
+            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
         }
     }
+
 
     /**
      * DB정보와 Redis정보를 합치는 편의 메서드
@@ -478,121 +480,91 @@ public class RoomService {
         }
     }
 
-    public void setRoomCurrentStatusBeforeStart(RequestRoomEnterDto requestRoomEnterDto, ResponseRoomEnterBeforeStartDto responseRoomEnterBeforeStartDto) {
+    @Transactional
+    public void roomStart(Long roomId) {
+        Room room = roomRepository.findById(roomId).get();
+        String debateStartTimeKey = redisKeyUtil.debateStartTimeKey(roomId);
+        Long serverTime = System.currentTimeMillis() / 1000L;
 
-        Long roomId = requestRoomEnterDto.getRoomId();
+        // 저장
+        redisTemplate.opsForValue().set(debateStartTimeKey, serverTime);
+        room.roomStartDebate();
+    }
+
+
+    /**
+     * 시작 하기 전과 후에 null 값 나올 수 있는 것들 생각해서 나눠놓기
+     *
+     * @param responseRoomEnterDto
+     * @param roomId
+     */
+    public void enterRoom(ResponseRoomEnterDto responseRoomEnterDto, Long roomId) {
 
         Room room = roomRepository.findById(roomId).get();
-        if(room.getRoom_creater_name().equals(requestRoomEnterDto.getUserNickname())){
-            responseRoomEnterBeforeStartDto.setIsUserCreater(true);
-        }else{
-            responseRoomEnterBeforeStartDto.setIsUserCreater(false);
-        }
-        responseRoomEnterBeforeStartDto.setCreaterNickname(room.getRoom_creater_name());
+
+        responseRoomEnterDto.setRoomCreaterName(room.getRoom_creater_name());
+        responseRoomEnterDto.setRoomName(room.getRoom_name());
+        responseRoomEnterDto.setRoomOpinionLeft(room.getRoom_opinion_left());
+        responseRoomEnterDto.setRoomOpinionRight(room.getRoom_opinion_right());
+        boolean roomState = room.isRoom_state();
+        responseRoomEnterDto.setRoomState(roomState);
 
         String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
         ArrayList<String> leftUserList = new ArrayList<>();
-        ArrayList<Boolean> leftUserIsReadyList = new ArrayList<>();
+        ArrayList<String> readyUserList = new ArrayList<>();
 
         if (redisTemplate.type(leftUserListKey) != null) {
             List<Object> range = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
             for (Object o : range) {
                 String userNickname = (String) o;
                 leftUserList.add(userNickname);
-                Object o1 = redisTemplate.opsForValue().get(redisKeyUtil.isReadyKey(roomId,userNickname));
-                String isReady = (String) o1;
-                if (isReady.equals("TRUE")) {
-                    leftUserIsReadyList.add(true);
-                } else if (isReady.equals("FALSE")) {
-                    leftUserIsReadyList.add(false);
+
+                if (roomState == false) {
+                    Object o1 = redisTemplate.opsForValue().get(redisKeyUtil.isReadyKey(roomId, userNickname));
+                    String isReady = (String) o1;
+                    if (isReady.equals("TRUE")) {
+                        readyUserList.add(userNickname);
+                    }
                 }
             }
-            responseRoomEnterBeforeStartDto.setLeftUserList(leftUserList);
-            responseRoomEnterBeforeStartDto.setLeftUserIsReady(leftUserIsReadyList);
+            responseRoomEnterDto.setLeftUserList(leftUserList);
         } else {
-            responseRoomEnterBeforeStartDto.setLeftUserList(leftUserList);
-            responseRoomEnterBeforeStartDto.setLeftUserIsReady(leftUserIsReadyList);
+            responseRoomEnterDto.setLeftUserList(leftUserList);
         }
 
         String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
         ArrayList<String> rightuserls = new ArrayList<>();
-        ArrayList<Boolean> rightuserIsready = new ArrayList<>();
         if (redisTemplate.type(rightUserListKey) != null) {
             List<Object> range = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
             for (Object o : range) {
                 String userNickname = (String) o;
                 rightuserls.add(userNickname);
-                Object o1 = redisTemplate.opsForValue().get(redisKeyUtil.isReadyKey(roomId,userNickname));
-                String isReady = (String) o1;
-                if (isReady.equals("TRUE")) {
-                    rightuserIsready.add(true);
-                } else if (isReady.equals("FALSE")) {
-                    rightuserIsready.add(false);
+                if (roomState == false) {
+                    Object o1 = redisTemplate.opsForValue().get(redisKeyUtil.isReadyKey(roomId, userNickname));
+                    String isReady = (String) o1;
+                    if (isReady.equals("TRUE")) {
+                        readyUserList.add(userNickname);
+                    }
                 }
             }
-            responseRoomEnterBeforeStartDto.setRightUserList(rightuserls);
-            responseRoomEnterBeforeStartDto.setRightUserIsReady(rightuserIsready);
+            responseRoomEnterDto.setRightUserList(rightuserls);
         } else {
-            responseRoomEnterBeforeStartDto.setRightUserList(rightuserls);
-            responseRoomEnterBeforeStartDto.setRightUserIsReady(rightuserIsready);
+            responseRoomEnterDto.setRightUserList(rightuserls);
+        }
+        responseRoomEnterDto.setReadyUserList(readyUserList);
+
+        if (readyUserList.size() == 5) {
+            responseRoomEnterDto.setIsAllReady(true);
+        } else {
+            responseRoomEnterDto.setIsAllReady(false);
         }
 
-    }
 
-    public void setRoomCurrentStatusAfterStart(RequestRoomEnterDto requestRoomEnterDto, ResponseRoomEnterAfterStartDto responseRoomEnterAfterStartDto) {
-        Long roomId = requestRoomEnterDto.getRoomId();
+        String watchCntKey = redisKeyUtil.watchCntKey(roomId);
+        Integer roomWatchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey) + 1;
+        redisTemplate.opsForValue().set(watchCntKey, roomWatchCnt);
+        responseRoomEnterDto.setRoomWatchCnt(roomWatchCnt);
 
-        Room room = roomRepository.findById(roomId).get();
-        responseRoomEnterAfterStartDto.setIsUserCreater(false);
-        responseRoomEnterAfterStartDto.setCreaterNickname(room.getRoom_creater_name());
-
-        String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
-        ArrayList<String> leftUserList = new ArrayList<>();
-
-        List<Object> leftoList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
-        for (Object o : leftoList) {
-            String userNickname = (String) o;
-            leftUserList.add(userNickname);
-        }
-        responseRoomEnterAfterStartDto.setLeftUserList(leftUserList);
-
-
-        String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
-        ArrayList<String> rightuserls = new ArrayList<>();
-
-        List<Object> rightoList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
-        for (Object o : rightoList) {
-            String userNickname = (String) o;
-            rightuserls.add(userNickname);
-        }
-        responseRoomEnterAfterStartDto.setRightUserList(rightuserls);
-
-        String currentSpeakingUserKey = redisKeyUtil.currentSpeakingUserKey(roomId);
-        String currentSpeakingTeamKey = redisKeyUtil.currentSpeakingTeamKey(roomId);
-        String currentTurnKey = redisKeyUtil.currentTurnKey(roomId);
-
-        String currentUserNickName = (String) redisTemplate.opsForValue().get(currentSpeakingUserKey);
-        String currentUserTeam = (String) redisTemplate.opsForValue().get(currentSpeakingTeamKey);
-        Integer currentTurn = (Integer) redisTemplate.opsForValue().get(currentTurnKey);
-
-        responseRoomEnterAfterStartDto.setCurrentSpeakingUserNickname(currentUserNickName);
-        responseRoomEnterAfterStartDto.setCurrentSpeakingUserTeam(currentUserTeam);
-        responseRoomEnterAfterStartDto.setCurrentTurn(currentTurn);
-
-        String phaseKey = redisKeyUtil.phaseKey(roomId);
-        String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
-
-        Integer phase = (Integer) redisTemplate.opsForValue().get(phaseKey);
-        Long phaseStarttime = ((Integer) redisTemplate.opsForValue().get(phaseStartTimeKey)).longValue();
-
-        Long currentTime = System.currentTimeMillis() / 1000L;
-        Long timeDifference = currentTime - phaseStarttime;
-        Integer minutes = (int) ((timeDifference / 60) % 60);
-        Integer seconds = (int) (timeDifference % 60);
-
-        responseRoomEnterAfterStartDto.setRoomPhase(phase);
-        responseRoomEnterAfterStartDto.setRoomPhaseCurrentTimeMinute(minutes);
-        responseRoomEnterAfterStartDto.setRoomPhaseCurrentTimeSecond(seconds);
 
         /**
          * 토론 중간에 들어오는 경우
@@ -600,30 +572,129 @@ public class RoomService {
          * 투표 결과는 1페이즈까지 있을 것입니다
          * 따라서 1페이즈까지의 투표 결과만 저장해서 보내줍니다
          */
-        List<Integer> voteLeftResultList = new ArrayList<>();
-        List<Integer> voteRightResultList = new ArrayList<>();
-        for (int votePhase = 1; votePhase < phase; votePhase++) {
-            String voteLeftKey = redisKeyUtil.voteLeftKey(roomId,votePhase);
-            String voteRightKey = redisKeyUtil.voteRightKey(roomId,votePhase);
 
-            Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftKey);
-            Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightKey);
+        if (roomState == true) {
 
-            voteLeftResultList.add(voteLeftResult);
-            voteRightResultList.add(voteRightResult);
+            String phaseKey = redisKeyUtil.phaseKey(roomId);
+            Integer phase = (Integer) redisTemplate.opsForValue().get(phaseKey);
+            String phaseDetailKey = redisKeyUtil.phaseDetailKey(roomId);
+            Integer phaseDetail = (Integer) redisTemplate.opsForValue().get(phaseDetailKey);
+
+            List<Integer> voteLeftResultList = new ArrayList<>();
+            List<Integer> voteRightResultList = new ArrayList<>();
+            if (phase != 0 && phaseDetail < 4) {
+                for (int votePhase = 1; votePhase < phase; votePhase++) {
+                    String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
+                    String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
+
+                    Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
+                    Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
+
+                    voteLeftResultList.add(voteLeftResult);
+                    voteRightResultList.add(voteRightResult);
+                }
+            } else if (phase != 0 && phaseDetail == 4) {
+                for (int votePhase = 1; votePhase <= phase; votePhase++) {
+                    String voteLeftResulPercentKey = redisKeyUtil.voteLeftResulPercentKey(roomId, votePhase);
+                    String voteRightResultPercentKey = redisKeyUtil.voteRightResultPercentKey(roomId, votePhase);
+
+                    Integer voteLeftResult = (Integer) redisTemplate.opsForValue().get(voteLeftResulPercentKey);
+                    Integer voteRightResult = (Integer) redisTemplate.opsForValue().get(voteRightResultPercentKey);
+
+                    voteLeftResultList.add(voteLeftResult);
+                    voteRightResultList.add(voteRightResult);
+                }
+            }
+
+            responseRoomEnterDto.setVoteLeftResultsList(voteLeftResultList);
+            responseRoomEnterDto.setVoteRightResultsList(voteRightResultList);
+
+
+            String currentSpeakingUserKey = redisKeyUtil.currentSpeakingUserKey(roomId);
+            String currentSpeakingTeamKey = redisKeyUtil.currentSpeakingTeamKey(roomId);
+
+            String currentUserNickName = (String) redisTemplate.opsForValue().get(currentSpeakingUserKey);
+            String currentUserTeam = (String) redisTemplate.opsForValue().get(currentSpeakingTeamKey);
+
+            responseRoomEnterDto.setCurrentSpeakingUser(currentUserNickName);
+            responseRoomEnterDto.setCurrentSpeakingTeam(currentUserTeam);
+
+            String phaseStartTimeKey = redisKeyUtil.phaseStartTimeKey(roomId);
+            Long phaseStarttime = ((Integer) redisTemplate.opsForValue().get(phaseStartTimeKey)).longValue();
+            Long currentTime = System.currentTimeMillis() / 1000L;
+            Long phaseTimeDifference = currentTime - phaseStarttime;
+
+            Integer phaseRemainSecond = 0;
+            // 1,2 토론 페이즈 180초 투표 페이즈 60초 결과 페이즈 10초
+            switch (phaseDetail) {
+                case 0:
+                    if(phase==1){
+                        phaseRemainSecond = 10 - phaseTimeDifference.intValue();
+                        break;
+                    }
+                    break;
+                case 1:
+                case 2:
+                    phaseRemainSecond = 180 - phaseTimeDifference.intValue();
+                    break;
+                case 3:
+                    phaseRemainSecond = 60 - phaseTimeDifference.intValue();
+                    break;
+                case 4:
+                    phaseRemainSecond = 10 - phaseTimeDifference.intValue();
+                    break;
+            }
+            if (phaseRemainSecond < 0) {
+                phaseRemainSecond = 0;
+            }
+
+//            Integer minutes = (int) ((timeDifference / 60) % 60);
+
+            String debateStartTimeKey = redisKeyUtil.debateStartTimeKey(roomId);
+            Long debateStarttime = ((Integer) redisTemplate.opsForValue().get(debateStartTimeKey)).longValue();
+            Long debateTimeDifference = currentTime - debateStarttime;
+            Integer timeInProgressSecond = debateTimeDifference.intValue();
+
+
+            responseRoomEnterDto.setRoomPhaseRemainSecond(phaseRemainSecond);
+            responseRoomEnterDto.setRoomTimeInProgressSecond(timeInProgressSecond);
+            responseRoomEnterDto.setRoomPhase(phase);
+            responseRoomEnterDto.setRoomPhaseDetail(phaseDetail);
+
+            String leftImgCardOpenedListKey = redisKeyUtil.imgCardOpenedListKey(roomId, "LEFT");
+            List<Object> oleftCardOpenedList = redisTemplate.opsForList().range(leftImgCardOpenedListKey, 0, -1);
+            List<String> leftCardOpenedList = new ArrayList<>();
+            if (oleftCardOpenedList != null) {
+                for (Object o : oleftCardOpenedList) {
+                    leftCardOpenedList.add((String) o);
+                }
+            }
+            responseRoomEnterDto.setLeftOpenedCardList(leftCardOpenedList);
+            String rightImgCardOpenedListKey = redisKeyUtil.imgCardOpenedListKey(roomId, "RIGHT");
+            List<Object> orightCardOpenedList = redisTemplate.opsForList().range(rightImgCardOpenedListKey, 0, -1);
+            List<String> rightCardOpenedList = new ArrayList<>();
+            if (orightCardOpenedList != null) {
+                for (Object o : orightCardOpenedList) {
+                    rightCardOpenedList.add((String) o);
+                }
+            }
+            responseRoomEnterDto.setRightOpenedCardList(rightCardOpenedList);
+
+
+        } else {
+            responseRoomEnterDto.setVoteLeftResultsList(new ArrayList<>());
+            responseRoomEnterDto.setVoteRightResultsList(new ArrayList<>());
+            responseRoomEnterDto.setCurrentSpeakingUser("");
+            responseRoomEnterDto.setCurrentSpeakingTeam("");
+            responseRoomEnterDto.setRoomPhaseRemainSecond(0);
+            responseRoomEnterDto.setRoomTimeInProgressSecond(0);
+            responseRoomEnterDto.setRoomPhase(0);
+            responseRoomEnterDto.setRoomPhaseDetail(0);
+            responseRoomEnterDto.setLeftOpenedCardList(new ArrayList<>());
+            responseRoomEnterDto.setRightOpenedCardList(new ArrayList<>());
         }
 
-        responseRoomEnterAfterStartDto.setVoteLeftResultsList(voteLeftResultList);
-        responseRoomEnterAfterStartDto.setVoteRightResultsList(voteRightResultList);
-
     }
-
-    @Transactional
-    public void roomStart(Long roomId) {
-        Room room = roomRepository.findById(roomId).get();
-        room.roomStartDebate();
-    }
-
 
 }
 

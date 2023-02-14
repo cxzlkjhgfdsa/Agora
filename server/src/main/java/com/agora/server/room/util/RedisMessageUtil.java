@@ -1,103 +1,179 @@
 package com.agora.server.room.util;
 
+import com.agora.server.room.controller.dto.pubsub.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class RedisMessageUtil {
 
-    /**
-     * 태그 규칙
-     * <p>
-     * [이벤트태그] [파라미터태그1] [파라미터태그2] ... parameter1 parameter2 ...
-     * ex) [ENTER] [TEAM] [USERNICKNAME] LEFT 김영한
-     * 왼쪽팀의 김영한님이 방에 입장함을 알리는 태그
-     *
-     * 공백 기준으로 스플릿 하실 수 있게 해놨습니다
-     */
+    private final ObjectMapper objectMapper;
 
-    // 이벤트 태그
-    private final String DEBATE_START_TAG = "[DEBATESTART] ";
-    private final String DEBATE_END_TAG = "[DEBATEEND] ";
-    private final String ENTER_TAG = "[ENTER] ";
-    private final String LEAVE_TAG = "[LEAVE] ";
-    private final String READY_TAG = "[READY] ";
-    private final String UNREADY_TAG = "[UNREADY] ";
-    private final String PHASE_START_TAG = "[PHASESTART] ";
-    private final String PHASE_END_TAG = "[PHASEEND] ";
-    private final String PHASE_SKIP_TAG = "[PHASESKIP] ";
-    private final String VOTE_START_TAG = "[VOTESTART] ";
-    private final String VOTE_END_TAG = "[VOTEEND] ";
+    // 이벤트
+    private final String ENTER_EVENT = "enter";
+    private final String LEAVE_EVENT = "enter";
+    private final String READY_EVENT = "ready";
+    private final String UNREADY_EVENT = "unready";
+    private final String START_DEBATE_EVENT = "startDebate";
+    private final String END_DEBATE_EVENT = "endDebate";
+    private final String START_SPEAK_EVENT = "startSpeakPhase";
+    private final String START_VOTE_EVENT = "startVotePhase";
+    private final String START_VOTE_RESULT_EVENT = "startVoteResultPhase";
+    private final String CARD_OPEN_EVENT = "cardOpen";
+    private final String WATCHCNT_UPDATE_EVENT = "updateWatchCnt";
 
-    // 파라미터 태그
-    private final String NICKNAME_TAG = "[NICKNAME] ";
-    private final String DEBATE_PHASE_TAG = "[DEBATEPHASE] ";
-    private final String VOTE_PHASE_TAG = "[VOTEPHASE] ";
-    private final String VOTE_RESULT_TAG = "[VOTERESULT] ";
-    private final String TURN_TAG = "[TURN] ";
-    private final String TEAM_TAG = "[TEAM] ";
 
-    public String enterMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return ENTER_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
-    }
-
-    public String leaveMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return LEAVE_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
-    }
-
-    public String readyMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return READY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
-    }
-
-    public String unreadyMessage(Integer userSide, String userNickname) {
-        String team = getTeam(userSide);
-        return UNREADY_TAG + TEAM_TAG + NICKNAME_TAG + team + " " + userNickname;
-    }
-
-    public String debateStartMessage() {
-        return DEBATE_START_TAG + "start debate";
-    }
-
-    public String phaseStartAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_START_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
-    }
-
-    public String phaseEndAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_END_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG + phase + " " + turn + " " + team + " " + userNickname;
-    }
-
-    public String phaseSkipAllInOneMessage(Integer phase, Integer turn, String team, String userNickname) {
-        return PHASE_SKIP_TAG + DEBATE_PHASE_TAG + TURN_TAG + TEAM_TAG + NICKNAME_TAG  + phase + " " + turn + " " + team + " " + userNickname;
-    }
-
-    public String voteStartMessage(Integer votePhase) {
-        return VOTE_START_TAG + VOTE_PHASE_TAG + votePhase;
-    }
-
-    public String voteEndMessage(Integer votePhase, Integer voteLeftResult, Integer voteRightResult) {
-        return VOTE_END_TAG + VOTE_PHASE_TAG +VOTE_RESULT_TAG + votePhase + " " + voteLeftResult + " " + voteRightResult;
-    }
-    public String debateEndMessage() {
-        return DEBATE_END_TAG + "debate ended please leave room";
-    }
-
-    /**
-     * 편의용 메서드
-     * 팀 태그
-     *
-     * @param userSide
-     * @return
-     */
-    private String getTeam(Integer userSide) {
-        if (userSide == 0) {
-            return "LEFT";
-        } else if (userSide == 1) {
-            return "RIGHT";
-        } else {
-            return "NOSIDE";
+    public String enterMessage(List<String> leftUserList, List<String> rightUserList) {
+        EnterLeaveMessage enterLeaveMessage = new EnterLeaveMessage();
+        enterLeaveMessage.setEvent(ENTER_EVENT);
+        enterLeaveMessage.setLeftUserList(leftUserList);
+        enterLeaveMessage.setRightUserList(rightUserList);
+        try {
+            String json = objectMapper.writeValueAsString(enterLeaveMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
+
+    public String leaveMessage(List<String> leftUserList, List<String> rightUserList) {
+        EnterLeaveMessage enterLeaveMessage = new EnterLeaveMessage();
+        enterLeaveMessage.setEvent(LEAVE_EVENT);
+        enterLeaveMessage.setLeftUserList(leftUserList);
+        enterLeaveMessage.setRightUserList(rightUserList);
+        try {
+            String json = objectMapper.writeValueAsString(enterLeaveMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String readyMessage(Boolean isAllReady, List<String> readyUserList) {
+        ReadyUnreadyMessage readyUnreadyMessage = new ReadyUnreadyMessage();
+        readyUnreadyMessage.setEvent(READY_EVENT);
+        readyUnreadyMessage.setIsAllReady(isAllReady);
+        readyUnreadyMessage.setReadyUserList(readyUserList);
+        try {
+            String json = objectMapper.writeValueAsString(readyUnreadyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String unreadyMessage(Boolean isAllReady, List<String> readyUserList) {
+        ReadyUnreadyMessage readyUnreadyMessage = new ReadyUnreadyMessage();
+        readyUnreadyMessage.setEvent(UNREADY_EVENT);
+        readyUnreadyMessage.setIsAllReady(isAllReady);
+        readyUnreadyMessage.setReadyUserList(readyUserList);
+        try {
+            String json = objectMapper.writeValueAsString(readyUnreadyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String debateStartMessage(Integer phase, Integer phaseDetail) {
+        DebateStartMessage debateStartMessage = new DebateStartMessage();
+        debateStartMessage.setEvent(START_DEBATE_EVENT);
+        debateStartMessage.setRoomPhase(phase);
+        debateStartMessage.setRoomPhaseDetail(phaseDetail);
+        try {
+            String json = objectMapper.writeValueAsString(debateStartMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String speakPhaseStartMessage(Integer phase, Integer phaseDetail, String team, String userNickname) {
+        SpeakPhaseMessage speakPhaseMessage = new SpeakPhaseMessage();
+        speakPhaseMessage.setEvent(START_SPEAK_EVENT);
+        speakPhaseMessage.setRoomPhase(phase);
+        speakPhaseMessage.setRoomPhaseDetail(phaseDetail);
+        speakPhaseMessage.setCurrentSpeakingTeam(team);
+        speakPhaseMessage.setCurrentSpeakingUser(userNickname);
+        try {
+            String json = objectMapper.writeValueAsString(speakPhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String votePhaseStartMessage(Integer phase, Integer phaseDetail) {
+        VotePhaseMessage votePhaseMessage = new VotePhaseMessage();
+        votePhaseMessage.setEvent(START_VOTE_EVENT);
+        votePhaseMessage.setRoomPhase(phase);
+        votePhaseMessage.setRoomPhaseDetail(phaseDetail);
+        try {
+            String json = objectMapper.writeValueAsString(votePhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String voteEndMessage(Integer phase, Integer phaseDetail ,List<Integer> voteLeftResultList, List<Integer> voteRightResultList) {
+        VoteResultPhaseMessage voteResultPhaseMessage = new VoteResultPhaseMessage();
+        voteResultPhaseMessage.setEvent(START_VOTE_RESULT_EVENT);
+        voteResultPhaseMessage.setRoomPhase(phase);
+        voteResultPhaseMessage.setRoomPhaseDetail(phaseDetail);
+        voteResultPhaseMessage.setVoteLeftResultsList(voteLeftResultList);
+        voteResultPhaseMessage.setVoteRightResultsList(voteRightResultList);
+        try {
+            String json = objectMapper.writeValueAsString(voteResultPhaseMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String debateEndMessage() {
+        EventOnlyMessage eventOnlyMessage = new EventOnlyMessage();
+        eventOnlyMessage.setEvent(END_DEBATE_EVENT);
+        try {
+            String json = objectMapper.writeValueAsString(eventOnlyMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String imgCardOpenMessage(List<String> leftOpenedCardList,List<String> rightOpenedCardList){
+        CardOpenMessage cardOpenMessage = new CardOpenMessage();
+        cardOpenMessage.setEvent(CARD_OPEN_EVENT);
+        cardOpenMessage.setLeftOpenedCardList(leftOpenedCardList);
+        cardOpenMessage.setRightOpenedCardList(rightOpenedCardList);
+        try {
+            String json = objectMapper.writeValueAsString(cardOpenMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String roomWatchCntUpdate(Integer roomWatchCnt){
+        WatchCntUpdateMessage watchCntUpdateMessage = new WatchCntUpdateMessage();
+        watchCntUpdateMessage.setEvent(WATCHCNT_UPDATE_EVENT);
+        watchCntUpdateMessage.setRoomWatchCnt(roomWatchCnt);
+        try {
+            String json = objectMapper.writeValueAsString(watchCntUpdateMessage);
+            return json;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

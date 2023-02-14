@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/system/Container";
@@ -52,7 +52,7 @@ function DebateRoom() {
   const [voteRightResult, setVoteRightResult] = useRecoilState(voteRightResultState);
   const [role, setRole] = useRecoilState(debateUserRoleState);
   
-  // // listening
+  // listening
   const [listening, setListening] = useState(false);
   const [meventSource, msetEventSource] = useState(undefined);
 
@@ -64,7 +64,10 @@ function DebateRoom() {
   const [nickname, setNickname] = useState("anonymous")
 
   // Post Flag
-  const [postFlag, setPostFlag] = useState(false);
+  const [submitPicsPostFlag, setSubmitPicsPostFlag] = useState(false);
+  const [leavePostFlag, setLeavePostFlag] = useState(false);
+
+  const navigate = useNavigate();
   
   // useEffect(() => {
   //  getToken(roomId).then(token => {
@@ -105,7 +108,7 @@ function DebateRoom() {
           setWatchNum(data.roomWatchCnt);
           setVoteLeftResult(data.voteLeftResultsList);
           setVoteRightResult(data.voteRightResultsList);
-          // setIsStart(data.roomState);
+
           return data.roomState
         })
         .then(roomState => {
@@ -148,6 +151,7 @@ function DebateRoom() {
             setIsAllReady(true);
           }
         };
+
         // 2. phase 신호 처리
         // 2.1. debate phase 신호 처리
         if (data.event === "startDebate") {
@@ -157,7 +161,7 @@ function DebateRoom() {
           setTimer(10);         
 
           // Post Flag를 True로 바꿔 서버로 근거자료 전송
-          setPostFlag(true);
+          setSubmitPicsPostFlag(true);
         };
         if (data.event === "startSpeakPhase") {
           setPhaseNum(data.roomPhase);
@@ -188,10 +192,22 @@ function DebateRoom() {
           setLeftUserList(data.leftUserList);
           setRightUserList(data.rightUserList);
         }
+
         // 4. cardOpen 신호 처리
         if (data.event === "cardOpen") {
           setLeftCardList(data.leftOpenedCardList);
           setRightCardList(data.rightOpenedCardList);
+        }
+        
+        // 5. 실시간 시청자수 처리
+        if (data.event === "updateWatchCnt") {
+          setWatchNum(data.roomWatchCnt);
+        }
+
+        // 6. 방 나가기 신호
+        if (data.event === "endDebate") {
+          window.alert("토론이 종료되었습니다;.")
+          navigate("/debate/list")
         }
       };
 
@@ -203,15 +219,41 @@ function DebateRoom() {
         eventSource.close();
       };
       setListening(true);  
+
+      window.addEventListener('beforeunload', handleBeforeUnload)
     }
     return () => {
       eventSource.close();
       console.log("eventsource closed")
+      // 나갈 때, post
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [])
 
+  // 토론방을 떠날 때 실행될 Post
+  const handleBeforeUnload = () => {
+    setLeavePostFlag(true);
+  };
   useEffect(() => {
-    if (postFlag) {
+    if (leavePostFlag) {
+      const axios = customAxios();
+        axios
+          .post('v2/room/leave', {
+            "roomId": roomId,
+            "userNickname" : nickname,
+          })
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      setLeavePostFlag(false);
+    }
+  }, [leavePostFlag]);
+
+  useEffect(() => {
+    if (setSubmitPicsPostFlag) {
       // FormData 생성
       const formData = new FormData();
       formData.append("roomId", roomId);
@@ -235,9 +277,9 @@ function DebateRoom() {
       });
       
       // 다시 False로 변경해 다시 실행될 수 있도록 설정
-      setPostFlag(false);
+      setSubmitPicsPostFlag(false);
     }
-  }, [postFlag]);
+  }, [submitPicsPostFlag]);
 
   // temp button to control session
   const handleStart = () => {

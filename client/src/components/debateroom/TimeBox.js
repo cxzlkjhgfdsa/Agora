@@ -90,7 +90,7 @@ function TimeBox({isAllReady, roomId, role, nickname}) {
               <Grid item xs={4}>
                 <CardNumDiv>
                   <TitleDiv>
-                    카드 등록 {nickname}
+                    카드 등록
                   </TitleDiv>
                   <div>
                     {cardNum}/2장

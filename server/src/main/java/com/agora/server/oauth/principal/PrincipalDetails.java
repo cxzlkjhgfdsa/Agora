@@ -16,6 +16,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     private String nickname;
     private String profile;
     private Boolean state;
+
     private Map<String, Object> attributes;
 
     public PrincipalDetails() {
@@ -89,6 +90,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     public void setState(Boolean state) {
         this.state = state;
     }
+
 
     @Override
     public String getName() {
