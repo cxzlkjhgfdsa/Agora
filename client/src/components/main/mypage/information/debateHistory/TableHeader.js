@@ -18,11 +18,11 @@ const Opinion = styled.p`
 
   &.more {
     // 색상 설정
-    color: #BBBBBB;
+    color: #F6C026;
   }
   &.less {
     // 색상 설정
-    color: #F6C026;
+    color: #BBBBBB;
   }
 
   // Display

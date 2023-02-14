@@ -19,12 +19,22 @@ const CheckDiv = styled.div`
   // 크기 설정
   width: 3%;
 
+  // 글꼴 설정
+  font-weight: 700;
+
   // Display
   display: inline-block;
+
+  &.more {
+    color: #F6C026;
+  }
+  &.less {
+    color: #BBBBBB;
+  }
 `;
 const VotePercent = styled.div`
   // 크기 설정
-  width: 10%;
+  width: 8%;
 
   // 글꼴 설정
   font-weight: 700;
@@ -34,7 +44,7 @@ const VotePercent = styled.div`
 `;
 const ColorBarDiv = styled.div`
   // 크기 설정
-  width: 31%;
+  width: 33%;
   height: 1.2rem;
 
   // Display
@@ -80,20 +90,41 @@ const Center = styled.p`
   text-overflow: ellipsis;
 `;
 
-function VoteResultRow({ leftPercent, rightPercent, phaseKorean, isPhaseMore }) {
+// leftPercent: 왼쪽 주장 투표율
+// rightPercent: 오른쪽 주장 투표율
+// phaseKorean: 페이즈 구분 단어 (첫번째, 두번째, ...)
+// isPhaseMore: 현재 페이즈에서 우세했는지 (왼쪽 주장 기준 우세했을 경우 true, 아닐 경우 false)
+// curPlayerTeam: 현재 페이즈에서 플레이어가 속한 팀 (LEFT: 왼쪽 팀, RIGHT: 오른쪽 팀, null: 미참여)
+function VoteResultRow({ leftPercent, rightPercent, phaseKorean, isPhaseMore, curPlayerTeam }) {
+  let leftCheckDivClass = "";  // 왼쪽 체크 표시 클래스명
+  if (curPlayerTeam === "LEFT") {
+    leftCheckDivClass = isPhaseMore ? "more" : "less";
+  }
+
+  let rightCheckDivClass = "";  // 오른쪽 체크 표시 클래스명
+  if (curPlayerTeam === "RIGHT") {
+    rightCheckDivClass = isPhaseMore ? "less" : "more";
+  }
+
   return (
     <StyledVoteResultRow>
-      <CheckDiv></CheckDiv>
+      <CheckDiv className={leftCheckDivClass}>{leftCheckDivClass === "" ? "" : "V"}</CheckDiv>
       <VotePercent>{leftPercent}%</VotePercent>
       <ColorBarDiv>
-        <ColorBar percent={leftPercent} className={"leftColorBar" + (isPhaseMore ? " more" : " less")}></ColorBar>
+        <ColorBar
+          percent={leftPercent}
+          className={"leftColorBar" + (isPhaseMore ? " more" : " less")}
+        />
       </ColorBarDiv>
       <Center>{phaseKorean}</Center>
       <ColorBarDiv>
-        <ColorBar percent={rightPercent} className={"rightColorBar" + (isPhaseMore ? " less" : " more")}></ColorBar>
+        <ColorBar
+          percent={rightPercent}
+          className={"rightColorBar" + (isPhaseMore ? " less" : " more")}
+        />
       </ColorBarDiv>
       <VotePercent>{rightPercent}%</VotePercent>
-      <CheckDiv></CheckDiv>
+      <CheckDiv className={rightCheckDivClass}>{rightCheckDivClass === "" ? "" : "V"}</CheckDiv>
     </StyledVoteResultRow>
   );
 }

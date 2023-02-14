@@ -6,7 +6,7 @@ import VoteResultRow from "./VoteResultRow";
 const StyledDebateHistory = styled.div`
   // 크기 설정
   width: 60%;
-  margin: 36px 20% 36px 20%;
+  margin: 60px 20% 48px 20%;
   padding: 0 0 12px 0;
 
   // 디자인
@@ -72,6 +72,14 @@ function DebateHistory({ content }) {
   const userTeam = content.userTeam;
   const totalPlayerResult = content.total_player_result;
 
+  // 사용자가 발언한 페이즈를 알기 위해 세션에서 닉네임 가져오기
+  let playerNickname = "";
+  if (sessionStorage.getItem("user_info")) {
+    playerNickname = sessionStorage.getItem("user_info").userNickname;
+  }
+  const leftPlayerList = content.leftPlayerList;
+  const rightPlayerList = content.rightPlayerList;
+
   // 전체 토론 및 플레이어 우세 여부
   const isLeftMore = (userTeam === "LEFT" && totalPlayerResult === "WIN")
     || (userTeam === "RIGHT" && totalPlayerResult === "LOSE");
@@ -90,10 +98,7 @@ function DebateHistory({ content }) {
       <RoomIdSpan>{roomId}번 토론</RoomIdSpan>
       
       {/* 방제 */}
-      <DebateTitleDiv
-        className={isPlayerMore ? "more" : "less"}
-        isLeftMore={isLeftMore}
-      >
+      <DebateTitleDiv className={isPlayerMore ? "more" : "less"}>
         <DebateTitle title={roomTitle}>
           {roomTitle}
         </DebateTitle>
@@ -110,10 +115,17 @@ function DebateHistory({ content }) {
       {/* 투표 결과 */}
       {phasesMore.map((item, index) => (
         <VoteResultRow
+          key={index}
           leftPercent={leftVotes[index]}
           rightPercent={rightVotes[index]}
           phaseKorean={phasesKorean[index]}
           isPhaseMore={item}
+          curPlayerTeam={
+            (playerNickname === leftPlayerList[index]
+            || playerNickname === rightPlayerList[index])
+              ? userTeam
+              : null
+          }
         />
       ))}
     </StyledDebateHistory>
