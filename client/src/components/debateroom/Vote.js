@@ -5,7 +5,7 @@ import customAxios from "utils/customAxios";
 // recoil
 import { useRecoilValue, useRecoilState } from "recoil";
 import { phaseDetailState, timerState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
-
+ 
 function Vote({roomId}) {
   const [isVote, setIsVote] = useState(false);
   const [timer, setTimer] = useRecoilState(timerState);
