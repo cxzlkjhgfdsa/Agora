@@ -24,20 +24,26 @@ function ImageInput({ color, defaultProfile }) {
   // 참조 위치
   const imgRef = useRef();
 
+  const [previewFile, setPreviewFile] = useState()
+
   // 이미지 업로드 input의 onChange
   const saveImgFile = () => {
     const file = imgRef.current.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setImgFile(reader.result)
+
+      setPreviewFile(reader.result);
+
     }
+    setImgFile(file)
   }
 
   // 업로드 이미지의 초기화
   const resetImgFile = () => {
     imgRef.current.value = "";
     setImgFile("");
+    setPreviewFile("");
   }
 
   // 컴포넌트가 unmount 될 때, 최종 데이터 저장
@@ -55,7 +61,7 @@ function ImageInput({ color, defaultProfile }) {
         </SubText>
       </Grid>
       <Grid item xs={5}>
-        <PreviewImage src={imgFile ? imgFile : ProfileImage}/>
+        <PreviewImage src={previewFile ? previewFile : ProfileImage}/>
       </Grid>
       <Grid item xs={3}>
         <Button variant="contained" component="label" color={color} sx={{color: '#ffffff'}}>

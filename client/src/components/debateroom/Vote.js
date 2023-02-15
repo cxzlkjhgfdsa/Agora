@@ -44,7 +44,7 @@ function Vote({roomId}) {
       // 투표 결과 보내기
       const axios = customAxios();
       axios
-        .post("/api/v2/debate/vote", {
+        .post("/v2/debate/vote", {
           "roomId" : roomId,
           "voteTeam" : data
         })

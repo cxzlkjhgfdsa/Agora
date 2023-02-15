@@ -1,15 +1,25 @@
 import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
-// const DebateContainer = lazy(() => import("./DebateContainer"));
 import DebateContainer from "./DebateContainer";
 
 import Lightbulb from "../../../assets/icons/Main_lightbulb.png";
 import Clock from "../../../assets/icons/Main_clock.png";
+import { useSetRecoilState } from "recoil";
+import { showAllModalState } from "stores/ModalStates";
 
-function SmallDebateContainer({ url, position, openModalEvent }) {
+function SmallDebateContainer({ url, position }) {
+
+  const setShowAllModalState = useSetRecoilState(showAllModalState);
+  
+  const openModalEvent = () => {
+    setShowAllModalState(position === "mid"
+    ? { isModalOpen: true, type: "debating" }
+    : { isModalOpen: true, type: "waitnig" })
+  }
 
   const text = position === "mid" ? "열띤 토론 중" : "토론 준비 중";
+
   return (
     <Wrapper>
       <TextWrapper>
@@ -50,6 +60,7 @@ const Img = styled.img`
 const Text = styled.span`
 color: black;
 font-size: 1.3rem;
+font-weight: 700;
 margin-left: 1%;
 `
 

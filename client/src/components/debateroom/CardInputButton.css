@@ -39,7 +39,7 @@
     border-radius: 3px;
 }
 
-.card-input label:hover{
+.card-input label:hover:not(.onReady) {
     animation-duration: 0.3s;
     animation-name: labelhover;
     animation-fill-mode: forwards;
