@@ -119,16 +119,16 @@ export default function SignUp() {
   // 모든 데이터 유효성 검사 후 social 데이터 저장
   useEffect(() => {
     if (nameValid === "valid" & nicknameValid === "valid" & birthValid === "valid" & phoneValid === "valid") {
-      setSocialData({type: queryType, userId: querySocialId})
+      setSocialData({type: queryType, userId: querySocialId, profile: queryProfile})
       setAllValid(true)
     }
   }, [nameValid, nicknameValid, birthValid, phoneValid])
 
   // social 데이터 저장 이후 
   useEffect(() => {
-    
     if (allValid) {
-      navigate('/user/signup/category')
+      setAllValid(false);
+      navigate('/user/signup/category');
     } 
   }, [allValid])
 
