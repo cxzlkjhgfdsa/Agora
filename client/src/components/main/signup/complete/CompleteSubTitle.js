@@ -12,7 +12,7 @@ function CompleteSubTitle() {
   return(
     <Wrapper>
       <SubText>
-        축하합니다! 아고라 가입이 완료되었습니다.
+        축하합니다! 아고라 가입이 완료되었습니다
       </SubText>
     </Wrapper>
   )
