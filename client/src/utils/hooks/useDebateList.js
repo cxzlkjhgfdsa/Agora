@@ -6,14 +6,12 @@ const axios = customAxios();
 const fetchDebateList = ({ queryKey }) => {
   // const url = "makeError";
   const url = queryKey[1];
-  const params = queryKey[2];
-  return axios.get(
-    url, { params, }
-  );
+  // const params = queryKey[2];
+  return axios.get(url);
 }
 
-export const useDebateList = (url, params) => {
-  return useQuery(["debateList", url, params], fetchDebateList, {
+export const useDebateList = (url) => {
+  return useQuery(["debateList", url], fetchDebateList, {
     select,
     onError,
 
@@ -27,12 +25,12 @@ export const useDebateList = (url, params) => {
 }
 
 const select = (response) => {
-  // console.log("inside useDebateList select. data fetch result >> ", response.data);
+  console.log("inside useDebateList select. data fetch result >> ", response);
   if (!response.data.body || response.data.body.hasOwnProperty("content")) {
-    // console.log("there is content property")
+    console.log("there is content property")
     return response.data.body.content;  
   }
-  // console.log("there is no content property")
+  console.log("there is no content property")
   return response.data.body;
 }
 

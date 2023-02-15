@@ -3,11 +3,11 @@ import Debate from "./Debate"
 import styled from "styled-components";
 import { useEffect, useState, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
-import customAxios from "utils/customAxios";
 import { useDebateList } from "utils/hooks/useDebateList";
 import Spinner from "components/common/Spinner";
 
 function NewDebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, url, slidePerClick} ) {
+
   const [currSlideIdx, setCurrSlideIdx] = useState(0);
   const [visibleCounts, setVisibleCounts] = useState(maximumVisibleCounts);
   
@@ -27,11 +27,11 @@ function NewDebateContainer( {maximumVisibleCounts, minimumVisibleCounts, type, 
   }, [visibleCounts])
 
   // data fetching logic
-  const params = type === "hot-thumbnail"
-    ? null
-    : {roomState: `${type === "mid" ? true : false}`, category: "전체", order: "createnew", page: 0, size: 10,}
+  // const params = type === "hot-thumbnail"
+  //   ? null
+  //   : {roomState: `${type === "mid" ? true : false}`, category: "전체", order: "createnew", page: 0, size: 10,}
 
-  const { isLoading, data, isError, error } = useDebateList(url, params);
+  const { isLoading, data, isError, error } = useDebateList(url);
 
   if (isLoading) return <Spinner />;
   const debateList = isError ? error.alterData : data;
@@ -103,6 +103,7 @@ const Text = styled.div`
 `
 
 const Button = styled.button`
+  box-sizing: border-box;
   position: relative;
   flex-grow: 0;
   width: 4%;

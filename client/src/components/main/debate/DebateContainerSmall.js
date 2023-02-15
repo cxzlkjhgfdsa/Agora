@@ -50,6 +50,7 @@ const Img = styled.img`
 const Text = styled.span`
 color: black;
 font-size: 1.3rem;
+font-weight: 700;
 margin-left: 1%;
 `
 

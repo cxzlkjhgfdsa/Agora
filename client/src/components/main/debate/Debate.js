@@ -322,12 +322,13 @@ const ViewersIcon = styled.img`
   ${({ type }) => type === "hot-thumbnail"
     ? "width: 20px; height: 20px;"
     : "width: 15px; height: 15px;"}
+  margin-right: 2px;
 `;
 // Footer에 들어갈 정보의 글꼴
 const StyledFont = styled.span`
   // 글꼴 설정
   color: #FFFFFF;
   ${({ type }) => type === "hot-thumbnail"
-    ? "font-size: 0.5rem;"
-    : "font-size: 0.25rem;"}
+    ? "font-size: 1rem;"
+    : "font-size: 0.75rem;"}
 `;
