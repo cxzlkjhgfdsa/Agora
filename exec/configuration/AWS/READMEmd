@@ -1,0 +1,41 @@
+# AWS 설정
+
+```dockerfile
+# /home/ubuntu/docker-compose.yml
+
+version: '3'
+services:
+  client:
+    image: [docker hub image]
+    container_name: [container name]
+    ports:
+      - 3000:3000
+    environment:
+      REACT_APP_SERVER_BASE_URL: [backend base url]
+    networks:
+      - [project network]
+  backend:
+    image: [docker hub image]
+    container_name: [container name]
+    ports:
+      - 8081:8081
+    environment:
+      USE_PROFILE: [실행 환경(prod)]
+      HOST_NAME: [mysql host name]
+      SCHEMA: [mysql schema]
+      USERNAME: [mysql username]
+      PASSWORD: [mysql user password]
+      JWT_SECRET: [jwt secret]
+      REDISHOST: [redis host name]
+      REDISPASS: [redis password]
+      MEETING_HOST: [openvidu host name]
+      MEETING_SECRET: [openvidu secret]
+    networks:
+      - [project network]
+networks:
+  [network name]:
+    external:
+      name: [network name]
+```
+
+-   AWS에 Jenkins에서 배포 시 사용할 docker-compose.yml을 추가
