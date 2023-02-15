@@ -38,7 +38,7 @@ function RightComponents() {
   else if (userInfo.isLoggedIn) {
     return (
       <Wrapper>
-        <UserProfileIcon nickname={userInfo.nickname} />
+        <UserProfileIcon nickname={userInfo.userNickname} />
       </Wrapper>
     );
   }

@@ -27,7 +27,7 @@ function DebateRoom() {
   // state
   const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
-  // const nickname = userInfo?.userNickname;
+  const nickname = userInfo?.userNickname;
   const [currentSpeakingTeam, setCurrentSpeakingTeam] = useState("");
   const [currentSpeakingUser, setCurrentSpeakingUser] = useState("");
   const [isAllReady, setIsAllReady] = useState(false)
@@ -58,8 +58,6 @@ function DebateRoom() {
   // navigate
   const navigate = useNavigate();
   
-  // 임시 데이터
-  const [nickname, setNickname] = useState("anonymous")
 
   useEffect(() => {
     console.log(roomToken)
