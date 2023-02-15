@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useRecoilState, useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import customAxios from "utils/customAxios";
 
 // recoil
 import { useRecoilValue } from "recoil";
-import { phaseDetailState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
+import { phaseDetailState, timerState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
 
 function Vote({roomId}) {
   const [isVote, setIsVote] = useState(false);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useRecoilState(timerState);
   const phaseDetail = useRecoilValue(phaseDetailState);
   const leftResult = useRecoilValue(voteLeftResultState);
   const rightResult = useRecoilValue(voteRightResultState);
