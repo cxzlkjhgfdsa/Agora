@@ -10,15 +10,19 @@ import styled, { css, keyframes } from "styled-components";
 // Title
 import LightBulb from "assets/icons/Light_Bulb.png";
 import Clock from "assets/icons/Clock.png";
-import { useRecoilCallback } from "recoil";
+import { useRecoilCallback, useResetRecoilState } from "recoil";
 import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
+import { showAllModalState } from "stores/ModalStates";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
-function DebateListModal({ isModalOpen, closeModalEvent, debateState }) {
+function DebateListModal({ isModalOpen, debateState }) {
+  
+  const resetShowAllModalState = useResetRecoilState(showAllModalState);
+
   const axios = customAxios();
 
   // 제목 관련 이미지 및 글자, 아톰 패밀리 업데이트 인덱스 (화제의 토론: 0 ~, 열띤 토론중: 100 ~, 토론 대기중: 200 ~)
@@ -130,7 +134,7 @@ function DebateListModal({ isModalOpen, closeModalEvent, debateState }) {
       {/* 제목 이미지와 글자 넘겨주기 */}
       <ModalTitle image={titleIcon} text={titleText} />
       {/* Modal 닫는 이벤트 넘겨주기 */}
-      <CloseButton onClick={closeModalEvent} />
+      <CloseButton onClick={resetShowAllModalState} />
       {/* 정렬 방식과 카테고리 setter를 넘겨 데이터 변경 권한 주기 */}
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />

@@ -1,15 +1,25 @@
 import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
-// const DebateContainer = lazy(() => import("./DebateContainer"));
-import NewDebateContainer from "./NewDebateContainer";
+import DebateContainer from "./DebateContainer";
 
 import Lightbulb from "../../../assets/icons/Main_lightbulb.png";
 import Clock from "../../../assets/icons/Main_clock.png";
+import { useSetRecoilState } from "recoil";
+import { showAllModalState } from "stores/ModalStates";
 
-function SmallDebateContainer({ url, position, openModalEvent }) {
+function SmallDebateContainer({ url, position }) {
+
+  const setShowAllModalState = useSetRecoilState(showAllModalState);
+  
+  const openModalEvent = () => {
+    setShowAllModalState(position === "mid"
+    ? { isModalOpen: true, type: "debating" }
+    : { isModalOpen: true, type: "waitnig" })
+  }
 
   const text = position === "mid" ? "열띤 토론 중" : "토론 준비 중";
+
   return (
     <Wrapper>
       <TextWrapper>
@@ -18,7 +28,7 @@ function SmallDebateContainer({ url, position, openModalEvent }) {
         <ShowAll onClick={openModalEvent}>모두 보기 &gt;</ShowAll>
       </TextWrapper>
       <Suspense fallback={<Spinner />}>
-      <NewDebateContainer
+      <DebateContainer
         maximumVisibleCounts={4}
         minimumVisibleCounts={3}
         type="normal"

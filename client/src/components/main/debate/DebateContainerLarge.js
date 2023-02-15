@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
 // const DebateContainer = lazy(() => import("./DebateContainer"));
-import NewDebateContainer from "./NewDebateContainer";
+import NewDebateContainer from "./DebateContainer";
 
 import Icon from "../../../assets/icons/Main_fire.png";
 import { useSetRecoilState } from "recoil";
