@@ -253,7 +253,7 @@ function DebateRoom() {
   }, [leavePostFlag]);
 
   useEffect(() => {
-    if (setSubmitPicsPostFlag) {
+    if (submitPicsPostFlag) {
       // FormData 생성
       const formData = new FormData();
       formData.append("roomId", roomId);
