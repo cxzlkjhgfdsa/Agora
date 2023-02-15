@@ -265,10 +265,10 @@ function DebateRoom() {
                   <ReadyVideo opinion={"B쪽 주장입니다"} />
                 </Grid>
               </Grid>
-        ) : (
-            <VideoComponent data={data} />
-        )}
-        <Grid container spacing={3}>
+            ) : (
+                <VideoComponent data={data} />
+            )}
+          <Grid container spacing={3}>
             <Grid item xs={6}>
               <DebaterBox data={leftUserList} sessionNum={phaseNum} />
             </Grid>
@@ -276,14 +276,14 @@ function DebateRoom() {
               <DebaterBox data={rightUserList} sessionNum={phaseNum} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={5} lg={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
-              </Grid>
-              <Grid item xs={12}>
-                <CardComponent role={role} roomId={roomId} nickname={nickname} />
-              </Grid>
+        </Grid>
+        <Grid item xs={12} md={5} lg={4}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
+            </Grid>
+            <Grid item xs={12}>
+              <CardComponent role={role} roomId={roomId} nickname={nickname} />
             </Grid>
           </Grid>
         </Grid>
