@@ -26,8 +26,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +56,7 @@ public class UserController {
      */
     // TODO: 회원 가입 시 user_social_id 가 들어가지 않는 경우 발생
     @PostMapping("join")
-    public ResponseEntity<ResponseDTO> userJoin(@RequestBody RequestJoinDto requestJoinDto) throws Exception {
+    public ResponseEntity<ResponseDTO> userJoin(@RequestBody RequestJoinDto requestJoinDto, HttpServletResponse response) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
 
         String user_phone = requestJoinDto.getUser_phone();
@@ -61,9 +64,14 @@ public class UserController {
 
         System.out.println("여긴와요?");
         if(blackList==null){ // 블랙리스트에 존재하지 않은 사용자
-            userService.userjoin(requestJoinDto);
-            responseDTO.setState(true);
-            responseDTO.setMessage("회원가입에 성공하셨습니다");
+            String user_id = userService.userjoin(requestJoinDto);
+
+            response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/login/redirect-handler")
+                    .queryParam("userId", user_id)
+                    .build()
+                    .encode(StandardCharsets.UTF_8)
+                    .toUriString());
+
         }else{  // 블랙리스트에 추가된 사용자
             responseDTO.setState(false);
             responseDTO.setMessage("악질 사용자는 회원가입 할 수 없습니다");
