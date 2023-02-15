@@ -16,7 +16,6 @@ function Timer() {
   const leftUserList = useRecoilValue(leftUserListState);
   const rightUserList = useRecoilValue(rightUserListState);
 
-
   const second = count % 60;
   const minute = Math.floor(count / 60);
 
