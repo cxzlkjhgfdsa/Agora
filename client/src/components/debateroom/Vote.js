@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import customAxios from "utils/customAxios";
 
 // recoil
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { phaseDetailState, timerState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
 
 function Vote({roomId}) {
@@ -19,7 +19,7 @@ function Vote({roomId}) {
   // initiation
   useEffect(() => {
     setIsVote(false);
-
+ 
     return(() => {
       setIsVote(false);
     })
