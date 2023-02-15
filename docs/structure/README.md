@@ -12,4 +12,4 @@
 
 ## Project Structure
 
-![agora_structure2 0](https://user-images.githubusercontent.com/55802893/216476527-623c166c-3ed7-49c5-9063-86ee8ac3e63b.png)
+![agora_structure2 0](./agora_structure3.0.png)
