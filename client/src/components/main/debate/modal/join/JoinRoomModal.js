@@ -7,7 +7,7 @@ import JoinAsSpeaker from "./JoinAsSpeaker";
 import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import styled, { css, keyframes } from "styled-components";
-import { joinModalState } from "stores/ModalStates";
+import { joinModalState, showAllModalState } from "stores/ModalStates";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -25,6 +25,8 @@ function JoinRoomModal({ roomId, isModalOpen }) {
       <ModalTitle text={roomInfo?.roomName} titleSize="2.5rem" />
       {/* Modal 닫는 이벤트 넘겨주기 */}
       <CloseButton onClick={() => {
+        // Modal 종료
+        resetJoinModalState();
         // 기존 스트림 삭제
         const srcObject = document.querySelector("video")?.srcObject;
         if (srcObject) {
@@ -33,8 +35,6 @@ function JoinRoomModal({ roomId, isModalOpen }) {
             srcObject.removeTrack(track);
           });
         }
-        // Modal 종료
-        resetJoinModalState();
       }} />
 
       {/* 컨테이너 생성하여 메인 컴포넌트들 부착 */}

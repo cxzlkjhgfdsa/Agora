@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import { userInfoState } from "stores/userInfoState";
-import { joinModalState } from "stores/ModalStates";
+import { joinModalState, showAllModalState } from "stores/ModalStates";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -62,6 +62,7 @@ function JoinAsSpeaker(props) {
   // 다음 페이지로 전달하기 위한 참가자의 역할 setter
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
   const resetJoinModalState = useResetRecoilState(joinModalState);
+  const resetShowAllModalState = useResetRecoilState(showAllModalState);
 
   const userInfo = useRecoilValue(userInfoState);
 
@@ -103,6 +104,7 @@ function JoinAsSpeaker(props) {
 
       setDebateUserRole("speaker");
       resetJoinModalState();
+      resetShowAllModalState();
       navigate("/debate/room/" + roomId);
     }
   }, []);
