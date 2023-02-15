@@ -42,7 +42,7 @@ function SearchRoom() {
     setLoading(true);
 
     // 데이터 가져오기
-    await axios.get(`/api/v1/search/showall/${endPoint}`, {
+    await axios.get(`/v2/search/showall/${endPoint}`, {
       params: {
         searchWord: searchWord,
         hashTags: hashTags,
