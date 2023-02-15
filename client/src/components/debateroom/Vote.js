@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import customAxios from "utils/customAxios";
 
 // recoil
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { phaseDetailState, timerState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
 
 function Vote({roomId}) {
