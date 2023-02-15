@@ -1,12 +1,19 @@
 import styled from "styled-components"
+import people from "../../assets/icons/WatchNum.png"
 
-function HeadTitle({isStart, title}) {
+function HeadTitle({isStart, title, watchNum}) {
 
   return(
     <TitleDiv>
-      <OnAirDiv className={isStart ? "isStart-root": null}>
-        {isStart ? "On Air" : "Off Air"}
-      </OnAirDiv>
+      <IconDiv>
+        <OnAirDiv className={isStart ? "isStart-root": null}>
+          {isStart ? "On Air" : "Off Air"}
+        </OnAirDiv>
+        <WatcherDiv>
+          <WatchImg src={people} />
+            {watchNum}명
+        </WatcherDiv>
+      </IconDiv>
       {title}
     </TitleDiv> 
   )
@@ -14,7 +21,10 @@ function HeadTitle({isStart, title}) {
 
 export default HeadTitle
 
-
+const IconDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`
 
 const TitleDiv = styled.div`
   font-weight: bold;
@@ -23,13 +33,6 @@ const TitleDiv = styled.div`
 
   margin-top: 10px;
   letter-spacing: -1.5px;
-
-  
-  // 임시 폰트 적용
-  font-family: 'Inter', san-serif !important;
-
-  // // 영역 확인용 border
-  // border: 3px black solid;
 `
 
 const OnAirDiv = styled.div`
@@ -53,9 +56,6 @@ const OnAirDiv = styled.div`
   // margin
   margin-bottom: 8px;
 
-  // 임시 폰트 적용
-  font-family: 'Inter', san-serif !important;
-
   // 비활성시
   background-color: #d4d4d4;
   color: white;
@@ -64,25 +64,34 @@ const OnAirDiv = styled.div`
     background-color: #EF404A;
   }
 `
-const Title = styled.div`
+const WatchImg = styled.img`
+  // 크기 설정 
+  height: 15px;
+  width: auto;
+
+  // margin
+  margin-right: 3px;
+  padding-top: 3px;
 `
 
-// 스킵 버튼
-const SkipButton = styled.div`
-  color: #F6C026;
-  width: 120px;
+// 시청자 수 버튼
+const WatcherDiv = styled.div`
+  // 크기 설정
+  height: 36px;
+  width: 80px;
 
+  // font 특징 적용
+  font-weight: bold;
   font-size: 20px;
+  color: white;
+  letter-spacing: 0px;
 
-  border-radius: 8px;
-  border: 2px solid #F6C026;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  margin-left: 10px;
+  border-radius: 5px;
 
-  cursor: pointer;
-
-  // 드래그 방지
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
+  background-color: #d4d4d4;
 `

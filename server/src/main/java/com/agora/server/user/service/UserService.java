@@ -4,9 +4,11 @@ import com.agora.server.category.domain.Category;
 import com.agora.server.category.domain.UserCategory;
 import com.agora.server.category.repository.CategoryRepository;
 import com.agora.server.category.repository.UserCategoryRepository;
+import com.agora.server.encrypt.domain.Encrypt;
 import com.agora.server.encrypt.service.EncryptService;
 import com.agora.server.file.service.FileService;
 import com.agora.server.user.controller.dto.request.EditRequestDto;
+import com.agora.server.user.controller.dto.request.RequestJoinDto;
 import com.agora.server.user.controller.dto.response.UserInfoResponseDto;
 import com.agora.server.user.domain.User;
 import com.agora.server.user.repository.UserRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +42,6 @@ public class UserService {
     private final UserCategoryRepository userCategoryRepository;
 
     private final EncryptService encryptService;
-
-    public User join(User joinUser) {
-        return userRepository.save(joinUser);
-    }
-
 
     public User findUserByNickname(String nickname) {
         return userRepository.findByUser_nickname(nickname);
@@ -68,10 +66,11 @@ public class UserService {
     public void editUserInfo(String userId, EditRequestDto editRequestDto) throws IOException {
         User findUser = userRepository.findById(UUID.fromString(userId)).get();
 
-        List<String> filenames = new ArrayList<>();
-        filenames.add(findUser.getUser_photo_name());
-
-        fileService.deleteFile(filenames);  //기존 프로필 삭제
+        if(findUser.getUser_photo_name().length()>10){ //  기본 프로필을 사용허고 있지 않은 유저라면
+            List<String> filenames = new ArrayList<>();
+            filenames.add(findUser.getUser_photo_name());
+            fileService.deleteFile(filenames);  //기존 프로필 삭제
+        }
 
         findUser.changeUserPhoto(editRequestDto.getUser_photo_name(), editRequestDto.getUser_photo()); // 프로필 값 변경
 
@@ -104,5 +103,26 @@ public class UserService {
         return userInfoDto;
     }
 
+    @Transactional
+    public String userjoin(RequestJoinDto requestJoinDto) throws NoSuchAlgorithmException {
 
+
+        Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
+        // 카테고리 객체로 리스트 얻기
+        List<Category> categoryList = findCategoryById(requestJoinDto.getCategories());
+        String encryptedUserName = encryptService.getEncryptedUserName(encrypt, requestJoinDto);
+
+        User joinUser = User.createUser(encrypt, requestJoinDto.getUser_social_type(), requestJoinDto.getUser_social_id()
+                , encryptedUserName, requestJoinDto.getUser_age(), requestJoinDto.getUser_phone(),
+                requestJoinDto.getUser_nickname(), requestJoinDto.getUser_photo_name(), requestJoinDto.getUser_photo());
+        User saveUser = userRepository.save(joinUser); // 1차캐시로 영속성 컨텍스트에 user를 올림
+        // 더티 체킹과 변경감지 !! 다시 공부하기
+
+        for (Category category : categoryList) {
+            UserCategory userCategory = userCategoryRepository.save(UserCategory.createUserCategory(saveUser, category));
+            saveUser.addCategories(userCategory);
+        }
+
+        return saveUser.getUser_id().toString();
+    }
 }
