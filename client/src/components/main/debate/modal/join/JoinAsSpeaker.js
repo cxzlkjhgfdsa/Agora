@@ -101,26 +101,8 @@ function JoinAsSpeaker(props) {
         return;
       }
 
-      // 카메라와 오디오 모두 켜져 있다면,
-      // 방 참여 Request
-      // const joinData = await axios.post("/v2/room/enter", {
-      //   roomId: roomId,
-      //   userNickname: userInfo?.userNickname,
-      //   userTeam: team
-      // }, null)
-      //   .then((res) => {
-      //     if (res?.state === false) {
-      //       alert("방 참여에 실패했습니다.");
-      //       return;
-      //     }
-      //   })
-      //   .catch(error => { console.log(error); });
-      
-
-      // Recoil State 설정
-      setDebateUserRole("speaker");  // 발언자로 입장
+      setDebateUserRole("speaker");
       resetJoinModalState();
-      // 토론방 이동 Request
       navigate("/debate/room/" + roomId);
     }
   }, []);
