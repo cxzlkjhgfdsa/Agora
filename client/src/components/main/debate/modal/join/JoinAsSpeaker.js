@@ -93,6 +93,11 @@ function JoinAsSpeaker(props) {
         document.querySelector("#deviceSetting").classList.add("wrong");
         isValid = false;
       }
+      
+      if (!isValid) {
+        window.alert("설정에서 카메라와 오디오를 켜주세요.");
+        return;
+      }
 
       // 카메라와 오디오 모두 켜져 있다면,
       if (isValid) {
