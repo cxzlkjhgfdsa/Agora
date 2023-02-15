@@ -34,7 +34,7 @@ video {
     margin-left: 30px;
 }
 
-p{  
+.userNickname {  
     color: white;
     margin: 0;
     /* 드래그 방지 */
