@@ -98,6 +98,7 @@ const DebateWrapper = styled.div`
 `
 
 const Text = styled.div`
+  color: white;
   transition: transform 150ms ease-in-out;
 `
 
@@ -106,13 +107,14 @@ const Button = styled.button`
   flex-grow: 0;
   width: 4%;
   margin: .25rem 0;
-  border-radius: 1rem;
-  opacity: 0.5;
+  /* border-radius: 1rem; */
+  opacity: 0.7;
   transition: background-color 150ms ease-in-out;
   &:hover {
-    background-color: rgba(0, 0, 0, .5);
+    border-color: rgba(0, 0, 0, .8);
+    background-color: rgba(0, 0, 0, .8);
     ${Text} {
-      transform: scale(2);
+      transform: scale(1.8);
     }
   }
   cursor: pointer;
@@ -121,19 +123,19 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: black;
-  font-size: 3rem;
+  background-color: black;
+  font-size: 3vw;
   line-height: 0;
 `
 
 const LeftButton = styled(Button)`
-  border-top-left-radius: 0; border-bottom-left-radius: 0;
+  /* border-top-left-radius: 0; border-bottom-left-radius: 0; */
   transition: visibility 150ms ease-in-out;
   visibility: ${props => props.currSlideIdx === 0 ? "hidden" : "visible"};
 `
 
 const RightButton = styled(Button)`
-  border-top-right-radius: 0; border-bottom-right-radius: 0;
+  /* border-top-right-radius: 0; border-bottom-right-radius: 0; */
   transition: visibility 150ms ease-in-out;
   visibility: ${props => props.currSlideIdx + props.visibleCounts >= props.numOfSlides ? "hidden" : "visible"};
 `
