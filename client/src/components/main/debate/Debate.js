@@ -8,12 +8,13 @@ import People from "assets/icons/People.png";
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import RoomInfo from "./RoomInfo";
 import { joinModalState } from "stores/ModalStates";
+import { useNavigate } from "react-router-dom";
 
 function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
+
+  const navigate = useNavigate();
   const setDebateRoom = useSetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
   const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
-
-  const setJoinModalState = useSetRecoilState(joinModalState);
 
   const { 
     roomId, 
@@ -41,24 +42,34 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
   const [isHovered, setIsHovered] = useState(false);
 
   // 모달
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const setJoinModalState = useSetRecoilState(joinModalState);
+  const HandleDebateClick = () => {
+    console.log("clicked debate type >> ", type);
+    if (type === "waiting") {
+      setJoinModalState({ roomId: roomId, isModalOpen: true})
+    } else {
+      if (window.confirm(`"${title}" 방에 입장하시겠습니까?`)) {
+        navigate(`/debate/room/${roomId}`)
+      }
+    }
+  }
 
   // 타이머
-  // const interval = useRef(null);
-  // const [secondsState, setSecondsState] = useState(seconds);
-  // const [minutesState, setMinutesState] = useState(minutes);
+  const interval = useRef(null);
+  const [secondsState, setSecondsState] = useState(seconds);
+  const [minutesState, setMinutesState] = useState(minutes);
 
-  // useEffect(() => {
-  //     interval.current = setInterval(() => {
-  //     if (secondsState === 59) {
-  //         setMinutesState(current => current + 1);
-  //         setSecondsState(0);
-  //     } else {
-  //         setSecondsState(current => current + 1);
-  //     }
-  //     }, 1000);
-  //     return () => clearInterval(interval.current);
-  // }, [secondsState]);
+  useEffect(() => {
+      interval.current = setInterval(() => {
+      if (secondsState === 59) {
+          setMinutesState(current => current + 1);
+          setSecondsState(0);
+      } else {
+          setSecondsState(current => current + 1);
+      }
+      }, 1000);
+      return () => clearInterval(interval.current);
+  }, [secondsState]);
 
   return (
 
@@ -75,7 +86,7 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
         <StyledThumbnail 
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={() => setJoinModalState({ roomId: roomId, isModalOpen: true})}
+          onClick={HandleDebateClick}
         >  
           {/* 배경 이미지 및 반투명 검은 배경 */}
           <StyledBackgroundImage src={imageUrl} />
@@ -111,9 +122,9 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
             <FooterInfo>
                 <StyledFont type={type}>{phases}</StyledFont>
                 <StyledFont type={type}>&nbsp;페이즈&nbsp;</StyledFont>
-                {/* <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
+                <StyledFont type={type}>{to_02d(minutesState)}</StyledFont>
                 <StyledFont type={type}>&nbsp;:&nbsp;</StyledFont>
-                <StyledFont type={type}>{to_02d(secondsState)}</StyledFont> */}
+                <StyledFont type={type}>{to_02d(secondsState)}</StyledFont>
             </FooterInfo>
           </Footer>
         </StyledThumbnail>
@@ -133,7 +144,6 @@ const Wrapper = styled.div`
   flex: 0 0 ${props => 100 / props.visibleCounts}%;
   max-width: ${props => 100 / props.visibleCounts}%;
   min-width: 4rem;
-  /* order: ${props => -props.viewers}; */
   
   aspect-ratio: 16 / 9;
   padding: .25rem;
