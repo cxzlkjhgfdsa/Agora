@@ -1,14 +1,16 @@
 import styled, { keyframes } from "styled-components";
 import "./CardInputButton.css"
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 // mui
 import Grid from "@mui/material/Grid";
 // recoil
-import { SetRecoilState, useRecoilState } from "recoil";
-import { cardNumState, firstCardState, secondCardState } from "stores/DebateStates";
+import { useRecoilState } from "recoil";
+import { cardNumState, firstCardFileState, firstCardState, secondCardFileState, secondCardState } from "stores/DebateStates";
 
 function CardInputButton ({isReady}) {
   // state
+  const [img1File, setImg1File] = useRecoilState(firstCardFileState);
+  const [img2File, setImg2File] = useRecoilState(secondCardFileState);
   const [img1, setImg1] = useRecoilState(firstCardState);
   const [img2, setImg2] = useRecoilState(secondCardState);
   const [cardNum, setCardNum] = useRecoilState(cardNumState);
@@ -17,6 +19,10 @@ function CardInputButton ({isReady}) {
   const imgRef2 = useRef();
   // onChange => image upload
   const saveImgFile = (event) => {
+    // 준비 완료 시 이미지가 바뀌지 않도록 핸들러 종료
+    if (isReady) {
+      return;
+    }
     const id = event.target.id
     switch (id) {
       case 'card-input1':
@@ -27,6 +33,8 @@ function CardInputButton ({isReady}) {
           setImg1(reader1.result);
           setCardNum(cardNum + 1);
         };
+        // 파일 State 저장
+        setImg1File(file1);
         break;
       case 'card-input2':
         const file2 = imgRef2.current.files[0];
@@ -36,19 +44,32 @@ function CardInputButton ({isReady}) {
           setImg2(reader2.result);
           setCardNum(cardNum + 1);
         };
+        // 파일 State 저장
+        setImg2File(file2);
         break;
     }
   }
+  
   // onClick => reset image
   const resetImg1 = () => {
+    // 준비 완료 시 이미지가 바뀌지 않도록 핸들러 종료
+    if (isReady) {
+      return;
+    }
     imgRef1.current.value = "";
     setImg1("");
     setCardNum(cardNum - 1);
+    setImg1File("");
   };
   const resetImg2 = () => {
+    // 준비 완료 시 이미지가 바뀌지 않도록 핸들러 종료
+    if (isReady) {
+      return;
+    }
     imgRef2.current.value = "";
     setImg2("");
     setCardNum(cardNum - 1);
+    setImg2File("");
   };
 
   return(
@@ -59,7 +80,7 @@ function CardInputButton ({isReady}) {
             {img1 !== ""
               ?(
                 <ImageCropping>
-                  <ImgWrapper ref={imgRef1} onClick={resetImg1}>
+                  <ImgWrapper className={isReady ? "onReady" : ""} ref={imgRef1} onClick={resetImg1}>
                     <DeleteImg />
                     <TextWrapper>
                       Delete
@@ -69,8 +90,8 @@ function CardInputButton ({isReady}) {
                 </ImageCropping>
               ):(
                 <div className="card-input">
-                  <label htmlFor="card-input1">✚</label>
-                  <input type='file' id="card-input1" ref={imgRef1} onChange={saveImgFile} />
+                  <label htmlFor="card-input1" className={isReady ? "onReady" : ""}>✚</label>
+                  <input type='file' id="card-input1" ref={imgRef1} onChange={saveImgFile} disabled={isReady} />
                 </div>
             )}
             
@@ -81,7 +102,7 @@ function CardInputButton ({isReady}) {
             {img2 !== ""
               ?(
                 <ImageCropping>
-                  <ImgWrapper ref={imgRef2} onClick={resetImg2}>
+                  <ImgWrapper className={isReady ? "onReady" : ""} ref={imgRef2} onClick={resetImg2}>
                     <DeleteImg />
                     <TextWrapper>
                       Delete
@@ -91,11 +112,11 @@ function CardInputButton ({isReady}) {
                 </ImageCropping>
               ):(
                 <div className="card-input">
-                  <label htmlFor="card-input2">✚</label>
-                  <input type='file' id="card-input2" ref={imgRef2} onChange={saveImgFile} />
+                  <label htmlFor="card-input2" className={isReady ? "onReady" : ""}>✚</label>
+                  <input type='file' id="card-input2" ref={imgRef2} onChange={saveImgFile} disabled={isReady} />
                 </div>
             )}
-           
+          
           </ButtonWrapper>
         </Grid>
       </Grid>
@@ -180,7 +201,7 @@ const SelectTextAnime = keyframes`
 const ImgWrapper = styled.div`
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(.onReady) {
     ${DeleteImg} {
       animation: ${ SelectAnime } 0.3s 0.01s ease 1 forwards;
     }

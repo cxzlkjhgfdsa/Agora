@@ -1,29 +1,39 @@
 import styled, { css, keyframes } from "styled-components"
 import DebateListModal from "components/main/debate/modal/showall/DebateListModal";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { showAllModalState } from "stores/ModalStates";
 
-function ModalContainerShowAll({ closeModalEvent, isDebatingModalOpen, isWaitingModalOpen, renderingCounts }) {
+function ModalContainerShowAll() {
   
-  const outside = useRef(null);
+  const getShowAllModalState = useRecoilValue(showAllModalState);
+  const [visible, setVisible] = useState(false);
 
-  if (renderingCounts === 0 || !renderingCounts) return null;
+  useEffect(() => {
+    let timeoutId;
+    if (getShowAllModalState.isModalOpen) {
+      setVisible(true);
+    } else {
+      timeoutId = setTimeout(() => {setVisible(false)}, 500)
+    }
+
+    return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    }
+  }, [getShowAllModalState])
+
+  if (!visible) return null;
 
   return (
     <ModalContainer 
-      isModalOpen={isDebatingModalOpen || isWaitingModalOpen}
+      isModalOpen={getShowAllModalState.isModalOpen}
     >
-      <Background 
-        ref={outside}
-        onClick={(e) => {
-          if (e.target === outside.current) {
-            closeModalEvent()
-            console.log("bg clicked")} 
-          }}
-        >
+      <Background>
         <DebateListModal 
-          isModalOpen={isDebatingModalOpen || isWaitingModalOpen} 
-          closeModalEvent={closeModalEvent} 
-          debateState={isDebatingModalOpen ? "debating" : "waiting"} 
+          isModalOpen={getShowAllModalState.isModalOpen}
+          debateState={getShowAllModalState.type} 
         />
       </Background>
     </ModalContainer>
