@@ -47,22 +47,23 @@ function CardComponent({role, roomId, nickname}) {
       return;
     }
 
-    // 오픈할 카드 번호
-    let cardIdx = null;
     // 카드 오픈 중복 검사를 위해 현재 측이 제출한 카드 리스트 가져오기
     const cardListForOverlapCheck = (phaseDetail === 1) ? leftCardList : rightCardList;
+    // 오픈할 카드가 이미 오픈된 카드라면 그만두기
+    console.log(cardListForOverlapCheck);
+    console.log()
+    if (cardListForOverlapCheck.includes(
+      document.querySelector(`img#${e.target.id}`)?.src
+    )) {
+      return;
+    }
+
+    // 오픈할 카드 번호
+    let cardIdx = null;
     if (e.target.id === "first") {
       cardIdx = 0;
-      // 오픈할 카드가 이미 오픈된 카드라면 그만두기
-      if (cardListForOverlapCheck.includes(firstMyCard)) {
-        return;
-      }
     } else if (e.target.id === "second") {
       cardIdx = 1;
-      // 오픈할 카드가 이미 오픈된 카드라면 그만두기
-      if (cardListForOverlapCheck.includes(secondMyCard)) {
-        return;
-      }
     }
 
     // 4. 카드 오픈 요청
@@ -79,6 +80,10 @@ function CardComponent({role, roomId, nickname}) {
   }
 
   const handleCard = (e) => {
+    // 없는 이미지라면 이벤트 종료
+    if (document.querySelector(`img#${e.target.id}`)?.src === "") {
+      return;
+    }
     document.querySelector(`img#${e.target.id}`)?.classList.toggle("expanded");
   }
 
@@ -235,8 +240,11 @@ const CardImage = styled.img`
   margin-left: calc(50% - 75px);
 
   &.expanded {
+    // 크기 및 비율 설정
     min-width: 1280px;
     width: 80%;
+    aspect-ratio: 16 / 9;
+
     margin: 0;
 
     position: fixed;
@@ -244,5 +252,9 @@ const CardImage = styled.img`
     left: 10%;
     z-index: 100;
     transition: 0.5s;
+
+    // 비율 맞추기
+    object-fit: contain;
+    background-color: #141414;
   }
 `
