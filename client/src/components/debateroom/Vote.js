@@ -19,7 +19,7 @@ function Vote({roomId}) {
   // initiation
   useEffect(() => {
     setIsVote(false);
-
+ 
     return(() => {
       setIsVote(false);
     })
