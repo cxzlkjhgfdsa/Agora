@@ -121,7 +121,8 @@ function DebateRoom() {
     if(!listening) {
       console.log("listening", listening);
 
-      eventSource = new EventSource(`/v2/room/subscribe/${roomId}`)
+      const baseURL = process.env.REACT_APP_SERVER_BASE_URL;
+      eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${roomId}`)
       msetEventSource(eventSource);
       console.log("eventSource", eventSource);
 

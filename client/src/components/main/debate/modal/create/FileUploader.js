@@ -53,7 +53,7 @@ function FileUploader(props) {
   const onFileUploaderChange = (event) => {
     if (props) {
       setImgPath(event.target.value);
-      props.fileSetter(event.target.files);
+      props.fileSetter(event.target.files[0]);
     }
   };
 

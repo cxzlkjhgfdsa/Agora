@@ -9,11 +9,12 @@ import SettingComboBox from "./SettingComboBox";
 import WebCam from "../WebCam";
 import { tokenize } from "components/common/Tokenizers";
 import customAxios from "utils/customAxios";
-import { useResetRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import { useNavigate } from "react-router-dom";
 import { createModalState } from "stores/ModalStates";
 import styled from "styled-components";
+import { userInfoState } from "stores/userInfoState";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -21,6 +22,8 @@ import styled from "styled-components";
 */
 function CreateRoomModal({ closeModalEvent }) {
   const axios = customAxios();
+
+  const userInfo = useRecoilValue(userInfoState);
 
   const resetCreateModalState = useResetRecoilState(createModalState)
 
@@ -117,25 +120,28 @@ function CreateRoomModal({ closeModalEvent }) {
         hashTagsForSend = hashTagsList.join(",");
       }
 
+      const formData = new FormData();
+      formData.append("files", thumbnailFile);
+      
       // 서버에 이미지를 전송해 저장하고, URL 전달받기
-      const thumbnailUrl = await axios.post("/v2/file/save/roomthumbnail", {
-        files: thumbnailFile
-      }, {
-        withCredentials: true
-      }).then(({ data }) => data.body.fileUrl)
-        .catch(error => {
-          console.log(error);
-          return "https://storage.googleapis.com"
-            + "/download/storage/v1/b/agora_real1/o"
-            + "/img%2Fde141bcb-9388-43b0-ae46-5a58e2bed066-basicthumbnailagora.jpg.jpg"
-            + "?generation=1675926956571193&alt=media";
-        });
+      let thumbnailUrl = "https://storage.googleapis.com/agora_real1/static/thumbnail.jpg";
+      if (thumbnailFile instanceof File) {
+        thumbnailUrl = await axios.post(
+          "/v2/file/save/roomthumbnail",
+          formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          withCredentials: true
+        }).then(({ data }) => data.body[0].fileUrl)
+          .catch(error => alert(error));
+      }
       
       // 전달받은 URL을 포함한 다른 정보들로 방 생성 처리
       // 데이터 취합
       const sendData = {
         roomName: debateTitle,
-        roomCreaterName: "NICK_DUMMY",
+        roomCreaterName: "left",
         roomDebateType: (debateType === "정식 토론") ? "FORMAL" : "SHORT",
         roomOpinionLeft: leftOpinion,
         roomOpinionRight: rightOpinion,
@@ -145,10 +151,18 @@ function CreateRoomModal({ closeModalEvent }) {
       };
 
       // 방 생성 Request
-      const createData = await axios.post("/v2/room/create", sendData, null)
-        .then(({ data }) => data.body)
-        .catch(error => { console.log(error); });
-    
+      const createData = await axios.post(
+        "/v2/room/create",
+        sendData,
+        null)
+        .then(({ data }) => {
+          console.log(data);
+          return data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      
       if (createData?.state !== true) {
         alert("방 생성에 실패했습니다.");
         return;
@@ -162,11 +176,11 @@ function CreateRoomModal({ closeModalEvent }) {
         team = "RIGHT";
       }
       const joinData = await axios.post("/v2/room/enter", {
-        roomId: createData.roomId,
-        userNickname: "NICK_DUMMY",
-        userTeam: team 
+        roomId: createData?.body?.roomId,
+        userNickname: userInfo?.userNickname,
+        userTeam: team
       }, null)
-        .then(({ data }) => data.body)
+        .then(({ data }) => data)
         .catch(error => { console.log(error); });
       
       if (joinData?.state !== true) {
@@ -176,10 +190,9 @@ function CreateRoomModal({ closeModalEvent }) {
 
       // Recoil State 설정
       setDebateUserRoleState("host");  // 방장으로 입장
-       // Openvidu 토큰 저장
 
       // 토론방 이동 Request
-      navigate("/debate/room/" + createData.roomId);
+      navigate("/debate/room/" + joinData?.body?.roomId);
     }
   };
 
