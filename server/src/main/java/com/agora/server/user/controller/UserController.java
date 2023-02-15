@@ -65,12 +65,9 @@ public class UserController {
         System.out.println("여긴와요?");
         if(blackList==null){ // 블랙리스트에 존재하지 않은 사용자
             String user_id = userService.userjoin(requestJoinDto);
-
-            response.sendRedirect(UriComponentsBuilder.fromUriString("https://i8a705.p.ssafy.io/user/login/redirect-handler")
-                    .queryParam("userId", user_id)
-                    .build()
-                    .encode(StandardCharsets.UTF_8)
-                    .toUriString());
+            responseDTO.setState(true);
+            responseDTO.setMessage("회원가입 정상 완료");
+            responseDTO.setStatusCode(200);
 
         }else{  // 블랙리스트에 추가된 사용자
             responseDTO.setState(false);
