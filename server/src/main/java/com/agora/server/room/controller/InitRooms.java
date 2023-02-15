@@ -55,7 +55,7 @@ public class InitRooms {
 
             User joinUser = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "123"
                     , "테스트이름", "20", "01023232324",
-                    "테스트닉", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "테스트닉", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             em.persist(joinUser);
 
                 List<Category> categoryList = new ArrayList<>();
@@ -106,22 +106,22 @@ public class InitRooms {
 
             User dummyUser1 = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "123"
                     , "영좋사", "20", "01023232324",
-                    "영화좋아하는사람", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "영화좋아하는사람", "photo_name", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             User dummyUser2 = User.createUser(Encrypt.createEncrypt("1234"), SocialType.KAKAO, "1234"
                     , "이동진", "20", "01023232325",
-                    "이동진", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "이동진", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             User dummyUser3 = User.createUser(Encrypt.createEncrypt("1235"), SocialType.NAVER, "1235"
                     , "김영한", "20", "01023232326",
-                    "김영한", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "김영한", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             User dummyUser4 = User.createUser(Encrypt.createEncrypt("1236"), SocialType.GOOGLE, "1236"
                     , "로다주", "20", "01023232327",
-                    "로버트다우니주니어", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "로버트다우니주니어", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             User dummyUser5 = User.createUser(Encrypt.createEncrypt("1237"), SocialType.KAKAO, "1237"
                     , "삼병건", "20", "01023232328",
-                    "안침착맨", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "안침착맨", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
             User dummyUser6 = User.createUser(Encrypt.createEncrypt("1238"), SocialType.NAVER, "1238"
                     , "진라면", "20", "01023232329",
-                    "라면조아", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                    "라면조아", "photo_name","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
 
             em.persist(dummyUser1);
             em.persist(dummyUser2);
@@ -148,6 +148,34 @@ public class InitRooms {
                 User dummyUser12 = User.createUser(Encrypt.createEncrypt("1238"), SocialType.NAVER, "12389"
                         , "right3", "20", "01023232329",
                         "right3", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+
+                em.persist(dummyUser7);
+                em.persist(dummyUser8);
+                em.persist(dummyUser9);
+                em.persist(dummyUser10);
+                em.persist(dummyUser11);
+                em.persist(dummyUser12);
+
+
+
+                    User dummyUser7 = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "1234"
+                        , "left1creater", "20", "01023232324",
+                        "left1creater", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser8 = User.createUser(Encrypt.createEncrypt("1234"), SocialType.KAKAO, "12345"
+                        , "left2", "20", "01023232325",
+                        "left2", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser9 = User.createUser(Encrypt.createEncrypt("1235"), SocialType.NAVER, "12356"
+                        , "left3", "20", "01023232326",
+                        "left3", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser10 = User.createUser(Encrypt.createEncrypt("1236"), SocialType.GOOGLE, "12367"
+                        , "right1", "20", "01023232327",
+                        "right1", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser11 = User.createUser(Encrypt.createEncrypt("1237"), SocialType.KAKAO, "12378"
+                        , "right2", "20", "01023232328",
+                        "right2", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser12 = User.createUser(Encrypt.createEncrypt("1238"), SocialType.NAVER, "12389"
+                        , "right3", "20", "01023232329",
+                        "right3", "dimg","https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
 
                 em.persist(dummyUser7);
                 em.persist(dummyUser8);

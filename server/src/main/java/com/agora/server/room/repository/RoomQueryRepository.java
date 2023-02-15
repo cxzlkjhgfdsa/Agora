@@ -41,7 +41,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state
@@ -66,7 +65,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state
@@ -89,7 +87,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state
@@ -112,7 +109,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -138,7 +134,6 @@ public class RoomQueryRepository {
                         room.room_opinion_right,
                         room.room_hashtags,
                         room.room_watch_cnt,
-                        room.room_start_time,
                         room.room_thumbnail_url,
                         room.room_category,
                         room.room_state))
@@ -162,7 +157,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -187,7 +181,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -212,7 +205,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -246,7 +238,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -282,7 +273,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))
@@ -318,7 +308,6 @@ public class RoomQueryRepository {
                                 room.room_opinion_right,
                                 room.room_hashtags,
                                 room.room_watch_cnt,
-                                room.room_start_time,
                                 room.room_thumbnail_url,
                                 room.room_category,
                                 room.room_state))

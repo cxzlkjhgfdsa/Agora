@@ -17,11 +17,27 @@ export const firstCardState = atom({
   key: 'firstCardState',
   default: "",
 })
+export const firstCardFileState = atom({
+  key: "FirstCardFileState",
+  default: "",
+});
+export const openedFirstCardState = atom({
+  key: "OpenedFirstCard",
+  default: false
+});
 
 export const secondCardState = atom({
   key: 'secondCardState',
   default: "",
 })
+export const secondCardFileState = atom({
+  key: "SecondCardFileState",
+  default: "",
+});
+export const openedSecondCardState = atom({
+  key: "OpenedSecondCardState",
+  default: false
+});
 
 // 왼쪽 카드 요소 
 export const leftCardListState = atom({
@@ -34,6 +50,12 @@ export const rightCardListState = atom({
   key: 'RightCardListState',
   default: []
 })
+
+// 인코딩 카드 정보 isLoading
+export const isEncodedCardLoadingState = atom({
+  key: "IsEncodedCardLoading",
+  default: false
+});
 
 // 왼쪽 참여자
 export const leftUserListState = atom({
