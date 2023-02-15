@@ -209,7 +209,7 @@ function DebateRoom() {
       // 나갈 때, post
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  });
+  }, []);
 
   const [postFlag, setPostFlag] = useState(false);
   const handleBeforeUnload = () => {
