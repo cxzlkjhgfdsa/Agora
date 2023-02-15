@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Grid } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Container } from "@mui/system";
@@ -77,6 +77,7 @@ function CategoryItem() {
     const birthData = useRecoilValue(birthDataState);
     const socialData = useRecoilValue(socialDataState);
     const profileData = useRecoilValue(profileDataState);
+    const [userProfile, setUserProfile] = useState(undefined);
 
     const ImageList = imageUrls.map(image => (
         <Grid
@@ -104,25 +105,79 @@ function CategoryItem() {
     const handleForm = () => {
         const axios = customAxios();
 
-        axios
-            .post(`${process.env.REACT_APP_SERVER_BASE_URL}/v2/user/join`, {
-                user_name: nameData,
-                user_age: birthData,
-                user_nickname: nicknameData,
-                user_phone: phoneData,
-                user_photo: profileData,
-                user_social_type: socialData.type,
-                user_social_id: socialData.userId,
-                categories: select,
-            })
-            .then(response => {
-                console.log(response.data);
-                navigate("/user/signup/complete");
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        // 1. profileData가 없는 경우
+        if (profileData === null) {
+            axios
+                .post('v2/user/join', {
+                    user_name: nameData,
+                    user_age: birthData,
+                    user_nickname: nicknameData,
+                    user_phone: phoneData,
+                    user_photo: socialData.profile,
+                    user_photo_name: "",
+                    user_social_type: socialData.type,
+                    user_social_id: socialData.userId,
+                    categories: select,
+                })
+                .then(response => {
+                    console.log(response);
+                    window.alert("Agora에 회원가입 되었습니다")
+                    navigate("/debate/list")
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+        // 2. profileData가 있는 경우
+        else {
+            const profileForm = new FormData();
+            profileForm.append("files", profileData);
+            // profile 이미지 저장
+            axios
+                .post('/v2/file/save/roomthumbnail', profileForm, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                })
+                .then(response => {
+                    const data = {
+                        photo_url: response.data.body[0].fileName,
+                        photo_name: response.data.body[0].fileUrl,
+                    };
+                    setUserProfile(data)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
     };
+
+    useEffect(() => {
+        const axios = customAxios();
+        if (userProfile !== undefined) {
+            axios
+                .post('v2/user/join', {
+                    user_name: nameData,
+                    user_age: birthData,
+                    user_nickname: nicknameData,
+                    user_phone: phoneData,
+                    user_photo: userProfile.photo_url,
+                    user_photo_name: userProfile.photo_name,
+                    user_social_type: socialData.type,
+                    user_social_id: socialData.userId,
+                    categories: select,
+                })
+                .then(response => {
+                    console.log(response);
+                    window.alert("Agora에 회원가입 되었습니다")
+                    navigate("/debate/list")
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+    }, [userProfile])
+
 
     return (
         <ThemeProvider theme={theme}>

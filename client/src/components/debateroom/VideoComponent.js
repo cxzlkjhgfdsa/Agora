@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import { OpenVidu } from 'openvidu-browser';
 import Grid from '@mui/material/Grid';
 import styled from 'styled-components';
+import customAxios from 'utils/customAxios';
 
 // 자식 component import
 import './VideoComponent.css';
+import SkipButton from './SkipButton';
 import UserVideoComponent from 'components/video/UserVideoComponent';
 
 class VideoComponent extends Component {
@@ -27,6 +29,7 @@ class VideoComponent extends Component {
       phaseDetail: this.props.data.phaseDetail,
       publisher: undefined,
       subscribers: [],
+      roomId: this.props.data.roomId,
 
       // SSE
       listening: false,
@@ -55,43 +58,83 @@ class VideoComponent extends Component {
     window.addEventListener('beforeunload', this.onbeforeunload);
 
     // 2. SSE 연결
-    // let eventSource = undefined;
+    let eventSource = undefined;
 
-    // if (!this.listening) {
-    //   // listnening 연결 시작
-    //   console.log("listening", this.listening);
-    //   eventSource = new EventSource('http://70.12.247.157:8080/api/v2/room/subscribe/6')
-    //   this.setState({
-    //     meventSource: eventSource,
-    //   }, () => {
-    //     console.log("eventSource", eventSource)
-    //   });
-    //   // SSE 연결 완료 시,
-    //   eventSource.onopen = evnet => {
-    //     console.log("video component 연결 완료");
-    //   };
-    //   // SSE 데이터 수신 시,
-    //   eventSource.onmessage = event => {
-    //     console.log("onmessage");
+    if (!this.state.listening) {
+      // listnening 연결 시작
+      const baseURL = process.env.REACT_APP_SERVER_BASE_URL
+      console.log("listening", this.state.listening);
 
-    //     const SSEData = JSON.parse(event.data)
+      eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${this.state.roomId}`)
+      this.setState({
+        meventSource: eventSource,
+      }, () => {
+        console.log("eventSource", eventSource)
+      });
+      // SSE 연결 완료 시,
+      eventSource.onopen = event => {
+        console.log("video component 연결 완료");
+      };
+      // SSE 데이터 수신 시,
+      eventSource.onmessage = event => {
+        console.log("onmessage");
+
+        const SSEData = JSON.parse(event.data)
         
-    //     // 이하 SSE 데이터 control
-    //     console.log(SSEData)
-    //   };
-    //   // SSE 에러 수신 시,
-    //   eventSource.onerror = event => {
-    //     console.log(event.target.readyState);
-    //     if (event.target.readyState === EventSource.CLOSED) {
-    //       console.log("eventsource closed (" + event.target.readyState + ")");
-    //     }
-    //     eventSource.close();
-    //   };
-    //   // listening 처리
-    //   this.setState({
-    //     listening: true,
-    //   });
-    // }
+        // 이하 SSE 데이터 control
+        console.log(SSEData)
+        // 1. phase 신호 처리
+        if (SSEData.event === "startDebate") {
+          this.setState({
+            phaseNum: SSEData.roomPhase,
+            phaseDetail: SSEData.roomPhaseDetail,
+          }, () => {
+            this.toggleSpeaker();
+            this.handleSpeaker();
+          })
+        }
+        if (SSEData.event === "startSpeakPhase") {
+          this.setState({
+            phaseNum: SSEData.roomPhase,
+            phaseDetail: SSEData.roomPhaseDetail,
+          }, () => {
+            this.toggleSpeaker();
+            this.handleSpeaker();
+          })
+        }
+        if (SSEData.event === "startVotePhase") {
+          this.setState({
+            phaseNum: SSEData.roomPhase,
+            phaseDetail: SSEData.roomPhaseDetail,
+          }, () => {
+            this.toggleSpeaker();
+            this.handleSpeaker();
+          })
+        }
+        if (SSEData.event === "startVoteResultPhase") {
+          this.setState({
+            phaseNum: SSEData.roomPhase,
+            phaseDetail: SSEData.roomPhaseDetail,
+          }, () => {
+            this.toggleSpeaker();
+            this.handleSpeaker();
+          })
+        }
+        // if (SSEData.event === "")
+      };
+      // SSE 에러 수신 시,
+      eventSource.onerror = event => {
+        console.log(event.target.readyState);
+        if (event.target.readyState === EventSource.CLOSED) {
+          console.log("eventsource closed (" + event.target.readyState + ")");
+        }
+        eventSource.close();
+      };
+      // listening 처리
+      this.setState({
+        listening: true,
+      });
+    }
 
     // 3. Openvidu connect
     // host & speaker;
@@ -101,6 +144,11 @@ class VideoComponent extends Component {
     else {
       this.joinListenerSession();
     }
+    // 4. Set speaker camera
+    setTimeout(() => {
+      this.handleSpeaker();
+      this.toggleSpeaker();
+    }, 500);
   };
 
   // 토론이 끝날 때,
@@ -113,6 +161,7 @@ class VideoComponent extends Component {
       console.log("eventsource closed")
     }
   }
+  
   // 초기화 코드
   onbeforeunload(event) {
     this.leaveSession();
@@ -322,17 +371,6 @@ class VideoComponent extends Component {
 
     if (mySession) {
       mySession.disconnect();
-      // 나갈 때 api 요청
-      // axios({
-      //   method: 'get',
-      //   url: 'http://70.12.247.157:8080/api/v1/search/mian/hot5',
-      // })
-      // .then((response) => {
-      //   console.log(response)
-      // })
-      // .catch((error) => {
-      //   console.log(error)
-      // })
     }
 
     // Empty all properties...
@@ -377,17 +415,19 @@ class VideoComponent extends Component {
   }
 
   toggleSpeaker() {
-    if (this.state.phaseDetail === 1) {
-      this.onLeftSpeaker(true);
-      this.onRightSpeaker(false);
-    }
-    else if (this.state.phaseDetail === 2) {
-      this.onLeftSpeaker(false);
-      this.onRightSpeaker(true);
-    }
-    else {
-      this.onLeftSpeaker(false);
-      this.onRightSpeaker(false);
+    if (this.state.rightStreamManager !== undefined & this.state.leftStreamManager !== undefined) {
+      if (this.state.phaseDetail === 1) {
+        this.onLeftSpeaker(true);
+        this.onRightSpeaker(false);
+      }
+      else if (this.state.phaseDetail === 2) {
+        this.onLeftSpeaker(false);
+        this.onRightSpeaker(true);
+      }
+      else {
+        this.onLeftSpeaker(false);
+        this.onRightSpeaker(false);
+      }
     }
   };
   
@@ -458,6 +498,11 @@ class VideoComponent extends Component {
                         <div>
                           <SpeakingDiv>발언중</SpeakingDiv>
                           <SpeakingWrapper/>
+                          {this.state.nickname === this.getNicknameTag(this.state.leftStreamManager)
+                            ? (
+                              <SkipButton roomId={this.state.roomId} />
+                            ) 
+                            : null}
                         </div>
                       )
                       : null
@@ -481,6 +526,11 @@ class VideoComponent extends Component {
                         <div>
                           <SpeakingDiv>발언중</SpeakingDiv>
                           <SpeakingWrapper/>
+                          {this.state.nickname === this.getNicknameTag(this.state.rightStreamManager)
+                            ? (
+                              <SkipButton roomId={this.state.roomId} />
+                            ) 
+                            : null}
                         </div>
                       )
                       : null
