@@ -34,7 +34,8 @@ const JoinAsViewerButton = styled.button`
   cursor: pointer;
 `;
 
-function JoinAsViewer(props) {
+function JoinAsViewer({ roomId }) {
+
   const axios = customAxios();
   const navigate = useNavigate();
 
@@ -42,22 +43,20 @@ function JoinAsViewer(props) {
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
 
   const join = useCallback(async () => {
-    // 참가할 토론방 ID
-    const roomId = props?.roomInfo?.roomId;
-
+  
     let choice = window.confirm("관전에 참여 하시겠습니까?");
     if (choice === true) {
       // 방 참여 Request
       const joinData = await axios.get(`/v2/room/enter/${roomId}`, null)
-        .then(({ data }) => data.body)
+        .then((res) => {
+          if (res?.state === false) {
+            alert("방 참여에 실패했습니다.");
+            return;
+          }
+        })
         .catch(error => {
           console.log(error);
         });
-      
-      if (joinData?.state !== true) {
-        alert("방 참여에 실패했습니다.");
-        return;
-      }
 
       // Recoil State 설정
       setDebateUserRole("viewer");  // 관전자로 입장

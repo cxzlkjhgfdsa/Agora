@@ -102,13 +102,14 @@ function JoinAsSpeaker(props) {
           userNickname: userInfo?.userNickname,
           userTeam: team
         }, null)
-          .then(({ data }) => data.body)
+          .then((res) => {
+            if (res?.state === false) {
+              alert("방 참여에 실패했습니다.");
+              return;
+            }
+          })
           .catch(error => { console.log(error); });
         
-        if (joinData?.state !== true) {
-          alert("방 참여에 실패했습니다.");
-          return;
-        }
 
         // Recoil State 설정
         setDebateUserRole("speaker");  // 발언자로 입장

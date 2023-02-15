@@ -112,6 +112,8 @@ function DebateRoom() {
         })
         .catch(error => {
           console.log(error);
+          alert("방이 존재하지 않습니다.");
+          navigate("/debate/list");
         })
     }
     get();
