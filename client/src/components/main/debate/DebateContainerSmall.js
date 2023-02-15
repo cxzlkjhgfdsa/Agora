@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
 // const DebateContainer = lazy(() => import("./DebateContainer"));
-import DebateContainer from "./DebateContainer";
+import NewDebateContainer from "./NewDebateContainer";
 
 import Lightbulb from "../../../assets/icons/Main_lightbulb.png";
 import Clock from "../../../assets/icons/Main_clock.png";
@@ -18,7 +18,7 @@ function SmallDebateContainer({ url, position, openModalEvent }) {
         <ShowAll onClick={openModalEvent}>모두 보기 &gt;</ShowAll>
       </TextWrapper>
       <Suspense fallback={<Spinner />}>
-      <DebateContainer
+      <NewDebateContainer
         maximumVisibleCounts={4}
         minimumVisibleCounts={3}
         type="normal"
@@ -50,6 +50,7 @@ const Img = styled.img`
 const Text = styled.span`
 color: black;
 font-size: 1.3rem;
+font-weight: 700;
 margin-left: 1%;
 `
 
