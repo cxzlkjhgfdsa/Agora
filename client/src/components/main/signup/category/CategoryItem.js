@@ -108,7 +108,7 @@ function CategoryItem() {
         // 1. profileData가 없는 경우
         if (profileData === null) {
             axios
-                .post('v2/user/join', {
+                .post("/v2/user/join", {
                     user_name: nameData,
                     user_age: birthData,
                     user_nickname: nicknameData,
@@ -121,11 +121,11 @@ function CategoryItem() {
                 })
                 .then(response => {
                     console.log(response);
-                    navigate("//user/signup/complete")
+                    navigate("/user/signup/complete");
                 })
                 .catch(error => {
-                    console.log(error)
-                })
+                    console.log(error);
+                });
         }
         // 2. profileData가 있는 경우
         else {
@@ -133,21 +133,21 @@ function CategoryItem() {
             profileForm.append("files", profileData);
             // profile 이미지 저장
             axios
-                .post('/v2/file/save/roomthumbnail', profileForm, {
+                .post("/v2/file/save/roomthumbnail", profileForm, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                    }
+                    },
                 })
                 .then(response => {
                     const data = {
                         photo_url: response.data.body[0].fileName,
                         photo_name: response.data.body[0].fileUrl,
                     };
-                    setUserProfile(data)
+                    setUserProfile(data);
                 })
                 .catch(error => {
-                    console.log(error)
-                })
+                    console.log(error);
+                });
         }
     };
 
@@ -155,7 +155,7 @@ function CategoryItem() {
         const axios = customAxios();
         if (userProfile !== undefined) {
             axios
-                .post('v2/user/join', {
+                .post("/v2/user/join", {
                     user_name: nameData,
                     user_age: birthData,
                     user_nickname: nicknameData,
@@ -168,14 +168,13 @@ function CategoryItem() {
                 })
                 .then(response => {
                     console.log(response);
-                    navigate("//user/signup/complete")
+                    navigate("/user/signup/complete");
                 })
                 .catch(error => {
                     console.log(error);
-                })
+                });
         }
-    }, [userProfile])
-
+    }, [userProfile]);
 
     return (
         <ThemeProvider theme={theme}>
