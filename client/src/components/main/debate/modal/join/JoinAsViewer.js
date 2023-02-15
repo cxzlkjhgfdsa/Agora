@@ -39,9 +39,9 @@ function JoinAsViewer(props) {
   const navigate = useNavigate();
 
   // 다음 페이지로 보내기 위한 사용자의 역할 setter
-  const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
+  const setDebateUserRole = useSetRecoilState(debateUserRoleState);
 
-  const join = useCallback(async (event) => {
+  const join = useCallback(async () => {
     // 참가할 토론방 ID
     const roomId = props?.roomInfo?.roomId;
 
@@ -60,8 +60,7 @@ function JoinAsViewer(props) {
       }
 
       // Recoil State 설정
-      setDebateUserRoleState("speaker");  // 발언자로 입장
-        // Openvidu 토큰 저장
+      setDebateUserRole("viewer");  // 관전자로 입장
 
       // 토론방 이동 Request
       navigate("/debate/room/" + roomId);

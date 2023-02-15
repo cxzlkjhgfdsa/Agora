@@ -1,8 +1,13 @@
 import HashTag from "components/common/HashTag";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
+
+import { debateUserRoleState } from "stores/joinDebateRoomStates";
+import { useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import customAxios from "utils/customAxios";
+import { useCallback } from "react";
 
 const StyledSearchContent = styled.div`
   width: 26rem;
@@ -14,6 +19,8 @@ const StyledSearchContent = styled.div`
   align-items: center;
 
   position: relative;
+
+  cursor: pointer;
 `;
 
 const Thumbnail = styled.img`
@@ -66,30 +73,52 @@ function SearchContent({ content }) {
   const hashTags = content.roomHashtags ? content.roomHashtags.split(",") : [];
   const imageUrl = content.roomThumbnailUrl ? content.roomThumbnailUrl : NoImageAvailable;
 
+  // 토론방 참가 시 역할
+  const setDebateUserRole = useSetRecoilState(debateUserRoleState);
+  const navigate = useNavigate();
+  const axios = customAxios();
+  const join = useCallback(async () => {
+    // 방 참여 Request
+    const joinData = await axios.get(`/v2/room/enter/${content.roomId}`, null)
+      .then(({ data }) => data.body)
+      .catch(error => {
+        console.log(error);
+      });
+    
+    if (joinData?.state !== true) {
+      alert("방 참여에 실패했습니다.");
+      return;
+    }
+
+    // Recoil State 설정
+    setDebateUserRole("viewer");  // 관전자로 입장
+
+    // 토론방 이동 Request
+    navigate(roomUrl);
+  }, []);
+
   return (
-    <Link to={roomUrl}>
-      <StyledSearchContent>
-        <Thumbnail src={imageUrl} />
-        <InfoWrapper>
-          {/* 방 제목 */}
-          <Title title={title}>{title}</Title>
-          
-          {/* 작성자 / 시청자 수 */}
-          <EtcInfoWrapper>
-            <EtcInfo>@{creator}</EtcInfo>
-            <EtcInfo>/</EtcInfo>
-            <EtcInfo>시청자 {viewers}명</EtcInfo>
-          </EtcInfoWrapper>
-          
-          {/* 해시태그 */}
-          <EtcInfoWrapper>
-            {hashTags.map((item, index) => (
-              <HashTag key={item + index} tag={item} color={"#CFCFCF"} />
-            ))}
-          </EtcInfoWrapper>
-        </InfoWrapper>
-      </StyledSearchContent>
-    </Link>
+    <StyledSearchContent onClick={join}>
+      <Thumbnail src={imageUrl} />
+      <InfoWrapper>
+        {/* 방 제목 */}
+        <Title title={title}>{title}</Title>
+        
+        {/* 작성자 / 시청자 수 */}
+        <EtcInfoWrapper>
+          <EtcInfo>@{creator}</EtcInfo>
+          <EtcInfo>/</EtcInfo>
+          <EtcInfo>시청자 {viewers}명</EtcInfo>
+        </EtcInfoWrapper>
+        
+        {/* 해시태그 */}
+        <EtcInfoWrapper>
+          {hashTags.map((item, index) => (
+            <HashTag key={item + index} tag={item} color={"#CFCFCF"} />
+          ))}
+        </EtcInfoWrapper>
+      </InfoWrapper>
+    </StyledSearchContent>
   );
 }
 
