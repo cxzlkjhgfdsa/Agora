@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
+import { userInfoState } from "stores/userInfoState";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -58,7 +59,9 @@ function JoinAsSpeaker(props) {
   const navigate = useNavigate();
 
   // 다음 페이지로 전달하기 위한 참가자의 역할 setter
-  const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
+  const setDebateUserRole = useSetRecoilState(debateUserRoleState);
+
+  const userInfo = useRecoilValue(userInfoState);
 
   const roomId = props?.roomInfo?.roomId;
   const leftOpinion = props?.roomInfo?.leftOpinion;
@@ -96,7 +99,7 @@ function JoinAsSpeaker(props) {
         // 방 참여 Request
         const joinData = await axios.post("/v2/room/enter", {
           roomId: roomId,
-          userNickname: "NICK_DUMMY",
+          userNickname: userInfo?.userNickname,
           userTeam: team
         }, null)
           .then(({ data }) => data.body)
@@ -108,8 +111,7 @@ function JoinAsSpeaker(props) {
         }
 
         // Recoil State 설정
-        setDebateUserRoleState("speaker");  // 발언자로 입장
-        // Openvidu 토큰도 저장
+        setDebateUserRole("speaker");  // 발언자로 입장
   
         // 토론방 이동 Request
         navigate("/debate/room/" + roomId);

@@ -27,7 +27,7 @@ function CompleteButton() {
   const navigate = useNavigate();
 
   const moveToDebateList = () => {
-    navigate("/debate/list")
+    navigate("/user/login")
   }
 
   return(
@@ -39,7 +39,7 @@ function CompleteButton() {
           color="custom"
           onClick={moveToDebateList}
           >
-          AGORA 시작하기
+          AGORA 로그인 하기
         </Button>
       </Wrapper>
     </ThemeProvider>

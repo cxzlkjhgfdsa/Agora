@@ -6,6 +6,7 @@ import MyInfoData from "./MyInfoData";
 import MyInputForm from "./MyInputForm";
 import MyPageTitle from "../MyPageTitle";
 import MyProfileImage from "./MyProfileImage";
+import customAxios from "utils/customAxios";
 
 const MyInfoForm = styled.div`
   // 크기 설정
@@ -15,6 +16,8 @@ const MyInfoForm = styled.div`
 `;
 
 function MyInfo() {
+  const axios = customAxios();
+
   const [myName, setMyName] = useState("");
   const [myNickname, setMyNickname] = useState("");
   const [myBirthDate, setMyBirthDate] = useState("");
@@ -23,11 +26,18 @@ function MyInfo() {
 
   // 데이터 초기화
   useEffect(() => {
-    setMyName("윤재휘");
-    setMyNickname("HwiHwi");
-    setMyBirthDate("1997.05.23");
-    setMyCategory(["음식", "게임", "IT/전자제품"]);
-    setMyProfileImage("https://mblogthumb-phinf.pstatic.net/MjAyMjA2MDRfNTAg/MDAxNjU0MzE3MDMwODM5.czPSBA70E_2mQUlehiSL-Q4VcyZRYmVv4pas8fTprOMg.OHBALOHgTnreloKx2iQF5-W0e5slciz9FeeW7Lrx0bkg.JPEG.gwmfruckwrl/220604-Chaewon-Instagram-1.jpeg?type=w800");
+    axios.get("/v2/user/get/userinfo")
+      .then(({ data }) => {
+        // 받아 온 사용자 데이터 삽입
+        const body = data?.body;
+        setMyName(body?.userName);
+        setMyNickname(body?.userNickname);
+        setMyBirthDate(body?.userAge);  // Response DTO에 없어서 우선 나이로 대체
+        setMyCategory(body?.categories);
+        setMyProfileImage(body?.user_photo);
+      }).catch(error => {
+        console.log(error);
+      });
   }, []);
 
   return (<>
