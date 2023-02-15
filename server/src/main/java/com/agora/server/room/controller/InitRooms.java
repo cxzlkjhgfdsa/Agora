@@ -130,6 +130,32 @@ public class InitRooms {
             em.persist(dummyUser5);
             em.persist(dummyUser6);
 
+                User dummyUser7 = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "1234"
+                        , "left1creater", "20", "01023232324",
+                        "left1creater", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser8 = User.createUser(Encrypt.createEncrypt("1234"), SocialType.KAKAO, "12345"
+                        , "left2", "20", "01023232325",
+                        "left2", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser9 = User.createUser(Encrypt.createEncrypt("1235"), SocialType.NAVER, "12356"
+                        , "left3", "20", "01023232326",
+                        "left3", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser10 = User.createUser(Encrypt.createEncrypt("1236"), SocialType.GOOGLE, "12367"
+                        , "right1", "20", "01023232327",
+                        "right1", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser11 = User.createUser(Encrypt.createEncrypt("1237"), SocialType.KAKAO, "12378"
+                        , "right2", "20", "01023232328",
+                        "right2", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+                User dummyUser12 = User.createUser(Encrypt.createEncrypt("1238"), SocialType.NAVER, "12389"
+                        , "right3", "20", "01023232329",
+                        "right3", "https://pbs.twimg.com/profile_images/1374979417915547648/vKspl9Et_400x400.jpg");
+
+                em.persist(dummyUser7);
+                em.persist(dummyUser8);
+                em.persist(dummyUser9);
+                em.persist(dummyUser10);
+                em.persist(dummyUser11);
+                em.persist(dummyUser12);
+
 
 
                     User dummyUser7 = User.createUser(Encrypt.createEncrypt("123"), SocialType.GOOGLE, "1234"

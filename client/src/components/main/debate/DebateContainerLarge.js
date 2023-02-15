@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
 // const DebateContainer = lazy(() => import("./DebateContainer"));
-import DebateContainer from "./DebateContainer";
+import NewDebateContainer from "./NewDebateContainer";
 
 import Icon from "../../../assets/icons/Main_fire.png";
 import { useSetRecoilState } from "recoil";
@@ -21,7 +21,7 @@ function LargeDebateContainer({ url }) {
         <StyledButton onClick={() => setCreateModalState({ isModalOpen: true})}>방 만들기</StyledButton>
       </TextWrapper>
       <Suspense fallback={<Spinner />}>
-        <DebateContainer
+        <NewDebateContainer
         maximumVisibleCounts={3}
         minimumVisibleCounts={2}
         type="hot-thumbnail"

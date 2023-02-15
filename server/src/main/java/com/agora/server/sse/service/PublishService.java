@@ -26,6 +26,7 @@ public class PublishService {
     private final Map<String, List<SseEmitter>> roomEmitterMap;
 
     private final RedisMessageListenerContainer redisMessageListenerContainer;
+<<<<<<< HEAD
     
     private final RedisKeyUtil redisKeyUtil;
     private final RedisTemplate redisTemplate;
@@ -36,11 +37,23 @@ public class PublishService {
         if(o == null){
             return null;
         }
+=======
+    private final RoomRepository roomRepository;
+
+    public SseEmitter subscribe(String roomId) {
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
         List<SseEmitter> roomSseEmitters = roomEmitterMap.getOrDefault(roomId, new CopyOnWriteArrayList<>());
 
         SseEmitter emitter = new SseEmitter(0L);
 
+<<<<<<< HEAD
+=======
+        if (roomRepository.findById(Long.parseLong(roomId)).isEmpty()) {
+            emitter.complete();
+            return emitter;
+        }
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
         roomSseEmitters.add(emitter);
 

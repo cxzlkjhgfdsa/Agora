@@ -80,22 +80,22 @@ const StyleWrapper = styled.div`
 
 const scaleUp = keyframes`
   0% {
-    transform: scale(.8) translateY(1000px);
+    transform: scale(.5) translateY(1000px);
     opacity: 0;
   }
   100% {
-    transform: scale(1) translateY(0);
+    transform: scale(.7) translateY(0);
     opacity: 1;
   }
 `
 
 const scaleDown = keyframes`
   0% {
-    transform: scale(1) translateY(0);
+    transform: scale(.7) translateY(0);
     opacity: 1;
   }
   100% {
-    transform: scale(.8) translateY(1000px);
+    transform: scale(.5) translateY(1000px);
     opacity: 0;
   }
 `

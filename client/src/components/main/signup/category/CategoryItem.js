@@ -121,8 +121,7 @@ function CategoryItem() {
                 })
                 .then(response => {
                     console.log(response);
-                    window.alert("Agora에 회원가입 되었습니다")
-                    navigate("/debate/list")
+                    navigate("//user/signup/complete")
                 })
                 .catch(error => {
                     console.log(error)
@@ -145,8 +144,6 @@ function CategoryItem() {
                         photo_name: response.data.body[0].fileUrl,
                     };
                     setUserProfile(data)
-                    window.alert("Agora에 회원가입 되었습니다")
-                    navigate("/debate/list")
                 })
                 .catch(error => {
                     console.log(error)
@@ -171,6 +168,7 @@ function CategoryItem() {
                 })
                 .then(response => {
                     console.log(response);
+                    navigate("//user/signup/complete")
                 })
                 .catch(error => {
                     console.log(error);

@@ -63,7 +63,11 @@ public class    Room {
         room.room_hashtags = room_hashtags;
         room.room_thumbnail_url = room_thumbnail_url;
         room.room_category = room_category;
+<<<<<<< HEAD
         room.room_start_time = System.currentTimeMillis();
+=======
+        room.room_start_time = LocalDateTime.now();
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         room.room_watch_cnt = 0;
         return room;
     }

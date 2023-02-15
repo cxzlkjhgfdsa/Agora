@@ -44,9 +44,9 @@ function DebateList() {
 
   return (
       <Wrapper>
-        <LargeDebateContainer url="/api/v1/search/main/hot" position="top" />
-        <SmallDebateContainer url="/api/v1/search/main/modal" position="mid" openModalEvent={openDebatingModal}/>
-        <SmallDebateContainer url="/api/v1/search/main/modal" position="bottom" openModalEvent={openWaitingModal}/>
+        <LargeDebateContainer url="/v2/search/main/hot5" position="top" />
+        <SmallDebateContainer url="/v2/search/main/topInprogress" position="mid" openModalEvent={openDebatingModal}/>
+        <SmallDebateContainer url="/v2/search/main/topReadystate" position="bottom" openModalEvent={openWaitingModal}/>
 
         <ModalContainerShowAll 
           closeModalEvent={closeModalEvent} 
@@ -70,7 +70,7 @@ const Wrapper = styled.div`
   background-color: white;
   /* height: 3000px; */
   min-width: 1024px;
-  min-height: 1224px;
+  min-height: 1400px;
 
   display: flex;
   flex-direction: column;

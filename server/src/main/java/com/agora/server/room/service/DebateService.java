@@ -53,10 +53,14 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
+<<<<<<< HEAD
     private final Map<String, List<SseEmitter>> roomEmitterMap;
 
     private final PublishService publishService;
 
+=======
+    private final PublishService publishService;
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
     /**
      * 토론자 입장 Redis Pub/Sub
@@ -317,7 +321,11 @@ public class DebateService {
 
         // 토론 시작 -> 메시지 날리고(JSON으로 변환) -> 다음 페이즈 시작
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
+<<<<<<< HEAD
         String debateStartMessage = redisMessageUtil.debateStartMessage(1, 0);
+=======
+        String debateStartMessage = redisMessageUtil.debateStartMessage(1,0);
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         redisPublisher.publishMessage(roomChannel, debateStartMessage);
 
 
@@ -475,7 +483,11 @@ public class DebateService {
                 // 여기서 토론 결과 페이즈로 넘기기
 
             }
+<<<<<<< HEAD
         }, 60, TimeUnit.SECONDS);
+=======
+        }, 10, TimeUnit.SECONDS);
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         // 테스트용 10초 실제 60초
         scheduledFutures.put(roomId + "_vote", future);
 
@@ -566,8 +578,13 @@ public class DebateService {
                     String debateEndMessage = redisMessageUtil.debateEndMessage();
                     redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
                 }
+<<<<<<< HEAD
             }, 30, TimeUnit.SECONDS);
             // 실제서비스 30초
+=======
+            }, 10, TimeUnit.SECONDS);
+            // 실제서비스 60초
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
             scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
 
             ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
@@ -692,7 +709,11 @@ public class DebateService {
                 roomRepository.delete(roomRepository.findById(roomId).get());
                 publishService.unsubscribe(roomId.toString());
             }
+<<<<<<< HEAD
         }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 60, TimeUnit.SECONDS);
+=======
+        }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         // 테스트 10초 실제 서비스 60초
         scheduledFutures.put(roomId + "_removeRoomInfo", futureRemoveRoomInfos);
 
@@ -753,6 +774,11 @@ public class DebateService {
             redisTemplate.opsForValue().set(imgCardNameKey, fileName);
             redisTemplate.opsForValue().set(imgCardUrlKey, fileUrl);
 
+<<<<<<< HEAD
+=======
+//            String imgCardSetMessage = redisMessageUtil.imgCardSetMessage(team, curfileidx, fileUrl);
+//            redisPublisher.publishMessage(roomChannelKey, imgCardSetMessage);
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
         }
 
@@ -776,6 +802,7 @@ public class DebateService {
         return fileList;
     }
 
+<<<<<<< HEAD
     public void cardOpen(String userNickname, int cardidx, Long roomId) {
         int useridx = -1;
         String team = "";
@@ -801,6 +828,9 @@ public class DebateService {
             return;
         }
 
+=======
+    public void cardOpen(int useridx, int cardidx, String team, Long roomId) {
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         int index = useridx * 2 + cardidx;
         String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, index, team);
         String openedCardUrl = (String) redisTemplate.opsForValue().get(imgCardUrlKey);
