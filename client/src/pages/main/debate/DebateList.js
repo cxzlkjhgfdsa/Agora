@@ -10,9 +10,9 @@ function DebateList() {
 
   return (
       <Wrapper>
-        <LargeDebateContainer url="/v2/search/main/hot5" position="top" />
-        <SmallDebateContainer url="/v2/search/main/topInprogress" position="mid" />
-        <SmallDebateContainer url="/v2/search/main/topReadystate" position="bottom" />
+        <LargeDebateContainer url="/v2/search/main/hot5" type="hot" />
+        <SmallDebateContainer url="/v2/search/main/topInprogress" type="debating" />
+        <SmallDebateContainer url="/v2/search/main/topReadystate" type="waiting" />
 
         <ModalContainerShowAll />
         <ModalContainerJoin />
