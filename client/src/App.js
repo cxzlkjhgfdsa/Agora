@@ -1,5 +1,3 @@
-import { RecoilRoot } from "recoil";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Global Style
@@ -10,7 +8,6 @@ import Header from "./pages/Header";
 
 // Main Pages
 import Login from "pages/main/Login";
-import SignUpSNS from "pages/main/signup/SignUpSNS";
 import SignUpInput from "pages/main/signup/SignUpInput";
 import SignUpCategory from "pages/main/signup/SignUpCategory";
 import SignUpComplete from "pages/main/signup/SignUpComplete";
@@ -21,13 +18,11 @@ import MyPage from "pages/main/MyPage";
 import ScrollToTop from "components/common/ScrollToTop";
 import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 import SearchRoom from "pages/main/debate/SearchRoom";
-import TestPage from "pages/TestPage";
 import TestMoadlPage from "pages/TestModalPage";
-
 
 function App() {
   return (
-    <RecoilRoot>
+    <>
       <GlobalStyle />
       <BrowserRouter>
         <ScrollToTop />
@@ -37,7 +32,7 @@ function App() {
             <Route path="/" element={<Welcome />} />
             <Route path="/user/login/redirect-handler" element={<LoginRedirectHandler />} />
             <Route path="/user/login" element={<Login />} />
-            <Route path="/user/signup/SNS" element={<SignUpSNS />} />
+            <Route path="/user/signup/SNS" element={<Login />} />
             <Route path="/user/signup/input" element={<SignUpInput />} />
             <Route path="/user/signup/category" element={<SignUpCategory />} />
             <Route path="/user/signup/complete" element={<SignUpComplete />} />
@@ -49,7 +44,7 @@ function App() {
           </Routes>
         </main>
       </BrowserRouter>
-      </RecoilRoot>
+    </>
   );
 }
 

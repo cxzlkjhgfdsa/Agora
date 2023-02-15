@@ -24,7 +24,6 @@ import axios from "axios";
  
 
 function DebateRoom() {
-
   // state
   const { roomId } = useParams();
   const userInfo = useRecoilValue(userInfoState);
@@ -212,12 +211,13 @@ function DebateRoom() {
       // 나갈 때, post
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [])
+  });
 
   const [postFlag, setPostFlag] = useState(false);
   const handleBeforeUnload = () => {
     setPostFlag(true);
   };
+
   useEffect(() => {
     if (postFlag) {
       const axios = customAxios();
@@ -235,68 +235,6 @@ function DebateRoom() {
       setPostFlag(false);
     }
   }, [postFlag]);
-
-  // temp button to control session
-  const handleStart = () => {
-    setIsStart(prev => !prev);
-  }
-  const handleIsAllReady = () => {
-    setIsAllReady(prev => !prev);
-  }
-  const handlePhaseNum = () => {
-    setPhaseNum(prev => (prev === 3 ? 0 : prev + 1))
-  }
-  const handlePhaseDetail = () => {
-    setPhaseDetail(prev => (prev === 4 ? 1 : prev + 1))
-  }
-  const handleResult = () => {
-    if (phaseNum === 1) {
-      setVoteLeftResult([10]);
-      setVoteRightResult([90]);
-    } else if (phaseNum === 2) {
-      setVoteLeftResult(prev => [...prev, 70]);
-      setVoteRightResult(prev => [...prev, 30]);
-    } else {
-      setVoteLeftResult(prev => [...prev, 20]);
-      setVoteRightResult(prev => [...prev, 80]);   
-    }
-  }
-  const handleUserList = () => {
-    setLeftUserList(["left1", "left2", "left3"]);
-    setRightUserList(["right1", "right2", "right3"]);
-  }
-  const handleReadyUserList = () => {
-    setReadyUserList(["left1", "left2", "right2", "right3"])
-  }
-  const handleTotlaPhase = () => {
-    const newPhaseDetail = phaseDetail + 1
-    if (!phaseNum) {
-      setPhaseNum(1);
-    } 
-    else if (newPhaseDetail === 5) {
-      handlePhaseNum();
-      handlePhaseDetail();
-    } 
-    else if (newPhaseDetail === 4) {
-      handlePhaseDetail();
-      handleResult();
-    } 
-    else {
-      handlePhaseDetail();
-    }
-  }
-  const handleRoleViewer = () => {
-    setRole("viewer");
-  }
-  const handleRoleHost = () => {
-    setRole("host");
-  }
-  const handleRoleSpeaker = () => {
-    setRole("speaker");
-  }
-  const handleNickname = (e) => {
-    setNickname(e.target.value);
-  }
 
   // VideoComponent props data
   const data = {
@@ -327,11 +265,10 @@ function DebateRoom() {
                   <ReadyVideo opinion={"B쪽 주장입니다"} />
                 </Grid>
               </Grid>
-              )
-            : (
-              <VideoComponent data={data} />
-            )}
-          <Grid container spacing={3}>
+        ) : (
+            <VideoComponent data={data} />
+        )}
+        <Grid container spacing={3}>
             <Grid item xs={6}>
               <DebaterBox data={leftUserList} sessionNum={phaseNum} />
             </Grid>
@@ -339,69 +276,16 @@ function DebateRoom() {
               <DebaterBox data={rightUserList} sessionNum={phaseNum} />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={12} md={5} lg={4}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
-            </Grid>
-            <Grid item xs={12}>
-              <CardComponent role={role} roomId={roomId} nickname={nickname} />
+          <Grid item xs={12} md={5} lg={4}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TimeBox isAllReady={isAllReady} roomId={roomId} role={role} nickname={nickname} />
+              </Grid>
+              <Grid item xs={12}>
+                <CardComponent role={role} roomId={roomId} nickname={nickname} />
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid container>
-        <Grid item xs={12}>
-          시작 전 준비사항
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleUserList}>user list</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleReadyUserList}>ready user list</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleIsAllReady}>is all ready</button>
-        </Grid>
-        <Grid item xs={3}>
-          <input onChange={handleNickname} value={nickname} />
-        </Grid>
-        <Grid item xs={12}>
-          역할 정하기
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleRoleViewer}>
-            viewer
-          </button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleRoleHost}>
-            host
-          </button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleRoleSpeaker}>
-            speaker
-          </button>
-        </Grid>
-        <Grid item xs={12}>
-          시작 후 조정 사항
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleStart}>start</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleTotlaPhase}>All Phase</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handlePhaseNum}>phaseNum : {phaseNum}</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handlePhaseDetail}>phaseDetail : {phaseDetail}</button>
-        </Grid>
-        <Grid item xs={1}>
-          <button onClick={handleResult}>handle result</button>
         </Grid>
       </Grid>
     </Container>

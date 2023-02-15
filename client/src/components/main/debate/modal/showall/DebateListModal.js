@@ -148,7 +148,7 @@ const StyleWrapper = styled.div`
   width: 100%;
   height: 100%;
 
-  transform: scale(${props => props.isModalOpen ? 0 : 1});
+  transform: scale(${props => props.isModalOpen ? 0 : .8});
   animation: ${props => props.isModalOpen 
     ? css`${zoomIn} .5s 1s` 
     : css`${zoomOut} .5s`
@@ -157,10 +157,10 @@ const StyleWrapper = styled.div`
 
 const zoomIn = keyframes`
   from { transform: scale(0); }
-  to { transform: scale(1); }
+  to { transform: scale(.8); }
 `
 
 const zoomOut = keyframes`
-  from { transform: scale(1); }
+  from { transform: scale(.8); }
   to { transform: scale(0); }
 `

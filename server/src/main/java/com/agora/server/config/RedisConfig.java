@@ -10,9 +10,15 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 public class RedisConfig {
@@ -36,7 +42,7 @@ public class RedisConfig {
 
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory){
+    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
@@ -48,5 +54,23 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(serializer);
         return template;
+    }
+
+
+    @Bean
+    RedisMessageListenerContainer redisMessageListenerContainer(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(lettuceConnectionFactory);
+        return redisMessageListenerContainer;
+    }
+
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    Map<String, List<SseEmitter>> roomEmitterMap() {
+        return new ConcurrentHashMap<>();
     }
 }
