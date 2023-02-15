@@ -1,8 +1,7 @@
 import { useEffect, useCallback, useRef, useState, memo } from "react";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateRoomsSelectorFamily } from "stores/debateRoomStates";
-import styled from "styled-components" 
-import { Link } from "react-router-dom"; 
+import styled from "styled-components"  
 
 import People from "assets/icons/People.png";
 
@@ -15,6 +14,14 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
   const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
 
   const setJoinModalState = useSetRecoilState(joinModalState);
+  const DebateClickEventHandler = () => {
+    console.log("type of clicked debate >> ", type)
+    if (type !== "waiting") {
+
+    } else {
+      setJoinModalState({ roomId: roomId, isModalOpen: true});
+    }
+  }
 
   const { 
     roomId, 
@@ -40,9 +47,7 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
 
   // 호버 체크
   const [isHovered, setIsHovered] = useState(false);
-
-  // 모달
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // console.log("ishovered >> ", isHovered);
 
   // 타이머
   const interval = useRef(null);
@@ -76,7 +81,7 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
         <StyledThumbnail 
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={() => setJoinModalState({ roomId: roomId, isModalOpen: true})}
+          onClick={DebateClickEventHandler}
         >  
           {/* 배경 이미지 및 반투명 검은 배경 */}
           <StyledBackgroundImage src={imageUrl} />
@@ -140,7 +145,7 @@ const Wrapper = styled.div`
   padding: .25rem;
   box-sizing: border-box;
   /* border: 1px solid black; */
-  border:radius: .1rem;
+  border-radius: .1rem;
 `
 
 const ThumbnailInfoWrapper = styled.div`

@@ -1,15 +1,14 @@
 import { Suspense, lazy } from "react";
 import styled from "styled-components";
 import Spinner from "components/common/Spinner";
-// const DebateContainer = lazy(() => import("./DebateContainer"));
-import NewDebateContainer from "./DebateContainer";
+import DebateContainer from "./DebateContainer";
 
 import Icon from "../../../assets/icons/Main_fire.png";
 import { useSetRecoilState } from "recoil";
 import { createModalState } from "stores/ModalStates";
 import { StyledDarkButton } from "components/common/Buttons";
 
-function LargeDebateContainer({ url }) {
+function LargeDebateContainer({ url, type }) {
 
   const setCreateModalState = useSetRecoilState(createModalState)
 
@@ -20,15 +19,13 @@ function LargeDebateContainer({ url }) {
         <Text>화제의 토론 TOP 5</Text>
         <StyledButton onClick={() => setCreateModalState({ isModalOpen: true})}>방 만들기</StyledButton>
       </TextWrapper>
-      <Suspense fallback={<Spinner />}>
-        <NewDebateContainer
+        <DebateContainer
         maximumVisibleCounts={3}
         minimumVisibleCounts={2}
-        type="hot-thumbnail"
+        type={type}
         url={url}
         slidePerClick={1}
         />
-      </Suspense>
     </Wrapper>
   )
 }

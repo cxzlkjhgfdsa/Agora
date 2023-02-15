@@ -1,4 +1,4 @@
-import { useRecoilState, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -19,7 +19,7 @@ function Vote({roomId}) {
   // initiation
   useEffect(() => {
     setIsVote(false);
-
+ 
     return(() => {
       setIsVote(false);
     })
