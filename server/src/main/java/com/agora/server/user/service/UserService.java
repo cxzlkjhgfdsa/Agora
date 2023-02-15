@@ -104,7 +104,7 @@ public class UserService {
     }
 
     @Transactional
-    public void userjoin(RequestJoinDto requestJoinDto) throws NoSuchAlgorithmException {
+    public String userjoin(RequestJoinDto requestJoinDto) throws NoSuchAlgorithmException {
 
 
         Encrypt encrypt = Encrypt.createEncrypt(requestJoinDto.getUser_social_id());
@@ -122,5 +122,7 @@ public class UserService {
             UserCategory userCategory = userCategoryRepository.save(UserCategory.createUserCategory(saveUser, category));
             saveUser.addCategories(userCategory);
         }
+
+        return saveUser.getUser_id().toString();
     }
 }
