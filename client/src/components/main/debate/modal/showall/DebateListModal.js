@@ -15,10 +15,6 @@ import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { showAllModalState } from "stores/ModalStates";
 
-/*
-  closeModalEvent: Modal 닫는 이벤트
-  showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
-*/
 function DebateListModal({ isModalOpen, debateState }) {
   
   const resetShowAllModalState = useResetRecoilState(showAllModalState);
@@ -91,6 +87,7 @@ function DebateListModal({ isModalOpen, debateState }) {
     }, {
       withCredentials: false
     }).then(({ data }) => {
+      console.warn("modal data >> ", data)
       // 새로운 데이터
       const newContents = data.body.content;
       // 저장

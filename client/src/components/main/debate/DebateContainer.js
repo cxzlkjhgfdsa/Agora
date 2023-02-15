@@ -98,16 +98,14 @@ const Text = styled.div`
 `
 
 const Button = styled.button`
-  box-sizing: border-box;
   position: relative;
   flex-grow: 0;
   width: 4%;
   margin: .25rem 0;
-  /* border-radius: 1rem; */
   opacity: 0.7;
   transition: background-color 150ms ease-in-out;
   &:hover {
-    border-color: rgba(0, 0, 0, .8);
+    /* border-color: rgba(0, 0, 0, .8); */
     background-color: rgba(0, 0, 0, .8);
     ${Text} {
       transform: scale(1.8);
@@ -119,7 +117,7 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: black;
+  color: black;
   font-size: 3vw;
   line-height: 0;
 `
