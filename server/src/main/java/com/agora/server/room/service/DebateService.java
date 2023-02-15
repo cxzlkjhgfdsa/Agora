@@ -10,6 +10,7 @@ import com.agora.server.room.controller.dto.RequestRoomLeaveDto;
 import com.agora.server.room.controller.dto.debate.RequestReadyStateChangeDto;
 import com.agora.server.room.controller.dto.debate.RequestSkipDto;
 import com.agora.server.room.controller.dto.debate.RequestVoteDto;
+import com.agora.server.room.domain.Room;
 import com.agora.server.room.exception.NotReadyException;
 import com.agora.server.room.repository.RoomRepository;
 import com.agora.server.room.util.RedisChannelUtil;
@@ -18,7 +19,9 @@ import com.agora.server.room.util.RedisMessageUtil;
 import com.agora.server.sse.service.PublishService;
 import com.agora.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -53,14 +56,10 @@ public class DebateService {
 
     private final DebateHistoryService debateHistoryService;
 
-<<<<<<< HEAD
     private final Map<String, List<SseEmitter>> roomEmitterMap;
 
     private final PublishService publishService;
 
-=======
-    private final PublishService publishService;
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
     /**
      * 토론자 입장 Redis Pub/Sub
@@ -321,11 +320,7 @@ public class DebateService {
 
         // 토론 시작 -> 메시지 날리고(JSON으로 변환) -> 다음 페이즈 시작
         String roomChannel = redisChannelUtil.roomChannelKey(roomId);
-<<<<<<< HEAD
         String debateStartMessage = redisMessageUtil.debateStartMessage(1, 0);
-=======
-        String debateStartMessage = redisMessageUtil.debateStartMessage(1,0);
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         redisPublisher.publishMessage(roomChannel, debateStartMessage);
 
 
@@ -483,11 +478,7 @@ public class DebateService {
                 // 여기서 토론 결과 페이즈로 넘기기
 
             }
-<<<<<<< HEAD
         }, 60, TimeUnit.SECONDS);
-=======
-        }, 10, TimeUnit.SECONDS);
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         // 테스트용 10초 실제 60초
         scheduledFutures.put(roomId + "_vote", future);
 
@@ -578,13 +569,8 @@ public class DebateService {
                     String debateEndMessage = redisMessageUtil.debateEndMessage();
                     redisPublisher.publishMessage(roomChannelKey, debateEndMessage);
                 }
-<<<<<<< HEAD
             }, 30, TimeUnit.SECONDS);
             // 실제서비스 30초
-=======
-            }, 10, TimeUnit.SECONDS);
-            // 실제서비스 60초
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
             scheduledFutures.put(roomId + "_debateEnd", futureDebateEnd);
 
             ScheduledFuture<?> futureRemoveRoomInfos = executorService.schedule(new Runnable() {
@@ -661,7 +647,7 @@ public class DebateService {
         // 방에 입장할 때 isDebateEnded를 확인하고 true인 경우 DebateEndedException을 터뜨려 줌
         // 토론이 끝난 후에는 방장이 나가도 방이 안터지게
         String debateEndedKey = redisKeyUtil.isDebateEndedKey(roomId);
-        if(((String)redisTemplate.opsForValue().get(debateEndedKey)).equals("TRUE")){
+        if (((String) redisTemplate.opsForValue().get(debateEndedKey)).equals("TRUE")) {
             return;
         }
         String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
@@ -709,11 +695,7 @@ public class DebateService {
                 roomRepository.delete(roomRepository.findById(roomId).get());
                 publishService.unsubscribe(roomId.toString());
             }
-<<<<<<< HEAD
         }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 60, TimeUnit.SECONDS);
-=======
-        }, futureDebateEnd.getDelay(TimeUnit.SECONDS) + 10, TimeUnit.SECONDS);
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         // 테스트 10초 실제 서비스 60초
         scheduledFutures.put(roomId + "_removeRoomInfo", futureRemoveRoomInfos);
 
@@ -774,11 +756,6 @@ public class DebateService {
             redisTemplate.opsForValue().set(imgCardNameKey, fileName);
             redisTemplate.opsForValue().set(imgCardUrlKey, fileUrl);
 
-<<<<<<< HEAD
-=======
-//            String imgCardSetMessage = redisMessageUtil.imgCardSetMessage(team, curfileidx, fileUrl);
-//            redisPublisher.publishMessage(roomChannelKey, imgCardSetMessage);
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
         }
 
@@ -802,7 +779,6 @@ public class DebateService {
         return fileList;
     }
 
-<<<<<<< HEAD
     public void cardOpen(String userNickname, int cardidx, Long roomId) {
         int useridx = -1;
         String team = "";
@@ -824,13 +800,10 @@ public class DebateService {
                 team = "RIGHT";
             }
         }
-        if(team.equals("")){
+        if (team.equals("")) {
             return;
         }
 
-=======
-    public void cardOpen(int useridx, int cardidx, String team, Long roomId) {
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
         int index = useridx * 2 + cardidx;
         String imgCardUrlKey = redisKeyUtil.imgCardUrlKey(roomId, index, team);
         String openedCardUrl = (String) redisTemplate.opsForValue().get(imgCardUrlKey);
@@ -866,4 +839,33 @@ public class DebateService {
             redisTemplate.opsForValue().increment(voteRightKey);
         }
     }
+
+    public String getUserRole(Long roomId, String userNickname) {
+        Room room = roomRepository.findById(roomId).get();
+
+        if (room.getRoom_creater_name().equals(userNickname)) {
+            return "creater";
+        }
+
+        String leftUserListKey = redisKeyUtil.leftUserListKey(roomId);
+        List<Object> oleftUserList = redisTemplate.opsForList().range(leftUserListKey, 0, -1);
+        for (Object o : oleftUserList) {
+            String curUser = (String) o;
+            if (curUser.equals(userNickname)) {
+                return "debater";
+            }
+        }
+        String rightUserListKey = redisKeyUtil.rightUserListKey(roomId);
+        List<Object> orightUserList = redisTemplate.opsForList().range(rightUserListKey, 0, -1);
+        for (Object o : orightUserList) {
+            String curUser = (String) o;
+            if (curUser.equals(userNickname)) {
+                return "debater";
+            }
+        }
+
+        return "watcher";
+    }
+
+
 }

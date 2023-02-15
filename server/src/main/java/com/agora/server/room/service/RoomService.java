@@ -178,10 +178,6 @@ public class RoomService {
             return false;
         }
 
-        Room room = roomRepository.findById(roomId).get();
-        if (room.getRoom_creater_name().equals(userNickname)) {
-            return true;
-        }
 
         return false;
     }
@@ -436,24 +432,6 @@ public class RoomService {
      * 10초마다 Redis의 실시간 시청자 수 정보를 가져와서
      * DB의 실시간 시청자 수 정보를 갱신합니다
      */
-<<<<<<< HEAD
-    @Scheduled(cron = "0/20 * * * * *")
-    @Transactional
-    public void updateViewCount() {
-        List<Room> all = roomRepository.findAll();
-        for (Room room : all) {
-            Long roomId = room.getRoom_id();
-            String watchCntKey = redisKeyUtil.watchCntKey(roomId);
-            Integer watchCnt = (Integer) redisTemplate.opsForValue().get(watchCntKey);
-
-            room.roomWatchCntUpdate(watchCnt);
-
-            String roomChannelKey = redisChannelUtil.roomChannelKey(roomId);
-            String roomWatchCntUpdate = redisMessageUtil.roomWatchCntUpdate(room.getRoom_watch_cnt());
-            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
-        }
-    }
-=======
 //    @Scheduled(cron = "0/20 * * * * *")
 //    @Transactional
 //    public void updateViewCount() {
@@ -470,8 +448,6 @@ public class RoomService {
 //            redisPublisher.publishMessage(roomChannelKey,roomWatchCntUpdate);
 //        }
 //    }
-
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
 
     /**
