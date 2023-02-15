@@ -19,9 +19,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState, firstCardFileState, secondCardFileState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
-import getToken from "components/debateroom/GetToken";
-import axios from "axios";
- 
 
 function DebateRoom() {
   // state
@@ -58,7 +55,6 @@ function DebateRoom() {
   // 이미지 파일 State
   const img1File = useRecoilValue(firstCardFileState);
   const img2File = useRecoilValue(secondCardFileState);
-  
 
   // Post Flag
   const [submitPicsPostFlag, setSubmitPicsPostFlag] = useState(false);

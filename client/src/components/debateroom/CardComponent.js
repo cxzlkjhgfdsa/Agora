@@ -4,8 +4,8 @@ import { useState } from "react";
 import customAxios from "utils/customAxios";
 
 // recoil
-import { useRecoilValue } from "recoil";
-import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState, cardNumState } from "stores/DebateStates";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { firstCardState, secondCardState, leftCardListState, rightCardListState, isStartState, cardNumState, openedFirstCardState, openedSecondCardState } from "stores/DebateStates";
 import { leftUserListState, rightUserListState, phaseNumberState, phaseDetailState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 
@@ -27,6 +27,9 @@ function CardComponent({role, roomId, nickname}) {
   const phaseNumber = useRecoilValue(phaseNumberState);  // 현재 페이즈
   const phaseDetail = useRecoilValue(phaseDetailState);  // 현재 페이즈 내에서 진행상황
   const userInfo = useRecoilValue(userInfoState);  // 현재 사용자 닉네임
+  // 중복 오픈 확인을 위한 State
+  const [openedFirstCard, setOpenedFirstCard] = useRecoilState(openedFirstCardState);
+  const [openedSecondCard, setOpenedSecondCard] = useRecoilState(openedSecondCardState);
   const handleMyCard = (e) => {
     // 카드 오픈 시 현재 본인의 차례인지 확인
     // 1. 현재 페이즈에서 누구의 발언 상황도 아니라면 종료
@@ -47,23 +50,22 @@ function CardComponent({role, roomId, nickname}) {
       return;
     }
 
-    // 카드 오픈 중복 검사를 위해 현재 측이 제출한 카드 리스트 가져오기
-    const cardListForOverlapCheck = (phaseDetail === 1) ? leftCardList : rightCardList;
-    // 오픈할 카드가 이미 오픈된 카드라면 그만두기
-    console.log(cardListForOverlapCheck);
-    console.log()
-    if (cardListForOverlapCheck.includes(
-      document.querySelector(`img#${e.target.id}`)?.src
-    )) {
-      return;
-    }
-
     // 오픈할 카드 번호
     let cardIdx = null;
     if (e.target.id === "first") {
       cardIdx = 0;
+      if (openedFirstCard) {
+        alert("이미 오픈한 카드입니다.");
+        return;
+      }
+      setOpenedFirstCard(true);
     } else if (e.target.id === "second") {
       cardIdx = 1;
+      if (openedSecondCard) {
+        alert("이미 오픈한 카드입니다.");
+        return;
+      }
+      setOpenedSecondCard(true);
     }
 
     // 4. 카드 오픈 요청

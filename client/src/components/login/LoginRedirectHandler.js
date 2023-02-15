@@ -31,12 +31,7 @@ function LoginRedirectHandler() {
     data.isLoggedIn = true;
     setUserInfo(data);
 
-<<<<<<< HEAD
-        getAccessTokenWithUserInfos().then(() => navigate("/debate/list"));
-    }, []);
-=======
     navigate("/debate/list");
->>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 
     
     // useEffect(() => {
