@@ -1,6 +1,4 @@
-import { Suspense, lazy } from "react";
 import styled from "styled-components";
-import Spinner from "components/common/Spinner";
 import DebateContainer from "./DebateContainer";
 
 import Icon from "../../../assets/icons/Main_fire.png";
@@ -19,7 +17,7 @@ function LargeDebateContainer({ url, type }) {
         <Text>화제의 토론 TOP 5</Text>
         <StyledButton onClick={() => setCreateModalState({ isModalOpen: true})}>방 만들기</StyledButton>
       </TextWrapper>
-        <DebateContainer
+      <DebateContainer
         maximumVisibleCounts={3}
         minimumVisibleCounts={2}
         type={type}
@@ -44,7 +42,7 @@ const TextWrapper = styled.div`
 `
 
 const Img = styled.img`
-  width:20px;
+  width: 20px;
 `
 
 const Text = styled.span`
