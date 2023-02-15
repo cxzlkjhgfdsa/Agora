@@ -19,5 +19,6 @@ public class OAuthUserPrincipalDto {
         this.userNickName = userNickName;
         this.userPhotoUrl = userPhotoUrl;
         this.state = state;
+
     }
 }

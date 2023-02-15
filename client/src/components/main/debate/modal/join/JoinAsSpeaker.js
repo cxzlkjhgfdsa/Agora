@@ -94,7 +94,7 @@ function JoinAsSpeaker(props) {
       // 카메라와 오디오 모두 켜져 있다면,
       if (isValid) {
         // 방 참여 Request
-        const joinData = await axios.post("/api/v2/room/enter", {
+        const joinData = await axios.post("/v2/room/enter", {
           roomId: roomId,
           userNickname: "NICK_DUMMY",
           userTeam: team

@@ -65,7 +65,7 @@ class VideoComponent extends Component {
       const baseURL = process.env.REACT_APP_SERVER_BASE_URL
       console.log("listening", this.state.listening);
 
-      eventSource = new EventSource(`${baseURL}/v2/room/subscribe/${this.state.roomId}`)
+      eventSource = new EventSource(`/v2/room/subscribe/${this.state.roomId}`)
       this.setState({
         meventSource: eventSource,
       }, () => {

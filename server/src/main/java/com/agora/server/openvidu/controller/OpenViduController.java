@@ -35,4 +35,8 @@ public class OpenViduController {
         return ResponseEntity.ok(responseDTO);
     }
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> b1ee99de512bcc471e947ee321bcc09251784fa0
 }

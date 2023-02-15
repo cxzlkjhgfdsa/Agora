@@ -80,7 +80,7 @@ function DebateListModal({ isModalOpen, debateState }) {
   const getContents = useCallback(async () => {
     // 로딩 상태 설정
     setLoading(true);
-    await axios.get("/api/v1/search/main/modal", {
+    await axios.get("/v2/search/main/modal", {
       params: {
         roomState: roomState,
         order: orderBy,

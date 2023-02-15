@@ -118,7 +118,7 @@ function CreateRoomModal({ closeModalEvent }) {
       }
 
       // 서버에 이미지를 전송해 저장하고, URL 전달받기
-      const thumbnailUrl = await axios.post("/api/v2/file/save/roomthumbnail", {
+      const thumbnailUrl = await axios.post("/v2/file/save/roomthumbnail", {
         files: thumbnailFile
       }, {
         withCredentials: true
@@ -145,7 +145,7 @@ function CreateRoomModal({ closeModalEvent }) {
       };
 
       // 방 생성 Request
-      const createData = await axios.post("/api/v2/room/create", sendData, null)
+      const createData = await axios.post("/v2/room/create", sendData, null)
         .then(({ data }) => data.body)
         .catch(error => { console.log(error); });
     
@@ -161,7 +161,7 @@ function CreateRoomModal({ closeModalEvent }) {
       } else if (selectedOpinion === "주장2") {
         team = "RIGHT";
       }
-      const joinData = await axios.post("/api/v2/room/enter", {
+      const joinData = await axios.post("/v2/room/enter", {
         roomId: createData.roomId,
         userNickname: "NICK_DUMMY",
         userTeam: team 

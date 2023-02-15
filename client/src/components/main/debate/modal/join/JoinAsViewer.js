@@ -48,7 +48,7 @@ function JoinAsViewer(props) {
     let choice = window.confirm("관전에 참여 하시겠습니까?");
     if (choice === true) {
       // 방 참여 Request
-      const joinData = await axios.get(`/api/v2/room/enter/${roomId}`, null)
+      const joinData = await axios.get(`/v2/room/enter/${roomId}`, null)
         .then(({ data }) => data.body)
         .catch(error => {
           console.log(error);
