@@ -137,7 +137,7 @@ function MyDebateHistory() {
     setLoading(true);
     
     // V1
-    // await axios.get("/api/v1/debate/history/list", {
+    // await axios.get("/v1/debate/history/list", {
     //   data: {
     //     page: page,
     //     size: 10
@@ -145,7 +145,7 @@ function MyDebateHistory() {
     // }).then(({ data }) => {
 
     // V2
-    await axios.get("/api/v2/debate/history/list", {
+    await axios.get("/v2/debate/history/list", {
       data: {
         page: page,
         size: 10
