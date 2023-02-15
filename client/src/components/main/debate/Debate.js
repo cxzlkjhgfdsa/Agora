@@ -1,27 +1,20 @@
 import { useEffect, useCallback, useRef, useState, memo } from "react";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateRoomsSelectorFamily } from "stores/debateRoomStates";
-import styled from "styled-components"  
+import styled from "styled-components" 
 
 import People from "assets/icons/People.png";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import RoomInfo from "./RoomInfo";
 import { joinModalState } from "stores/ModalStates";
+import { useNavigate } from "react-router-dom";
 
 function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
+
+  const navigate = useNavigate();
   const setDebateRoom = useSetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
   const resetDebateRoom = useResetRecoilState(debateRoomsSelectorFamily(roomInfo.roomId));
-
-  const setJoinModalState = useSetRecoilState(joinModalState);
-  const DebateClickEventHandler = () => {
-    console.log("type of clicked debate >> ", type)
-    if (type !== "waiting") {
-
-    } else {
-      setJoinModalState({ roomId: roomId, isModalOpen: true});
-    }
-  }
 
   const { 
     roomId, 
@@ -47,7 +40,19 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
 
   // 호버 체크
   const [isHovered, setIsHovered] = useState(false);
-  // console.log("ishovered >> ", isHovered);
+
+  // 모달
+  const setJoinModalState = useSetRecoilState(joinModalState);
+  const HandleDebateClick = () => {
+    console.log("clicked debate type >> ", type);
+    if (type === "waiting") {
+      setJoinModalState({ roomId: roomId, isModalOpen: true})
+    } else {
+      if (window.confirm(`"${title}" 방에 입장하시겠습니까?`)) {
+        navigate(`/debate/room/${roomId}`)
+      }
+    }
+  }
 
   // 타이머
   const interval = useRef(null);
@@ -81,7 +86,7 @@ function Debate({ visibleCounts, roomInfo, type, itemIdx, currSlideIdx }) {
         <StyledThumbnail 
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={DebateClickEventHandler}
+          onClick={HandleDebateClick}
         >  
           {/* 배경 이미지 및 반투명 검은 배경 */}
           <StyledBackgroundImage src={imageUrl} />
@@ -139,13 +144,11 @@ const Wrapper = styled.div`
   flex: 0 0 ${props => 100 / props.visibleCounts}%;
   max-width: ${props => 100 / props.visibleCounts}%;
   min-width: 4rem;
-  /* order: ${props => -props.viewers}; */
   
   aspect-ratio: 16 / 9;
   padding: .25rem;
   box-sizing: border-box;
-  /* border: 1px solid black; */
-  border-radius: .1rem;
+  /* border: 1px solid red; */
 `
 
 const ThumbnailInfoWrapper = styled.div`
@@ -153,15 +156,19 @@ const ThumbnailInfoWrapper = styled.div`
   background-color: #FFFFFF;
   box-sizing: border-box;
   cursor: pointer;
-  
-  transition: 0.35s;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s ease-in-out, transform-origin 0.35s 0.1s;
   &:hover {
     ${props => {
       if ((props.itemIdx - props.currSlideIdx) % props.visibleCounts === 0) {
+        console.log("왼쪽위")
         return "transform-origin: 0% 0%; transform: scale(1.15);"
       } else if ((props.itemIdx - props.currSlideIdx) === props.visibleCounts-1) {
-        return "transform-origin: 100% 0%; transform: scale(1.15);"
+        console.log("오른쪽위")
+        return "transform-origin: 111% 0%; transform: scale(1.15);"
       } else {
+        console.log("중간")
         return "transform-origin: 50% 0; transform: scale(1.15);"
       }
     }}
@@ -172,7 +179,9 @@ const ThumbnailInfoWrapper = styled.div`
 `;
 
 const StyledThumbnail = styled.div`
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
+  /* aspect-ratio: 16 / 9; */
   /* border: 1px solid red; */
 
   // 얘가 원인이었음
@@ -180,7 +189,7 @@ const StyledThumbnail = styled.div`
 
   box-sizing: border-box;
   overflow: hidden;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 `;
 
 const StyledBackgroundImage = styled.img`
@@ -194,7 +203,7 @@ const StyledBackgroundImage = styled.img`
   // fit
   object-fit: cover;                  
   
-  transform: scale(1.00);
+  /* transform: scale(1); */
 `;
 
 const HalfClearBlack = styled.div`
@@ -327,13 +336,12 @@ const ViewersIcon = styled.img`
   ${({ type }) => type === "hot-thumbnail"
     ? "width: 20px; height: 20px;"
     : "width: 15px; height: 15px;"}
-  margin-right: 2px;
 `;
 // Footer에 들어갈 정보의 글꼴
 const StyledFont = styled.span`
   // 글꼴 설정
   color: #FFFFFF;
   ${({ type }) => type === "hot-thumbnail"
-    ? "font-size: 1rem;"
-    : "font-size: 0.75rem;"}
+    ? "font-size: 0.5rem;"
+    : "font-size: 0.25rem;"}
 `;

@@ -44,7 +44,7 @@ const TextWrapper = styled.div`
 `
 
 const Img = styled.img`
-  width:20px;
+  width: 20px;
 `
 
 const Text = styled.span`
