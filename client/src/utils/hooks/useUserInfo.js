@@ -13,5 +13,10 @@ const fetchUserInfo = ({ queryKey }) => {
 export const useUserInfo = (userId) => {
   return useQuery(["userInfo", userId], fetchUserInfo, {
     staleTime: 0,
+    select,
   });
+}
+
+const select = response => {
+  return response.body.data;
 }
