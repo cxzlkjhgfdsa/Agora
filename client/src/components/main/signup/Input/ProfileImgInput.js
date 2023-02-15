@@ -18,13 +18,13 @@ const PreviewImage = styled.img`
 function ImageInput({ color, defaultProfile }) {
 
   // 이미지 주소를 업로드하는 state
-  const [imgFile, setImgFile] = useState(defaultProfile);
+  const [imgFile, setImgFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(defaultProfile);
   // 최종 프로필 이미지 저장 state
   const setProfileData = useSetRecoilState(profileDataState)
   // 참조 위치
   const imgRef = useRef();
 
-  const [previewFile, setPreviewFile] = useState()
 
   // 이미지 업로드 input의 onChange
   const saveImgFile = () => {
@@ -32,9 +32,7 @@ function ImageInput({ color, defaultProfile }) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-
       setPreviewFile(reader.result);
-
     }
     setImgFile(file)
   }
@@ -42,7 +40,7 @@ function ImageInput({ color, defaultProfile }) {
   // 업로드 이미지의 초기화
   const resetImgFile = () => {
     imgRef.current.value = "";
-    setImgFile("");
+    setImgFile(null);
     setPreviewFile("");
   }
 
