@@ -673,10 +673,12 @@ public class DebateService {
                 // 모든 클라이언트를 메인으로 내보낸 후 저장되어 있던 모든 방 정보 삭제
                 List<String> keyList = new ArrayList<>();
                 keyList.add(redisKeyUtil.phaseKey(roomId));
+                keyList.add(redisKeyUtil.phaseDetailKey(roomId));
                 keyList.add(redisKeyUtil.phaseStartTimeKey(roomId));
                 keyList.add(redisKeyUtil.watchCntKey(roomId));
                 keyList.add(redisKeyUtil.leftUserListKey(roomId));
                 keyList.add(redisKeyUtil.rightUserListKey(roomId));
+                keyList.add(redisKeyUtil.debateStartTimeKey(roomId));
                 List<Object> leftUserList = redisTemplate.opsForList().range(redisKeyUtil.leftUserListKey(roomId), 0, -1);
                 List<Object> rightUserList = redisTemplate.opsForList().range(redisKeyUtil.rightUserListKey(roomId), 0, -1);
                 for (Object o : leftUserList) {
