@@ -190,7 +190,7 @@ function CreateRoomModal({ closeModalEvent }) {
 
       // Recoil State 설정
       setDebateUserRoleState("host");  // 방장으로 입장
-
+      resetCreateModalState();
       // 토론방 이동 Request
       navigate("/debate/room/" + joinData?.body?.roomId);
     }

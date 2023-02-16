@@ -12,22 +12,29 @@ function LoginRedirectHandler() {
     const navigate = useNavigate();
     const userId = new URL(window.location.href).searchParams.get("userId");
 
-    const { isLoading, data, isError, error } = useUserInfo(userId);
+    const { isLoading, data: userData, isError, error } = useUserInfo(userId);
 
     if (isLoading) return <Spinner />;
-    if (isError) throw error.message;
+    if (isError) {
+        alert("로그인에 실패했습니다.")
+        navigate("/user/login");
+    } else {
+        const data = {...userData, isLoggedIn: true}
+        setUserInfo(data);
+        navigate("/debate/list");
+    }
 
-    const unpackedData = {
-        isLoggedIn: data.isLoggedIn,
-        accessToken: data.data.body.accessToken,
-        userId: data.data.body.userId,
-        userNickname: data.data.body.userNickname,
-        socialType: data.data.body.socialType,
-        userPhoto: data.data.body.userPhoto,
-    };
-    setUserInfo(unpackedData);
 
-    navigate("/debate/list");
 }
 
 export default LoginRedirectHandler;
+
+
+    // const unpackedData = {
+    //     isLoggedIn: true,
+    //     accessToken: data.data.body.accessToken,
+    //     userId: data.data.body.userId,
+    //     userNickname: data.data.body.userNickname,
+    //     socialType: data.data.body.socialType,
+    //     userPhoto: data.data.body.userPhoto,
+    // };

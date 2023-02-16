@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import { userInfoState } from "stores/userInfoState";
+import { joinModalState } from "stores/ModalStates";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -60,6 +61,7 @@ function JoinAsSpeaker(props) {
 
   // 다음 페이지로 전달하기 위한 참가자의 역할 setter
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
+  const resetJoinModalState = useResetRecoilState(joinModalState);
 
   const userInfo = useRecoilValue(userInfoState);
 
@@ -99,29 +101,9 @@ function JoinAsSpeaker(props) {
         return;
       }
 
-      // 카메라와 오디오 모두 켜져 있다면,
-      if (isValid) {
-        // 방 참여 Request
-        const joinData = await axios.post("/v2/room/enter", {
-          roomId: roomId,
-          userNickname: userInfo?.userNickname,
-          userTeam: team
-        }, null)
-          .then((res) => {
-            if (res?.state === false) {
-              alert("방 참여에 실패했습니다.");
-              return;
-            }
-          })
-          .catch(error => { console.log(error); });
-        
-
-        // Recoil State 설정
-        setDebateUserRole("speaker");  // 발언자로 입장
-  
-        // 토론방 이동 Request
-        navigate("/debate/room/" + roomId);
-      }
+      setDebateUserRole("speaker");
+      resetJoinModalState();
+      navigate("/debate/room/" + roomId);
     }
   }, []);
 
