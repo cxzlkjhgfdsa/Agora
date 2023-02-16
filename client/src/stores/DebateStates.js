@@ -1,5 +1,16 @@
 import { atom } from "recoil";
 
+// 방 진입 상태를 감지
+export const lastRoomState = atom({
+  key: 'lastRoomState',
+  default: 0,
+})
+
+export const isRoomState = atom({
+  key: 'inRoomState',
+  default: false,
+})
+
 // atom to declare the start state
 export const isStartState = atom({
   key: 'isStartState',
