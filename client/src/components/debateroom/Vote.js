@@ -25,6 +25,11 @@ function Vote({roomId}) {
     })
   },[]) 
 
+  // phase 변경 시, vote 여부 reset
+  useEffect(() => {
+    setIsVote(false);
+  }, [phaseDetail])
+
   const handleVoteButton = (e) => {
     const data = e.target.value;
     
