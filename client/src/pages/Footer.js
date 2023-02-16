@@ -28,7 +28,7 @@ function Footer() {
         <a href="https://www.instagram.com/seongheon742" rel="noreferrer" target="_blank"> 이승헌 </a>
         <a href="https://www.instagram.com/eukary_on" rel="noreferrer" target="_blank"> 전인덕 </a>
       </p>
-      <Button id="scroll-to-top-btn" onclick={scrollToTop}>▲</Button>
+      <Button id="scroll-to-top-btn" onClick={scrollToTop}>▲</Button>
     </Container>
   )
 }
