@@ -17,14 +17,14 @@ function LoginRedirectHandler() {
     if (isLoading) return <Spinner />;
     if (isError) {
         alert("로그인에 실패했습니다.")
-        console.warn("error message >> ", error.message)
         navigate("/user/login");
+    } else {
+        const data = {...userData, isLoggedIn: true}
+        setUserInfo(data);
+        navigate("/debate/list");
     }
 
-    const data = {...userData, isLoggedIn: true}
-    setUserInfo(data);
 
-    navigate("/debate/list");
 }
 
 export default LoginRedirectHandler;
