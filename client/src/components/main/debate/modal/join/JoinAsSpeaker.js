@@ -64,6 +64,8 @@ function JoinAsSpeaker({ roomInfo }) {
   const resetJoinModalState = useResetRecoilState(joinModalState);
   const resetShowAllModalState = useResetRecoilState(showAllModalState);
 
+  const userInfo = useRecoilValue(userInfoState);
+
   const { roomId, roomOpinionLeft, roomOpinionRight, leftUserList, rightUserList } = roomInfo;
 
   // opinion: 의견, team: LEFT or RIGHT
@@ -95,6 +97,21 @@ function JoinAsSpeaker({ roomInfo }) {
         window.alert("설정에서 카메라와 오디오를 켜주세요.");
         return;
       }
+
+      const axios = customAxios();
+      await axios.post("/v2/room/enter", {
+        roomId: roomId,
+        userNickname: userInfo?.userNickname,
+        userTeam: team
+      }, null)
+        .then((res) => {
+          console.log(res);
+          if (res?.state === false) {
+            alert("방 참여에 실패했습니다.");
+            return;
+          }
+        })
+        .catch(error => { console.log(error); });
 
       setDebateUserRole("speaker");
       resetJoinModalState();
