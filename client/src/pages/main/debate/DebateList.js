@@ -1,12 +1,44 @@
 import styled from "styled-components"
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect } from "react";
+import customAxios from "utils/customAxios";
 
 import LargeDebateContainer from "components/main/debate/DebateContainerLarge";
 import SmallDebateContainer from "components/main/debate/DebateContainerSmall";
 import ModalContainerShowAll from "../../../components/main/debate/ModalContainerShowAll";
 import ModalContainerJoin from "components/main/debate/ModalContainerJoin";
 import ModalContainerCreate from "components/main/debate/ModalContainerCreate";
+import { isRoomState, lastRoomState } from "stores/DebateStates";
+import { userInfoState } from "stores/userInfoState";
 
 function DebateList() {
+
+  const [lastRoom, setLastRoom] = useRecoilState(lastRoomState);
+  const [isRoom, setIsRoom] = useRecoilState(isRoomState);
+  const userInfo = useRecoilValue(userInfoState);
+
+  useEffect(() => {
+    setIsRoom(false);
+  }, []);
+
+  useEffect(() => {
+    if (lastRoom !== 0) {
+      const axios = customAxios();
+        axios
+          .post('v2/room/leave', {
+            "roomId": lastRoom,
+            "userNickname" : userInfo?.userNickname,
+          })
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+
+      setLastRoom(0);
+    }
+  }, [isRoom, lastRoom])
 
   return (
       <Wrapper>
