@@ -141,7 +141,7 @@ function CreateRoomModal({ closeModalEvent }) {
       // 데이터 취합
       const sendData = {
         roomName: debateTitle,
-        roomCreaterName: "left",
+        roomCreaterName: userInfo?.userNickname,
         roomDebateType: (debateType === "정식 토론") ? "FORMAL" : "SHORT",
         roomOpinionLeft: leftOpinion,
         roomOpinionRight: rightOpinion,
