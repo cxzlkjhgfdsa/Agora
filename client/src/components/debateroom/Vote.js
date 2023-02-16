@@ -3,12 +3,12 @@ import styled, { keyframes } from "styled-components";
 import customAxios from "utils/customAxios";
 
 // recoil
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { phaseDetailState, timerState, voteLeftResultState, voteRightResultState } from "stores/DebateStates";
  
 function Vote({roomId}) {
   const [isVote, setIsVote] = useState(false);
-  const [timer, setTimer] = useRecoilState(timerState);
+  const timer = useRecoilValue(timerState);
   const phaseDetail = useRecoilValue(phaseDetailState);
   const leftResult = useRecoilValue(voteLeftResultState);
   const rightResult = useRecoilValue(voteRightResultState);
@@ -24,17 +24,6 @@ function Vote({roomId}) {
       setIsVote(false);
     })
   },[])
-
-  // timer
-  useEffect(() => {
-    const counter = setInterval(() => {
-      setTimer(timer => (timer - 1) > 0 ? (timer - 1) : 0)
-    }, 1000);
-
-    return () => {
-      clearInterval(counter)
-    }
-  }, [])
 
   const handleVoteButton = (e) => {
     const data = e.target.value;
@@ -58,12 +47,6 @@ function Vote({roomId}) {
       setIsVote(data);
     }
   }
-
-  useEffect(() => {
-    const newTimer = phaseDetail === 3 ? 60 : 10;
-    setTimer(newTimer);
-    setIsVote(false);
-  }, [phaseDetail]);
   
   return(
     <VoteWrapper>
