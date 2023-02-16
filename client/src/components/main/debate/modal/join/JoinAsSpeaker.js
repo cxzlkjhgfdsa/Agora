@@ -5,6 +5,7 @@ import { userInfoState } from "stores/userInfoState";
 import { joinModalState, showAllModalState } from "stores/ModalStates";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
+import { openedFirstCardState, openedSecondCardState } from "stores/DebateStates";
 
 const StyledJoinAsSpeaker = styled.div`
   // 크기 설정
@@ -62,6 +63,10 @@ function JoinAsSpeaker({ roomInfo }) {
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
   const resetJoinModalState = useResetRecoilState(joinModalState);
   const resetShowAllModalState = useResetRecoilState(showAllModalState);
+
+  // 발언자 참여 시 카드 오픈 Flag 초기화용 State
+  const setOpenedFirstCardState = useSetRecoilState(openedFirstCardState);
+  const setOpenedSecondCardState = useSetRecoilState(openedSecondCardState);
 
   const userInfo = useRecoilValue(userInfoState);
 
@@ -123,6 +128,8 @@ function JoinAsSpeaker({ roomInfo }) {
       .catch(error => { console.log(error); });
 
     setDebateUserRole("speaker");
+    setOpenedFirstCardState(false);
+    setOpenedSecondCardState(false);
     resetJoinModalState();
     resetShowAllModalState();
     navigate("/debate/room/" + roomId);

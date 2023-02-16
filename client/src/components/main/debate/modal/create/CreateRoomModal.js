@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { createModalState } from "stores/ModalStates";
 import styled from "styled-components";
 import { userInfoState } from "stores/userInfoState";
+import { openedFirstCardState, openedSecondCardState } from "stores/DebateStates";
 
 /*
   closeModalEvent: Modal 닫는 이벤트
@@ -40,6 +41,10 @@ function CreateRoomModal({ closeModalEvent }) {
   // 참가자의 역할을 저장할 setter
   const setDebateUserRoleState = useSetRecoilState(debateUserRoleState);
   const navigate = useNavigate();
+
+  // 발언자 참여 시 카드 오픈 Flag 초기화용 State
+  const setOpenedFirstCardState = useSetRecoilState(openedFirstCardState);
+  const setOpenedSecondCardState = useSetRecoilState(openedSecondCardState);
 
   const onHashTagsChange = (event) => {
     setHashTags(event.target.value);
@@ -196,6 +201,8 @@ function CreateRoomModal({ closeModalEvent }) {
 
       // Recoil State 설정
       setDebateUserRoleState("host");  // 방장으로 입장
+      setOpenedFirstCardState(false);
+      setOpenedSecondCardState(false);
       resetCreateModalState();
       // 토론방 이동 Request
       navigate("/debate/room/" + joinData?.body?.roomId);

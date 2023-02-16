@@ -140,8 +140,8 @@ function CategoryItem() {
                 })
                 .then(response => {
                     const data = {
-                        photo_url: response.data.body[0].fileName,
-                        photo_name: response.data.body[0].fileUrl,
+                        photo_name: response.data.body[0].fileName,
+                        photo_url: response.data.body[0].fileUrl,
                     };
                     setUserProfile(data);
                 })
