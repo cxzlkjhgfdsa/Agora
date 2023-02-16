@@ -14,9 +14,14 @@ export const useUserInfo = (userId) => {
   return useQuery(["userInfo", userId], fetchUserInfo, {
     staleTime: 0,
     select,
+    onError,
   });
 }
 
 const select = response => {
   return response.body.data;
+}
+
+const onError = err => {
+  console.warn("onError >> ", err);
 }
