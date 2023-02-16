@@ -14,6 +14,8 @@ import java.util.List;
 public class ResponseHistoryInfoDto {
 
     private String roomName;
+
+    private Long roomId;
     private String leftOpinion;
     private String rightOpinion;
 
@@ -31,7 +33,7 @@ public class ResponseHistoryInfoDto {
 
 
     @QueryProjection
-    public ResponseHistoryInfoDto(String roomName, String leftOpinion, String rightOpinion, String userTeam,
+    public ResponseHistoryInfoDto(String roomName, Long roomId, String leftOpinion, String rightOpinion, String userTeam,
                                   Integer phase1LeftVote, Integer phase2LeftVote, Integer phase3LeftVote,
                                   Integer phase1RightVote, Integer phase2RightVote, Integer phase3RightVote,
                                   String phase1PlayerResult, String phase2PlayerResult, String phase3PlayerResult,
@@ -41,6 +43,7 @@ public class ResponseHistoryInfoDto {
                                   String category
     ) {
         this.roomName = roomName;
+        this.roomId = roomId;
         this.leftOpinion = leftOpinion;
         this.rightOpinion = rightOpinion;
         this.userTeam = userTeam;
