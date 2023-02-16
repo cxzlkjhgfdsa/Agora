@@ -19,6 +19,7 @@ function DebateList() {
 
   useEffect(() => {
     setIsRoom(false);
+    
   }, []);
 
   useEffect(() => {
