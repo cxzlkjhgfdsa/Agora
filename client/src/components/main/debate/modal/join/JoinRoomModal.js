@@ -14,6 +14,7 @@ import { joinModalState } from "stores/ModalStates";
   showType: 열띤 토론중 or 토론 대기중 등 모두보기를 누른 토론방의 상태 (debating, waiting)
 */
 function JoinRoomModal({ roomId, isModalOpen }) {
+
   const roomInfo = useRecoilValue(debateRoomsAtomFamily(roomId))
   const resetJoinModalState = useResetRecoilState(joinModalState);
 
@@ -51,7 +52,7 @@ function JoinRoomModal({ roomId, isModalOpen }) {
               <JoinAsSpeaker
                 roomInfo={roomInfo} />} />
             <ModalSetting className="full" name="관전하기" content={
-              <JoinAsViewer />
+              <JoinAsViewer roomId={roomId}/>
             } />
           </RightDiv>
         </CenterDiv>

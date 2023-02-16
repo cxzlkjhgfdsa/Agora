@@ -51,6 +51,7 @@ const DebateTitle = styled.p`
   padding: 0;
 
   // 글꼴 설정
+  color: #333;
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.05rem;

@@ -37,7 +37,7 @@ const StyledDebateWrapper = styled.div`
   margin: 0px; padding: 8px;
 `;
 
-function ModalContents({ contents, setInView, loading, isEnd }) {
+function ModalContents({ contents, setInView, loading, isEnd, type }) {
   // 한 행에 보여줄 토론방의 개수 설정
   let countInRow = 1;
   countInRow += useMediaQuery({
@@ -60,7 +60,7 @@ function ModalContents({ contents, setInView, loading, isEnd }) {
       <StyledModalContents>
         {contents.map((item, index) => (
           <StyledDebateWrapper key={item + index} countInRow={countInRow}>
-            <ModalThumbnail content={item} />
+            <ModalThumbnail content={item} type={type}/>
           </StyledDebateWrapper>
         ))}
         {contents.length === 0 ? <NoContents /> : null}

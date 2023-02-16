@@ -162,13 +162,10 @@ const ThumbnailInfoWrapper = styled.div`
   &:hover {
     ${props => {
       if ((props.itemIdx - props.currSlideIdx) % props.visibleCounts === 0) {
-        console.log("왼쪽위")
         return "transform-origin: 0% 0%; transform: scale(1.15);"
       } else if ((props.itemIdx - props.currSlideIdx) === props.visibleCounts-1) {
-        console.log("오른쪽위")
         return "transform-origin: 111% 0%; transform: scale(1.15);"
       } else {
-        console.log("중간")
         return "transform-origin: 50% 0; transform: scale(1.15);"
       }
     }}

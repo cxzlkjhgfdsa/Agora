@@ -93,6 +93,11 @@ function JoinAsSpeaker(props) {
         document.querySelector("#deviceSetting").classList.add("wrong");
         isValid = false;
       }
+      
+      if (!isValid) {
+        window.alert("설정에서 카메라와 오디오를 켜주세요.");
+        return;
+      }
 
       // 카메라와 오디오 모두 켜져 있다면,
       if (isValid) {
@@ -102,13 +107,14 @@ function JoinAsSpeaker(props) {
           userNickname: userInfo?.userNickname,
           userTeam: team
         }, null)
-          .then(({ data }) => data.body)
+          .then((res) => {
+            if (res?.state === false) {
+              alert("방 참여에 실패했습니다.");
+              return;
+            }
+          })
           .catch(error => { console.log(error); });
         
-        if (joinData?.state !== true) {
-          alert("방 참여에 실패했습니다.");
-          return;
-        }
 
         // Recoil State 설정
         setDebateUserRole("speaker");  // 발언자로 입장
