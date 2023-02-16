@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // Global Style
 import GlobalStyle from "GlobalStyle";
 
-// Header
 import Header from "./pages/Header";
+import Footer from "./pages/Footer";
 
 // Main Pages
 import Login from "pages/main/Login";
@@ -45,6 +45,7 @@ function App() {
             <Route path="/test-page" element={<TestMoadlPage />} />
           </Routes>
         </main>
+        <Footer />
       </BrowserRouter>
     </>
   );
