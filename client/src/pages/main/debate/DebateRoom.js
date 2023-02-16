@@ -303,10 +303,10 @@ function DebateRoom() {
             ? (
               <Grid container spacing={3}>
                 <Grid item xs={6}>
-                  <ReadyVideo opinion={"A쪽 주장입니다"} />
+                  <ReadyVideo opinion={leftOpinion} />
                 </Grid>
                 <Grid item xs={6}>
-                  <ReadyVideo opinion={"B쪽 주장입니다"} />
+                  <ReadyVideo opinion={rightOpinion} />
                 </Grid>
               </Grid>
             ) : (
