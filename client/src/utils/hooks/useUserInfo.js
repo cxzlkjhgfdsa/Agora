@@ -19,7 +19,7 @@ export const useUserInfo = (userId) => {
 }
 
 const select = response => {
-  return response.body.data;
+  return response.data.body
 }
 
 const onError = err => {
