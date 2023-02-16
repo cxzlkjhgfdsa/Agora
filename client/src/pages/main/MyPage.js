@@ -1,8 +1,10 @@
 import ShowInformation from "components/main/mypage/ShowInformation";
 import SideNav from "components/main/mypage/SideNav";
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { showPageState } from "stores/myPageStates";
+import { userInfoState } from "stores/userInfoState";
 import styled from "styled-components";
 
 const MyPageContainer = styled.div`
@@ -55,9 +57,16 @@ const InformationContainer = styled.div`
 
 function MyPage() {
   const [showPage, setShowPage] = useRecoilState(showPageState);
+  const userInfo = useRecoilValue(userInfoState);
+  const navigate = useNavigate();
 
   // 마이페이지 접근 시 내 개인정보를 우선으로 보여주기
   useEffect(() => {
+    // 로그인 여부 확인
+    if (userInfo?.isLoggedIn !== true) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/debate/list");
+    }
     setShowPage("MyInfo");
   }, []);
 
