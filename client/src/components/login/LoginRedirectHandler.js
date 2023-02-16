@@ -12,7 +12,7 @@ function LoginRedirectHandler() {
     const navigate = useNavigate();
     const userId = new URL(window.location.href).searchParams.get("userId");
 
-    const { isLoading, data: userData, isError, error } = useUserInfo(userId);
+    const { isLoading, data: userData, isError } = useUserInfo(userId);
 
     if (isLoading) return <Spinner />;
     if (isError) {
@@ -23,18 +23,6 @@ function LoginRedirectHandler() {
         setUserInfo(data);
         navigate("/debate/list");
     }
-
-
 }
 
 export default LoginRedirectHandler;
-
-
-    // const unpackedData = {
-    //     isLoggedIn: true,
-    //     accessToken: data.data.body.accessToken,
-    //     userId: data.data.body.userId,
-    //     userNickname: data.data.body.userNickname,
-    //     socialType: data.data.body.socialType,
-    //     userPhoto: data.data.body.userPhoto,
-    // };

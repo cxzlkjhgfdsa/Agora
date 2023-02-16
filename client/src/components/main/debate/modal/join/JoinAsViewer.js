@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
-import { joinModalState } from "stores/ModalStates";
+import { joinModalState, showAllModalState } from "stores/ModalStates";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -37,9 +37,9 @@ const JoinAsViewerButton = styled.button`
 
 function JoinAsViewer({ roomId }) {
 
-  const axios = customAxios();
   const navigate = useNavigate();
   const resetJoinModalState = useResetRecoilState(joinModalState);
+  const resetShowAllModalState = useResetRecoilState(showAllModalState);
 
   // 다음 페이지로 보내기 위한 사용자의 역할 setter
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
@@ -51,6 +51,7 @@ function JoinAsViewer({ roomId }) {
 
     setDebateUserRole("viewer");
     resetJoinModalState();
+    resetShowAllModalState();
     navigate("/debate/room/" + roomId);
     
   }, []);
