@@ -2,8 +2,6 @@ package com.agora.server.debatehistory.controller;
 
 import com.agora.server.auth.dto.UserAuthenticateInfo;
 import com.agora.server.common.dto.ResponseDTO;
-import com.agora.server.debatehistory.domain.DebateHistory;
-import com.agora.server.debatehistory.dto.RequestSaveHistoryDto;
 import com.agora.server.debatehistory.dto.ResponseHistoryInfoDto;
 import com.agora.server.debatehistory.service.DebateHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
