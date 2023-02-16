@@ -136,7 +136,7 @@ function SearchBar() {
       const [localKeyword, localHashTags] = tokenize(inputString);
       
       // 입력 정보에 따라 (사용자, 방제) 또는 해시태그 검색      
-      axios.get("/api/v1/search/dropdown", {
+      axios.get("/v2/search/dropdown", {
         params: {
           searchWord: localKeyword,
           hashTags: localHashTags.join(",")
