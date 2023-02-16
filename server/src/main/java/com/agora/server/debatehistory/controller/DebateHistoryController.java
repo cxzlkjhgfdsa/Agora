@@ -33,10 +33,9 @@ public class DebateHistoryController {
      * @return
      */
     @GetMapping("list")
-//    public ResponseEntity<ResponseDTO> getDebateHistoryPages(@AuthenticationPrincipal UserAuthenticateInfo userInfo, Pageable pageable){
-    public ResponseEntity<ResponseDTO> getDebateHistory(String userId, Pageable pageable){
+    public ResponseEntity<ResponseDTO> getDebateHistoryPages(@AuthenticationPrincipal UserAuthenticateInfo userInfo, Pageable pageable){
 
-        Page<ResponseHistoryInfoDto> debateHistoryPage = debateHistoryService.findByUserId(userId, pageable);
+        Page<ResponseHistoryInfoDto> debateHistoryPage = debateHistoryService.findByUserId(userInfo.getUserId(), pageable);
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setBody(debateHistoryPage);
