@@ -58,7 +58,7 @@ public class JwtTokenProvider {
                         .claim("id", userId)
                         .claim("socialType", socialType)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + Duration.ofMinutes(10).toMillis()))
+                        .setExpiration(new Date(now.getTime() + Duration.ofHours(3).toMillis()))
                         .signWith(SignatureAlgorithm.HS256, jwtSecret)
                         .compact();
             case REFRESH:
