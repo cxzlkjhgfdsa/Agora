@@ -46,13 +46,6 @@ function MyInfo() {
         setMyProfileImageName(body?.user_photo_name);
       }).catch(error => {
         console.warn(error);
-        setInitData({userName: "윤재휘", userNickname: "HwiHwi", userAge: "970523", categories: ["음식", "게임"], user_photo: "http://k.kakaocdn.net/dn/kRH8F/btrPDdQQDAb/uuJlVD7VSNrD7wKV9VCxik/img_640x640.jpg"});
-        setMyName("윤재휘");
-        setMyNickname("HwiHwi");
-        setMyBirthDate("970523");
-        setMyCategory(["음식", "게임"]);
-        setMyProfileImage("http://k.kakaocdn.net/dn/kRH8F/btrPDdQQDAb/uuJlVD7VSNrD7wKV9VCxik/img_640x640.jpg");
-        setMyProfileImageName("huru.png");
       });
   }, []);
 
