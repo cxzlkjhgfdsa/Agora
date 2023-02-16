@@ -66,23 +66,26 @@ public class UserService {
     public void editUserInfo(String userId, EditRequestDto editRequestDto) throws IOException {
         User findUser = userRepository.findById(UUID.fromString(userId)).get();
 
-        if(findUser.getUser_photo_name().length()>10){ //  기본 프로필을 사용허고 있지 않은 유저라면
-            List<String> filenames = new ArrayList<>();
-            filenames.add(findUser.getUser_photo_name());
-            fileService.deleteFile(filenames);  //기존 프로필 삭제
+        if(editRequestDto.getUser_photo()!=null){  // 수정할 프로필이 존재한다면
+            if(findUser.getUser_photo_name().length()>10){ //  기본 프로필을 사용허고 있지 않은 유저라면
+                List<String> filenames = new ArrayList<>();
+                filenames.add(findUser.getUser_photo_name());
+                fileService.deleteFile(filenames);  //기존 프로필 삭제
+            }
+            findUser.changeUserPhoto(editRequestDto.getUser_photo_name(), editRequestDto.getUser_photo()); // 프로필 값 변경
         }
 
-        findUser.changeUserPhoto(editRequestDto.getUser_photo_name(), editRequestDto.getUser_photo()); // 프로필 값 변경
+        if(editRequestDto.getCategories()!=null){  // 수정할 카테고리가 존재한다면
+            List<Category> categories = findCategoryById(editRequestDto.getCategories());
 
-        List<Category> categories = findCategoryById(editRequestDto.getCategories());
+            List<UserCategory> userCategories = findUser.getCategories();
 
-        List<UserCategory> userCategories = findUser.getCategories();
+            for(int i=0; i<userCategories.size(); i++){        // 카테고리 변경
+                userCategories.get(i).setCategory(categories.get(i));
+            }
 
-        for(int i=0; i<userCategories.size(); i++){        // 카테고리 변경
-            userCategories.get(i).setCategory(categories.get(i));
+            findUser.setUserCategories(userCategories);
         }
-
-        findUser.setUserCategories(userCategories);
     }
 
     public UserInfoResponseDto getUserInfo(User user) throws Exception {

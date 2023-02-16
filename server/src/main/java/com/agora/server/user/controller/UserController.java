@@ -206,6 +206,7 @@ public class UserController {
         userService.editUserInfo(userId, editRequestDto);
 
         responseDTO.setMessage("수정이 정상적으로 완료되었습니다");
+        responseDTO.setState(true);
 
         return ResponseEntity.ok(responseDTO);
 
