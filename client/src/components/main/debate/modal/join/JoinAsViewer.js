@@ -37,7 +37,6 @@ const JoinAsViewerButton = styled.button`
 
 function JoinAsViewer({ roomId }) {
 
-  const axios = customAxios();
   const navigate = useNavigate();
   const resetJoinModalState = useResetRecoilState(joinModalState);
   const resetShowAllModalState = useResetRecoilState(showAllModalState);

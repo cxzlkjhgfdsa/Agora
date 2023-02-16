@@ -55,8 +55,8 @@ const OpinionText = styled.p`
   text-overflow: ellipsis;
 `;
 
-function JoinAsSpeaker(props) {
-  const axios = customAxios();
+function JoinAsSpeaker({ roomInfo }) {
+
   const navigate = useNavigate();
 
   // 다음 페이지로 전달하기 위한 참가자의 역할 setter
@@ -64,13 +64,7 @@ function JoinAsSpeaker(props) {
   const resetJoinModalState = useResetRecoilState(joinModalState);
   const resetShowAllModalState = useResetRecoilState(showAllModalState);
 
-  const userInfo = useRecoilValue(userInfoState);
-
-  const roomId = props?.roomInfo?.roomId;
-  const leftOpinion = props?.roomInfo?.leftOpinion;
-  const rightOpinion = props?.roomInfo?.rightOpinion;
-  const leftUserList = props?.roomInfo?.leftUserList;
-  const rightUserList = props?.roomInfo?.rightUserList;
+  const { roomId, roomOpinionLeft, roomOpinionRight, leftUserList, rightUserList } = roomInfo;
 
   // opinion: 의견, team: LEFT or RIGHT
   const join = useCallback(async (opinion, team) => {
@@ -115,9 +109,9 @@ function JoinAsSpeaker(props) {
       <OpinionButton
         className="selectLeftOpinion"
         disabled={leftUserList.length === 3}
-        onClick={() => { join(leftOpinion, "LEFT"); }}
+        onClick={() => { join(roomOpinionLeft, "LEFT"); }}
       >
-        <OpinionText title={leftOpinion}>{leftOpinion}</OpinionText>
+        <OpinionText title={roomOpinionLeft}>{roomOpinionLeft}</OpinionText>
         <OpinionText>({leftUserList.length} / 3)</OpinionText>
       </OpinionButton>
       
@@ -125,9 +119,9 @@ function JoinAsSpeaker(props) {
       <OpinionButton
         className="selectRightOpinion"
         disabled={rightUserList.length === 3}
-        onClick={() => { join(rightOpinion, "RIGHT"); }}
+        onClick={() => { join(roomOpinionRight, "RIGHT"); }}
       >
-        <OpinionText title={rightOpinion}>{rightOpinion}</OpinionText>
+        <OpinionText title={roomOpinionRight}>{roomOpinionRight}</OpinionText>
         <OpinionText>({rightUserList.length} / 3)</OpinionText>
       </OpinionButton>
     </StyledJoinAsSpeaker>
