@@ -8,7 +8,7 @@ import MyPageTitle from "../MyPageTitle";
 const NoDebateHistory = styled.p`
   font-size: 2rem;
   letter-spacing: -0.05rem;
-  textAlign: center;
+  text-align: center;
 `;
 
 function MyDebateHistory() {
