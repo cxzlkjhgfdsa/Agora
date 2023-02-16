@@ -20,7 +20,9 @@ import LoginRedirectHandler from "components/login/LoginRedirectHandler";
 import SearchRoom from "pages/main/debate/SearchRoom";
 import TestMoadlPage from "pages/TestModalPage";
 
+
 function App() {
+
   return (
     <>
       <GlobalStyle />
