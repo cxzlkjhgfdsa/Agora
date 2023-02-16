@@ -84,7 +84,7 @@ function Vote({roomId}) {
             :isVote === "RIGHT" 
             ? "selected-root" 
             : isVote === "LEFT" 
-            ? "disabled-root" 
+            ? "disabled-root"  
             : null}
         >
           B
