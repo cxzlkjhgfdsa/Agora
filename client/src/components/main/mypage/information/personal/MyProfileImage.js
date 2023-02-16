@@ -36,7 +36,7 @@ const ChangeButton = styled.button`
   cursor: pointer;
 `;
 
-function MyProfileImage({ src, setSrc }) {
+function MyProfileImage({ src, setSrc, setImgName, setImgFile }) {
   const fileUploaderRef = useRef();
 
   // CSS를 위해 'display: none' 되어 있는 컴포넌트 클릭을 위한 함수
@@ -45,6 +45,8 @@ function MyProfileImage({ src, setSrc }) {
   };
   // 파일 선택 시 경로 변경 처리해주는 함수
   const onFileUploaderChange = (event) => {
+    setImgName(event.target.files[0].name);
+    setImgFile(event.target.files[0]);
     const reader = new FileReader();
     reader.readAsDataURL(event.target.files[0]);
     reader.onloadend = () => {
