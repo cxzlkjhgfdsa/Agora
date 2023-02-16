@@ -48,10 +48,12 @@ function MyCategoryForm({ myCategory, setMyCategory }) {
   
   // 기존에 선택되어 있던 카테고리 활성화
   useEffect(() => {
-    const children = document.querySelector("#categoryForm").children;
-    for (let child of children) {
-      if (myCategory.includes(child.textContent)) {
-        child.classList.add("selectedCategory");
+    if (myCategory !== undefined) {
+      const children = document.querySelector("#categoryForm").children;
+      for (let child of children) {
+        if (myCategory.includes(child.textContent)) {
+          child.classList.add("selectedCategory");
+        }
       }
     }
   }, [myCategory]);
