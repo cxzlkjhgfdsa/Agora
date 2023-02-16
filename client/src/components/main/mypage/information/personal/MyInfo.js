@@ -18,7 +18,7 @@ const MyInfoForm = styled.div`
 function MyInfo() {
   const axios = customAxios();
 
-  const [initData, setInitData] = useState({userName: "", userNickname: "", userAge: "", categories: [], numCategories: [], user_photo: ""});
+  const [initData, setInitData] = useState({userName: "", userNickname: "", userAge: "", categories: [], user_photo: ""});
   const [myName, setMyName] = useState("");
   const [myNickname, setMyNickname] = useState("");
   const [myBirthDate, setMyBirthDate] = useState("");
@@ -46,18 +46,24 @@ function MyInfo() {
         setMyProfileImageName(body?.user_photo_name);
       }).catch(error => {
         console.warn(error);
+        setInitData({userName: "윤재휘", userNickname: "HwiHwi", userAge: "970523", categories: ["음식", "게임"], user_photo: "http://k.kakaocdn.net/dn/kRH8F/btrPDdQQDAb/uuJlVD7VSNrD7wKV9VCxik/img_640x640.jpg"});
+        setMyName("윤재휘");
+        setMyNickname("HwiHwi");
+        setMyBirthDate("970523");
+        setMyCategory(["음식", "게임"]);
+        setMyProfileImage("http://k.kakaocdn.net/dn/kRH8F/btrPDdQQDAb/uuJlVD7VSNrD7wKV9VCxik/img_640x640.jpg");
+        setMyProfileImageName("huru.png");
       });
   }, []);
 
   const modify = async () => {
     // 관심 카테고리 변경 확인
-    const initCategories = initData.numCategories.sort();
-    const numCategories = myNumCategory.sort();
-    const equalsCategory = (JSON.stringify(initCategories) === JSON.stringify(numCategories));
-
+    const initCategories = initData.categories.sort();
+    const equalsCategory = (JSON.stringify(initCategories) === JSON.stringify(myCategory.sort()));
+    
     // 프로필 이미지 변경 확인
     const equalsProfileImage = (initData.user_photo === myProfileImage);
-
+    
     // 변경사항 없을 경우 변경 이벤트 종료
     if (equalsCategory && equalsProfileImage) {
       return;
@@ -94,7 +100,7 @@ function MyInfo() {
 
     // 카테고리 수정
     if (!equalsCategory) {
-      postData.categories = numCategories;
+      postData.categories = myNumCategory.sort();
     }
     
     // 변경 POST 요청
