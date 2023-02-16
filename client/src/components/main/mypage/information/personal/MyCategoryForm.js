@@ -54,11 +54,14 @@ function MyCategoryForm({ myCategory, setMyCategory, setMyNumCategory }) {
   useEffect(() => {
     if (myCategory !== undefined) {
       const children = document.querySelector("#categoryForm").children;
+      const initNumCategories = [];
       for (let child of children) {
         if (myCategory.includes(child.textContent)) {
           child.classList.add("selectedCategory");
+          initNumCategories.push(categoryNum[child.textContent]);
         }
       }
+      setMyNumCategory(initNumCategories);
     }
   }, [myCategory]);
 
