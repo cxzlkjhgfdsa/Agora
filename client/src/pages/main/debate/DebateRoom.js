@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { createBrowserHistory } from "history";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/system/Container";
 
@@ -16,7 +17,7 @@ import customAxios from "utils/customAxios";
 
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState, firstCardFileState, secondCardFileState } from "stores/DebateStates";
+import { isStartState, leftCardListState, rightCardListState, leftUserListState, rightUserListState, readyUserListState, phaseNumberState, phaseDetailState, voteLeftResultState, voteRightResultState, timerState, counterState, firstCardFileState, secondCardFileState, lastRoomState, isRoomState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 
@@ -47,6 +48,10 @@ function DebateRoom() {
   const [voteLeftResult, setVoteLeftResult] = useRecoilState(voteLeftResultState);
   const [voteRightResult, setVoteRightResult] = useRecoilState(voteRightResultState);
   const [role, setRole] = useRecoilState(debateUserRoleState);
+
+  // 방진입 감지
+  const [lastRoom, setLastRoom] = useRecoilState(lastRoomState);
+  const [isRoom, setIsRoom] = useRecoilState(isRoomState);
   
   // listening
   const [listening, setListening] = useState(false);
@@ -61,17 +66,6 @@ function DebateRoom() {
   const [leavePostFlag, setLeavePostFlag] = useState(false);
 
   const navigate = useNavigate();
-  
-  // useEffect(() => {
-  //  getToken(roomId).then(token => {
-  //   setRoomToken(token);
-  //  })
-  // }, [])
-
-  useEffect(() => {
-    console.log(roomToken)
-    console.log(isStart)
-  }, [roomToken, isStart])
 
   useEffect(() => {
     // 초기 데이터 받기
@@ -101,6 +95,10 @@ function DebateRoom() {
           setWatchNum(data.roomWatchCnt);
           setVoteLeftResult(data.voteLeftResultsList);
           setVoteRightResult(data.voteRightResultsList);
+
+          // 방진입 감지
+          setLastRoom(roomId);
+          setIsRoom(true);
 
           return data.roomState
         })
@@ -225,6 +223,11 @@ function DebateRoom() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(lastRoom)
+  }, [lastRoom]);
+
+
   // 토론방을 떠날 때 실행될 Post
   const handleBeforeUnload = () => {
     setLeavePostFlag(true);
@@ -300,10 +303,10 @@ function DebateRoom() {
             ? (
               <Grid container spacing={3}>
                 <Grid item xs={6}>
-                  <ReadyVideo opinion={"A쪽 주장입니다"} />
+                  <ReadyVideo opinion={leftOpinion} />
                 </Grid>
                 <Grid item xs={6}>
-                  <ReadyVideo opinion={"B쪽 주장입니다"} />
+                  <ReadyVideo opinion={rightOpinion} />
                 </Grid>
               </Grid>
             ) : (
