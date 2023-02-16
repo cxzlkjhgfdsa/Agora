@@ -17,7 +17,7 @@ import java.util.UUID;
 public class DebateHistory {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "debate_history_id")
     private Long id;
 
