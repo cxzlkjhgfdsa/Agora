@@ -17,8 +17,15 @@ function LoginRedirectHandler() {
     if (isLoading) return <Spinner />;
     if (isError) throw error.message;
 
-    data.isLoggedIn = true;
-    setUserInfo(data);
+    const unpackedData = {
+        isLoggedIn: data.isLoggedIn,
+        accessToken: data.body.accessToken,
+        userId: data.body.userId,
+        userNickname: data.body.userNickname,
+        socialType: data.body.socialType,
+        userPhoto: data.body.userPhoto,
+    };
+    setUserInfo(unpackedData);
 
     navigate("/debate/list");
 }

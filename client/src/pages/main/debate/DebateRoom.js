@@ -96,8 +96,8 @@ function DebateRoom() {
           setLeftOpinion(data.roomOpinionLeft);
           setPhaseNum(data.roomPhase);
           setPhaseDetail(data.roomPhaseDetail);
-          setTimer(data.roomPhaseRemainSecond);
-          setCounter(data.roomTimeInProgressSecond);
+          setTimer(data.roomPhaseRemainSecond - 3);
+          setCounter(data.roomTimeInProgressSecond + 3);
           setWatchNum(data.roomWatchCnt);
           setVoteLeftResult(data.voteLeftResultsList);
           setVoteRightResult(data.voteRightResultsList);
