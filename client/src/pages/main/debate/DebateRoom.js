@@ -68,6 +68,12 @@ function DebateRoom() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 로그인 여부 확인
+    if (userInfo?.isLoggedIn !== true) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/debate/list");
+      return;
+    }
     // 초기 데이터 받기
     async function get() {
       const axios = customAxios();
