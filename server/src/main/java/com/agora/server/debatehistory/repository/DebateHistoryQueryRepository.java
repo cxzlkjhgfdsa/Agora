@@ -33,6 +33,7 @@ public class DebateHistoryQueryRepository {
         List<ResponseHistoryInfoDto> content = queryFactory.select(
                         new QResponseHistoryInfoDto(
                                 debateHistory.room_name,
+                                debateHistory.room_id,
                                 debateHistory.left_opinion,
                                 debateHistory.right_opinion,
                                 debateHistory.user_team,
@@ -58,6 +59,7 @@ public class DebateHistoryQueryRepository {
                 .where(
                         debateHistory.user_id.eq(userId)
                 )
+                .orderBy(debateHistory.room_id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

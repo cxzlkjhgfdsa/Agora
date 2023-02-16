@@ -67,7 +67,9 @@ public class DebateHistory {
     @Column(length = 30)
     private String category;
 
-    public static DebateHistory createDebateHistory(String user_id, String room_name, String left_opinion, String right_opinion, String user_team, Integer phase1_left_vote, Integer phase1_right_vote, Integer phase2_left_vote, Integer phase2_right_vote, Integer phase3_left_vote, Integer phase3_right_vote, String phase1_player_result, String phase2_player_result, String phase3_player_result, String total_player_result, String left_player1_nickname, String left_player2_nickname, String left_player3_nickname, String right_player1_nickname, String right_player2_nickname, String right_player3_nickname, String category) {
+    private Long room_id;
+
+    public static DebateHistory createDebateHistory(String user_id, String room_name, String left_opinion, String right_opinion, String user_team, Integer phase1_left_vote, Integer phase1_right_vote, Integer phase2_left_vote, Integer phase2_right_vote, Integer phase3_left_vote, Integer phase3_right_vote, String phase1_player_result, String phase2_player_result, String phase3_player_result, String total_player_result, String left_player1_nickname, String left_player2_nickname, String left_player3_nickname, String right_player1_nickname, String right_player2_nickname, String right_player3_nickname, String category, Long room_id) {
         DebateHistory debateHistory = new DebateHistory();
         debateHistory.user_id = user_id;
         debateHistory.room_name = room_name;
@@ -91,6 +93,7 @@ public class DebateHistory {
         debateHistory.right_player2_nickname = right_player2_nickname;
         debateHistory.right_player3_nickname = right_player3_nickname;
         debateHistory.category = category;
+        debateHistory.room_id = room_id;
         return debateHistory;
     }
 }
