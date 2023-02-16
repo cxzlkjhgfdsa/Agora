@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import ModalRoomInfo from "./ModalRoomInfo";
-import { useSetRecoilState } from "recoil";
-import { joinModalState } from "stores/ModalStates";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
+import { joinModalState, showAllModalState } from "stores/ModalStates";
 
 // a 태그 그림에 딱 맞게
 const StyledLink = styled(Link)`
@@ -172,6 +172,8 @@ const StyledFont = styled.span`
 `;
 
 function ModalThumbnail({ content, type }) {
+
+  const resetShowAllModalState = useResetRecoilState(showAllModalState);
   
   const roomId = content.roomId;
 
@@ -228,6 +230,7 @@ function ModalThumbnail({ content, type }) {
       setJoinModalState({ roomId: roomId, isModalOpen: true})
     } else {
       if (window.confirm(`"${title}" 방에 입장하시겠습니까?`)) {
+        resetShowAllModalState();
         navigate(`/debate/room/${roomId}`)
       }
     }
