@@ -1,11 +1,13 @@
 import styled from "styled-components";
 
 import People from "assets/icons/People.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import NoImageAvailable from "assets/icons/No_Image_Available.png";
 import ModalRoomInfo from "./ModalRoomInfo";
+import { useSetRecoilState } from "recoil";
+import { joinModalState } from "stores/ModalStates";
 
 // a 태그 그림에 딱 맞게
 const StyledLink = styled(Link)`
@@ -169,7 +171,8 @@ const StyledFont = styled.span`
   font-size: 0.75rem;
 `;
 
-function ModalThumbnail({ content }) {
+function ModalThumbnail({ content, type }) {
+  
   const roomId = content.roomId;
 
   const title = content.roomName;
@@ -215,13 +218,29 @@ function ModalThumbnail({ content }) {
     return () => clearInterval(interval.current);
   }, [secondsState]);
 
+
+  const setJoinModalState = useSetRecoilState(joinModalState);
+  const navigate = useNavigate();
+  const HandleDebateClick = () => {
+    console.log("clicked debate type >> ", type);
+    console.log("roomId >> ", roomId);
+    if (type === "waiting") {
+      setJoinModalState({ roomId: roomId, isModalOpen: true})
+    } else {
+      if (window.confirm(`"${title}" 방에 입장하시겠습니까?`)) {
+        navigate(`/debate/room/${roomId}`)
+      }
+    }
+  }
+
   return (
     <Wrapper >
-      <StyledLink to={`/debate/room/${roomId}`}>
+      {/* <StyledLink to={`/debate/room/${roomId}`}> */}
         <ModalThumbnailInfoWrapper
           isHovered={isHovered}
           onMouseEnter={expand}
           onMouseLeave={reduce}
+          onClick={HandleDebateClick}
         >
           <StyledModalThumbnail>
             {/* 배경 이미지 및 반투명 검은 배경 */}
@@ -268,7 +287,7 @@ function ModalThumbnail({ content }) {
               </>}
           </StyledModalThumbnail>
         </ModalThumbnailInfoWrapper>
-      </StyledLink>
+      {/* </StyledLink> */}
     </Wrapper>
   );
 }

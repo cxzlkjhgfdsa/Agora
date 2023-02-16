@@ -33,7 +33,7 @@ function ModalContainerShowAll() {
       <Background>
         <DebateListModal 
           isModalOpen={getShowAllModalState.isModalOpen}
-          debateState={getShowAllModalState.type} 
+          type={getShowAllModalState.type} 
         />
       </Background>
     </ModalContainer>

@@ -19,11 +19,11 @@ function LoginRedirectHandler() {
 
     const unpackedData = {
         isLoggedIn: data.isLoggedIn,
-        accessToken: data.body.accessToken,
-        userId: data.body.userId,
-        userNickname: data.body.userNickname,
-        socialType: data.body.socialType,
-        userPhoto: data.body.userPhoto,
+        accessToken: data.data.body.accessToken,
+        userId: data.data.body.userId,
+        userNickname: data.data.body.userNickname,
+        socialType: data.data.body.socialType,
+        userPhoto: data.data.body.userPhoto,
     };
     setUserInfo(unpackedData);
 

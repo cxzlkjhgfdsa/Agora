@@ -15,7 +15,7 @@ import { debateRoomsAtomFamily } from "stores/debateRoomStates";
 import { CloseButton, ModalDiv, ModalTitle } from "../ModalComponents";
 import { showAllModalState } from "stores/ModalStates";
 
-function DebateListModal({ isModalOpen, debateState }) {
+function DebateListModal({ isModalOpen, type }) {
   
   const resetShowAllModalState = useResetRecoilState(showAllModalState);
 
@@ -30,10 +30,10 @@ function DebateListModal({ isModalOpen, debateState }) {
   // 아톰 패밀리 시작 키
   let updateBeginIndex = 0;
   // 제목 설정
-  if (debateState === "debating") {
+  if (type === "debating") {
     roomState = true;
     updateBeginIndex = 100;
-  } else if (debateState === "waiting") {
+  } else if (type === "waiting") {
     roomState = false;
     updateBeginIndex = 200;
   }
@@ -57,10 +57,10 @@ function DebateListModal({ isModalOpen, debateState }) {
 
   // State 초기화
   useEffect(() => {
-    if (debateState === "debating") {
+    if (type === "debating") {
       setTitleIcon(LightBulb);
       setTitleText("열띤 토론중");
-    } else if (debateState === "waiting") {
+    } else if (type === "waiting") {
       setTitleIcon(Clock);
       setTitleText("토론 대기중");
     }
@@ -87,7 +87,7 @@ function DebateListModal({ isModalOpen, debateState }) {
     }, {
       withCredentials: false
     }).then(({ data }) => {
-      console.warn("modal data >> ", data)
+      console.log("data >> ", data);
       // 새로운 데이터
       const newContents = data.body.content;
       // 저장
@@ -136,10 +136,9 @@ function DebateListModal({ isModalOpen, debateState }) {
       <ModalOrderBy setOrderBy={setOrderBy} />
       <ModalCategory setCategory={setCategory} />
       {/* 데이터 로딩 현황, 마지막 페이지 여부를 넘겨 InView 컴포넌트를 렌더링 할 수 있게 하기 */}
-      <ModalContents contents={contents} setInView={setInView} loading={loading} isEnd={isEnd} />
-    </ModalDiv>    
+      <ModalContents contents={contents} setInView={setInView} loading={loading} isEnd={isEnd} type={type} />
+      </ModalDiv>    
     </StyleWrapper>
-
   );
 }
 
