@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useResetRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
 import { joinModalState, showAllModalState } from "stores/ModalStates";
+import { userInfoState } from "stores/userInfoState";
 import styled from "styled-components";
 import customAxios from "utils/customAxios";
 
@@ -36,6 +37,7 @@ const JoinAsViewerButton = styled.button`
 `;
 
 function JoinAsViewer({ roomId }) {
+  const userInfo = useRecoilValue(userInfoState);
 
   const navigate = useNavigate();
   const resetJoinModalState = useResetRecoilState(joinModalState);
@@ -45,6 +47,11 @@ function JoinAsViewer({ roomId }) {
   const setDebateUserRole = useSetRecoilState(debateUserRoleState);
 
   const join = useCallback(async () => {
+    // 로그인 여부 확인
+    if (userInfo?.isLoggedIn !== true) {
+      alert("로그인이 필요한 서비스입니다.");
+      return;
+    }
   
     let choice = window.confirm("관전에 참여 하시겠습니까?");
     if (choice === false) return;

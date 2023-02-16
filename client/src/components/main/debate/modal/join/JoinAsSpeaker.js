@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { debateUserRoleState } from "stores/joinDebateRoomStates";
@@ -67,58 +66,67 @@ function JoinAsSpeaker({ roomInfo }) {
   const userInfo = useRecoilValue(userInfoState);
 
   const { roomId, roomOpinionLeft, roomOpinionRight, leftUserList, rightUserList } = roomInfo;
-
+  console.warn(userInfo);
+  console.warn(roomId, roomOpinionLeft, roomOpinionRight, leftUserList, rightUserList);
   // opinion: 의견, team: LEFT or RIGHT
-  const join = useCallback(async (opinion, team) => {
+  const join = async (opinion, team) => {
+    // 로그인 여부 확인
+    if (userInfo?.isLoggedIn !== true) {
+      alert("로그인이 필요한 서비스입니다.");
+      return;
+    }
+
     let isValid = true;
 
     const choice = window.confirm(`'${opinion}' 측 발언자로 참여 하시겠습니까?`);
-    if (choice === true) {
-      // 카메라, 오디오 확인
-      const srcObject = document.querySelector("video").srcObject;
-      let onCameraTrack = false;
-      let onAudioTrack = false;
-      if (srcObject) {
-        const tracks = srcObject.getTracks();
-        tracks.forEach(track => {
-          if (track.kind === "video") {
-            onCameraTrack = true;
-          } else if (track.kind === "audio") {
-            onAudioTrack = true;
-          }
-        });
-      }
-      if (!onCameraTrack || !onAudioTrack) {
-        document.querySelector("#deviceSetting").classList.add("wrong");
-        isValid = false;
-      }
-      
-      if (!isValid) {
-        window.alert("설정에서 카메라와 오디오를 켜주세요.");
-        return;
-      }
-
-      const axios = customAxios();
-      await axios.post("/v2/room/enter", {
-        roomId: roomId,
-        userNickname: userInfo?.userNickname,
-        userTeam: team
-      }, null)
-        .then((res) => {
-          console.log(res);
-          if (res?.state === false) {
-            alert("방 참여에 실패했습니다.");
-            return;
-          }
-        })
-        .catch(error => { console.log(error); });
-
-      setDebateUserRole("speaker");
-      resetJoinModalState();
-      resetShowAllModalState();
-      navigate("/debate/room/" + roomId);
+    if (!choice) {
+      return;
     }
-  }, []);
+
+    // 카메라, 오디오 확인
+    const srcObject = document.querySelector("video").srcObject;
+    let onCameraTrack = false;
+    let onAudioTrack = false;
+    if (srcObject) {
+      const tracks = srcObject.getTracks();
+      tracks.forEach(track => {
+        if (track.kind === "video") {
+          onCameraTrack = true;
+        } else if (track.kind === "audio") {
+          onAudioTrack = true;
+        }
+      });
+    }
+    if (!onCameraTrack || !onAudioTrack) {
+      document.querySelector("#deviceSetting").classList.add("wrong");
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      window.alert("설정에서 카메라와 오디오를 켜주세요.");
+      return;
+    }
+
+    const axios = customAxios();
+    await axios.post("/v2/room/enter", {
+      roomId: roomId,
+      userNickname: userInfo?.userNickname,
+      userTeam: team
+    }, null)
+      .then((res) => {
+        console.log(res);
+        if (res?.state === false) {
+          alert("방 참여에 실패했습니다.");
+          return;
+        }
+      })
+      .catch(error => { console.log(error); });
+
+    setDebateUserRole("speaker");
+    resetJoinModalState();
+    resetShowAllModalState();
+    navigate("/debate/room/" + roomId);
+  };
 
   return (
     <StyledJoinAsSpeaker>

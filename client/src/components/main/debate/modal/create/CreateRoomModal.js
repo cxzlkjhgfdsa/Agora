@@ -67,6 +67,12 @@ function CreateRoomModal({ closeModalEvent }) {
   };
 
   const createRoom = async () => {
+    // 로그인 여부 확인
+    if (userInfo?.isLoggedIn !== true) {
+      alert("로그인이 필요한 서비스입니다.");
+      return;
+    }
+    
     // 유효성 검증
     let isValid = true;
     if (debateTitle === "") {  // 방 제목
