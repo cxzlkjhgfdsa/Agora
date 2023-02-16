@@ -96,7 +96,7 @@ public class DebateHistoryService {
 
         User user = userRepository.findByUser_nickname(userNickname);
 
-        DebateHistory debateHistory = DebateHistory.createDebateHistory(user.getUser_id().toString(), room.getRoom_name(), room.getRoom_opinion_left(), room.getRoom_opinion_right(), userTeam, voteLeftList.get(0), voteRightList.get(0), voteLeftList.get(1), voteRightList.get(1), voteLeftList.get(2), voteRightList.get(2), playerWinList.get(0), playerWinList.get(1), playerWinList.get(2), totalPlayerWin, (String) leftuserlist.get(0), (String) leftuserlist.get(1), (String) leftuserlist.get(2), (String) rightuserlist.get(0), (String) rightuserlist.get(1), (String) rightuserlist.get(2), room.getRoom_category());
+        DebateHistory debateHistory = DebateHistory.createDebateHistory(user.getUser_id().toString(), room.getRoom_name(), room.getRoom_opinion_left(), room.getRoom_opinion_right(), userTeam, voteLeftList.get(0), voteRightList.get(0), voteLeftList.get(1), voteRightList.get(1), voteLeftList.get(2), voteRightList.get(2), playerWinList.get(0), playerWinList.get(1), playerWinList.get(2), totalPlayerWin, (String) leftuserlist.get(0), (String) leftuserlist.get(1), (String) leftuserlist.get(2), (String) rightuserlist.get(0), (String) rightuserlist.get(1), (String) rightuserlist.get(2), room.getRoom_category(), roomId);
 
         return debateHistory;
     }
