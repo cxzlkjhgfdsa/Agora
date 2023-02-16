@@ -23,7 +23,7 @@ function Vote({roomId}) {
     return(() => {
       setIsVote(false);
     })
-  },[])
+  },[]) 
 
   const handleVoteButton = (e) => {
     const data = e.target.value;
