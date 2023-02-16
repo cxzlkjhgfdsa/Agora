@@ -69,10 +69,10 @@ public class DataBucketUtil {
 
     private String checkFileExtension(String fileName) {
         if(fileName != null && fileName.contains(".")){
-            String[] extensionList = {".png", ".jpeg", ".jpg"};
+            String[] extensionList = {".PNG", ".JPEG", ".JPG"};
 
             for(String extension: extensionList) {
-                if (fileName.endsWith(extension)) {
+                if (fileName.toUpperCase().endsWith(extension)) {
                     return extension;
                 }
             }
