@@ -236,28 +236,6 @@ AGORA 서비스를 통해 사용자들은 쉽게 토론을 접근할 수 있어,
         └── hooks
 ```
 
-## 시연 시나리오
-
-### 현재 진행중인 방 확인
-
-![](https://user-images.githubusercontent.com/55802893/219533164-d01bface-fb20-475a-ae21-b22615f0ad9b.png)
-
-### 방 만들기
-
-![그림1](https://user-images.githubusercontent.com/55802893/219532144-285a1a40-794a-4181-b42a-d8f64aa66f37.png)
-
-### 방 참여 및 토론 준비
-
-![그림1](https://user-images.githubusercontent.com/55802893/219532851-c7126bd7-24c1-4188-8e75-16014abb086c.png)
-
-### 토론 중 화면
-
-![그림12](https://user-images.githubusercontent.com/55802893/219532939-eaaf90e8-c86b-4980-b980-31b218af94b5.png)
-
-### 토론 기록 확인
-
-![](https://user-images.githubusercontent.com/55802893/219532975-3e7fd357-fe26-4a56-a85a-9638028e0b57.png)
-
 ## Member
 
 |  이름  |  포지션  | 역할                |
