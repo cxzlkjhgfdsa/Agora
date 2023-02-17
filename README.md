@@ -85,34 +85,156 @@ AGORA 서비스를 통해 사용자들은 쉽게 토론을 접근할 수 있어,
 
 ## 기술 스택
 
--   ### BackEnd
+-   ### Server
 
+    -   Openjdk 11
     -   Springboot 2.7.7
     -   Spring Data JPA
     -   Spring Security
     -   QueryDSL
-    -   Redis
-    -   MySQL
     -   Swagger 3.0.0
-    -   Openvidu 2.25.0
+    -   jjwt 0.9.1
 
-    ### FrontEnd
+    ### Client
 
+    -   NodeJS 18.14.0 LTS
     -   ReactJS 18.2.0
     -   Recoil 0.7.6
     -   Styled-Component 5.3.6
-    -   Openvidu 2.25.0
+    -   Axios 1.2.4
 
-    ### CI / CD
+    ### Database
 
-    -   AWS EC2
-    -   Jenkins
-    -   NGINX
-    -   SSL
+    -   MYSQL 8.0
+    -   Redis 7.0
+
+    ### Infra
+
+    -   Docker 20.10.23
+    -   Jenkins 2.375.2
+    -   Nginx 1.18.0
+    -   AWS
+    -   GCP
 
 ## Project Structure
 
 ![agora_project_structure-페이지-2 drawio](https://user-images.githubusercontent.com/55802893/218713900-517e1ac5-a876-47ca-9a50-16334700cbca.png)
+
+### Server
+
+```shell
+.
+├── aop
+├── auth
+│   ├── domain
+│   ├── dto
+│   ├── exception
+│   ├── filter
+│   ├── provider
+│   └── util
+├── category
+│   ├── domain
+│   └── repository
+├── common
+│   └── dto
+├── config
+├── debatehistory
+│   ├── controller
+│   ├── domain
+│   ├── dto
+│   ├── repository
+│   └── service
+├── encrypt
+│   ├── domain
+│   ├── repository
+│   ├── service
+│   └── util
+├── file
+│   ├── controller
+│   ├── dto
+│   ├── exception
+│   ├── service
+│   └── util
+├── local
+├── oauth
+│   ├── dto
+│   ├── exception
+│   ├── handler
+│   ├── principal
+│   ├── repository
+│   └── service
+├── openvidu
+│   ├── config
+│   ├── controller
+│   ├── exception
+│   └── service
+├── report
+│   ├── controller
+│   ├── domain
+│   ├── dto
+│   ├── repository
+│   └── service
+├── room
+│   ├── controller
+│   │   └── dto
+│   ├── domain
+│   ├── exception
+│   ├── repository
+│   ├── service
+│   └── util
+├── sse
+│   ├── controller
+│   └── service
+└── user
+    ├── controller
+    │   └── dto
+    ├── domain
+    ├── dto
+    ├── exception
+    ├── repository
+    └── service
+```
+
+### Client
+
+```shell
+.
+├── nginx
+├── public
+└── src
+    ├── api
+    ├── assets
+    │   ├── icons
+    │   ├── images
+    │   ├── login
+    │   └── signup
+    ├── components
+    │   ├── common
+    │   ├── debate
+    │   │   ├── list
+    │   │   └── search
+    │   ├── debateroom
+    │   ├── header
+    │   │   ├── center
+    │   │   ├── left
+    │   │   ├── right
+    │   │   └── style
+    │   ├── login
+    │   ├── main
+    │   │   ├── debate
+    │   │   ├── main-example
+    │   │   ├── mypage
+    │   │   ├── signup
+    │   │   └── welcome
+    │   └── video
+    ├── pages
+    │   └── main
+    │       ├── debate
+    │       └── signup
+    ├── stores
+    └── utils
+        └── hooks
+```
 
 ## Member
 
