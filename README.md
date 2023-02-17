@@ -309,3 +309,7 @@ Branch 전략은 `git flow`를 사용한다.
 | release     | 배포 준비 브랜치           | release/1.0          |
 | hotfix      | 출시 버전 버그 수정 브랜치 | hotfix-1.1.0         |
 | document    | 문서 작업 브랜치           | docs/readme          |
+
+# UCC 영상 확인
+
+[UCC 영상 확인하러 가기](https://www.youtube.com/watch?v=wc9svKOyIUo)
