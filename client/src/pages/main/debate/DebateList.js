@@ -11,6 +11,8 @@ import ModalContainerCreate from "components/main/debate/ModalContainerCreate";
 import { isRoomState, lastRoomState } from "stores/DebateStates";
 import { userInfoState } from "stores/userInfoState";
 
+import Footer from "pages/Footer";
+
 function DebateList() {
 
   const [lastRoom, setLastRoom] = useRecoilState(lastRoomState);
@@ -42,6 +44,7 @@ function DebateList() {
   }, [isRoom, lastRoom])
 
   return (
+    <>
       <Wrapper>
         <LargeDebateContainer url="/v2/search/main/hot5" type="hot" />
         <SmallDebateContainer url="/v2/search/main/topInprogress" type="debating" />
@@ -51,6 +54,8 @@ function DebateList() {
         <ModalContainerJoin />
         <ModalContainerCreate />
       </Wrapper>
+      <Footer />
+    </>
   )
 }
 
